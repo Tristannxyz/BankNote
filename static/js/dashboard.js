@@ -231,11 +231,18 @@ function renderPerformanceChart(dt, rf) {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          labels: { color: "#e2e8f0", font: { family: "'IBM Plex Sans', sans-serif" } },
+          labels: {
+            color: "#f8fafc",
+            font: { family: "'IBM Plex Sans', sans-serif", size: 15, weight: "600" },
+            padding: 18,
+          },
         },
         tooltip: {
+          titleFont: { family: "'IBM Plex Sans', sans-serif", size: 15, weight: "700" },
+          bodyFont: { family: "'IBM Plex Sans', sans-serif", size: 14 },
+          padding: 12,
           callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`,
+            label: (ctx) => `  ${ctx.dataset.label}: ${ctx.raw}%`,
           },
         },
       },
@@ -243,15 +250,19 @@ function renderPerformanceChart(dt, rf) {
         y: {
           min: yMin,
           max: 100,
-          grid: { color: "rgba(255, 255, 255, 0.06)" },
+          grid: { color: "rgba(255, 255, 255, 0.08)" },
           ticks: {
-            color: "#94a3b8",
+            color: "#cbd5e1",
+            font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "500" },
             callback: (val) => `${val}%`,
           },
         },
         x: {
           grid: { display: false },
-          ticks: { color: "#94a3b8" },
+          ticks: {
+            color: "#cbd5e1",
+            font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "600" },
+          },
         },
       },
     },
@@ -302,25 +313,36 @@ function renderFeatureImportanceChart(dt, rf) {
       indexAxis: "y",
       plugins: {
         legend: {
-          labels: { color: "#e2e8f0", font: { family: "'IBM Plex Sans', sans-serif" } },
+          labels: {
+            color: "#f8fafc",
+            font: { family: "'IBM Plex Sans', sans-serif", size: 15, weight: "600" },
+            padding: 18,
+          },
         },
         tooltip: {
+          titleFont: { family: "'IBM Plex Sans', sans-serif", size: 15, weight: "700" },
+          bodyFont: { family: "'IBM Plex Sans', sans-serif", size: 14 },
+          padding: 12,
           callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`,
+            label: (ctx) => `  ${ctx.dataset.label}: ${ctx.raw}%`,
           },
         },
       },
       scales: {
         x: {
-          grid: { color: "rgba(255, 255, 255, 0.06)" },
+          grid: { color: "rgba(255, 255, 255, 0.08)" },
           ticks: {
-            color: "#94a3b8",
+            color: "#cbd5e1",
+            font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "500" },
             callback: (val) => `${val}%`,
           },
         },
         y: {
           grid: { display: false },
-          ticks: { color: "#94a3b8" },
+          ticks: {
+            color: "#cbd5e1",
+            font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "700" },
+          },
         },
       },
     },

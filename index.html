@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#0a0d14">
     <title>Verify Banknote Authenticity — NoteGuard</title>
 
-    <!-- Critical Dark Mode Canvas (prevents white-screen flash during page switches) -->
+    <!-- Critical Dark Mode Canvas & Text Size Initializer -->
     <style>
       :root, html, body {
         background-color: #0a0d14 !important;
@@ -16,6 +16,14 @@
         color-scheme: dark;
       }
     </style>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem("noteguard_text_size") || "normal";
+          document.documentElement.setAttribute("data-text-size", saved);
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Seamless Navigation Resolver (handles both Flask :5000 and Live Server / Static environments) -->
     <script>
@@ -109,12 +117,21 @@
             </button>
 
             
-            <nav class="nav-links" id="navLinks">
-                <a href="/index.html" class="nav-link active">Verify</a>
-                <a href="/security.html" class="nav-link">Security Features</a>
-                <a href="/dashboard.html" class="nav-link">Dashboard</a>
-                <a href="/about.html" class="nav-link">About</a>
-            </nav>
+            <div class="nav-controls-right">
+                <nav class="nav-links" id="navLinks">
+                    <a href="/index.html" class="nav-link active">Verify</a>
+                    <a href="/security.html" class="nav-link">Security Features</a>
+                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="/about.html" class="nav-link">About</a>
+                </nav>
+
+                <!-- Text-Size Accessibility Controls (A- / A / A+) -->
+                <div class="text-size-toggle" role="group" aria-label="Text Size Accessibility Controls">
+                    <button type="button" class="text-size-btn" id="btnTextDec" aria-label="Decrease text size" title="Smaller text">A-</button>
+                    <button type="button" class="text-size-btn" id="btnTextReset" aria-label="Reset text size" title="Default text size (18px)">A</button>
+                    <button type="button" class="text-size-btn" id="btnTextInc" aria-label="Increase text size" title="Larger text">A+</button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -530,6 +547,46 @@
             <p>Built with Python, scikit-learn, Flask, PyWavelets. Educational project.</p>
         </div>
     </footer>
+
+    <!-- Global Text Size Controller -->
+    <script>
+      (function() {
+        var root = document.documentElement;
+        var btnDec = document.getElementById("btnTextDec");
+        var btnReset = document.getElementById("btnTextReset");
+        var btnInc = document.getElementById("btnTextInc");
+
+        function applyTextSize(size) {
+          root.setAttribute("data-text-size", size);
+          try { localStorage.setItem("noteguard_text_size", size); } catch(e){}
+          if (btnDec) btnDec.classList.toggle("active", size === "small");
+          if (btnReset) btnReset.classList.toggle("active", size === "normal");
+          if (btnInc) btnInc.classList.toggle("active", size === "large" || size === "xlarge");
+        }
+
+        var current = "normal";
+        try { current = localStorage.getItem("noteguard_text_size") || "normal"; } catch(e){}
+        applyTextSize(current);
+
+        if (btnDec) {
+          btnDec.addEventListener("click", function() {
+            var cur = root.getAttribute("data-text-size") || "normal";
+            applyTextSize(cur === "xlarge" ? "large" : (cur === "large" ? "normal" : "small"));
+          });
+        }
+        if (btnReset) {
+          btnReset.addEventListener("click", function() {
+            applyTextSize("normal");
+          });
+        }
+        if (btnInc) {
+          btnInc.addEventListener("click", function() {
+            var cur = root.getAttribute("data-text-size") || "normal";
+            applyTextSize(cur === "small" ? "normal" : (cur === "normal" ? "large" : "xlarge"));
+          });
+        }
+      })();
+    </script>
 
     
 <script src="static/js/main.js"></script>

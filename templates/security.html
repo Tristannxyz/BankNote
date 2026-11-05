@@ -15,54 +15,75 @@
   </div>
 
   <!-- The BSP 3-Step Verification Method Overview -->
-  <div class="card" style="border-left: 4px solid var(--color-primary); margin-bottom: 24px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-      <h2 style="font-size: 1.1rem; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-book-open" style="color: var(--color-primary);"></i>
-        The Official BSP 3-Step Verification Method
-      </h2>
-      <span class="badge-tag" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">Bangko Sentral ng Pilipinas</span>
+  <div class="card" style="border-left: 4px solid var(--color-primary); margin-bottom: 28px;">
+    <div class="card-header" style="margin-bottom: 14px;">
+      <div class="card-title-group">
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-book-open"></i>
+        </div>
+        <div>
+          <h2 class="card-title">The Official BSP 3-Step Verification Method</h2>
+          <p class="card-subtitle">Practice the simple FEEL • LOOK • TILT inspection technique to verify Philippine banknotes without special equipment</p>
+        </div>
+      </div>
+      <span class="badge-tag" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.35);">Bangko Sentral ng Pilipinas</span>
     </div>
-    <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; margin-bottom: 16px;">
-      The BSP advises the public to practice the <strong>FEEL • LOOK • TILT</strong> technique to easily distinguish genuine banknotes from counterfeits without requiring special equipment.
-    </p>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
-      <!-- FEEL -->
-      <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.06);">
-        <div style="font-weight: 700; color: #10b981; font-size: 0.95rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-hand"></i> 1. FEEL (Substrate & Embossing)
+    <!-- 3-Step Cards (FEEL, LOOK, TILT) -->
+    <div class="bsp-method-grid">
+      <!-- 1. FEEL -->
+      <div class="bsp-step-card feel">
+        <div class="bsp-step-header">
+          <div class="bsp-step-icon">
+            <i class="fa-solid fa-hand"></i>
+          </div>
+          <div>
+            <div class="bsp-step-title">1. FEEL</div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Substrate & Embossing</div>
+          </div>
         </div>
-        <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-          <li><strong>Security Paper:</strong> 80% cotton, 20% Philippine abaca; distinctly rough and fibrous (never smooth/slippery like ordinary paper).</li>
-          <li><strong>Intaglio Embossed Print:</strong> Tactile roughness on the portrait, denomination numerals, and "REPUBLIKA NG PILIPINAS".</li>
-          <li><strong>Tactile Lines:</strong> Pairs of embossed short lines on the left and right edges for the visually impaired (1 to 6 pairs; 5 dots on polymer).</li>
+        <ul class="bsp-step-list">
+          <li><strong>Security Paper:</strong> 80% cotton, 20% Philippine abaca; distinctly rough, fibrous texture (never completely smooth or slippery like bond paper).</li>
+          <li><strong>Intaglio Embossed Print:</strong> Raised tactile ink across the portrait, denomination numerals, and "REPUBLIKA NG PILIPINAS".</li>
+          <li><strong>Tactile Lines:</strong> Pairs of embossed short lines at edges for the visually impaired (1 to 6 pairs on paper; 5 raised dots on polymer).</li>
         </ul>
       </div>
 
-      <!-- LOOK -->
-      <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.06);">
-        <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-eye"></i> 2. LOOK (Watermarks & Inks)
+      <!-- 2. LOOK -->
+      <div class="bsp-step-card look">
+        <div class="bsp-step-header">
+          <div class="bsp-step-icon">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <div>
+            <div class="bsp-step-title">2. LOOK</div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Watermarks & Inks</div>
+          </div>
         </div>
-        <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-          <li><strong>Shadow Watermark:</strong> Multi-tonal portrait and denomination numeral visible when held up against the light.</li>
-          <li><strong>Security Fibers:</strong> Red and blue fibers randomly scattered across the paper substrate.</li>
+        <ul class="bsp-step-list">
+          <li><strong>Shadow Watermark:</strong> Multi-tonal portrait and denomination numeral visible when held up against light.</li>
+          <li><strong>Security Fibers:</strong> Red and blue fibers randomly scattered across the paper substrate front and back.</li>
           <li><strong>Asymmetric Serial Number:</strong> Digits ascending in font size from left to right.</li>
-          <li><strong>See-Through Baybayin:</strong> Incomplete pre-Hispanic script completes into "PILIPINO" when viewed against the light.</li>
+          <li><strong>See-Through Baybayin:</strong> Incomplete pre-Hispanic script that completes into "PILIPINO" against back-illumination.</li>
         </ul>
       </div>
 
-      <!-- TILT -->
-      <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.06);">
-        <div style="font-weight: 700; color: #f59e0b; font-size: 0.95rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-arrows-rotate"></i> 3. TILT (Optical Elements)
+      <!-- 3. TILT -->
+      <div class="bsp-step-card tilt">
+        <div class="bsp-step-header">
+          <div class="bsp-step-icon">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </div>
+          <div>
+            <div class="bsp-step-title">3. TILT</div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Variable Optical Elements</div>
+          </div>
         </div>
-        <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-          <li><strong>Security Thread:</strong> Metallic windowed or embedded thread bearing "BSP" and denomination amount.</li>
-          <li><strong>Color-Shifting Ink (OVI):</strong> Denomination 1000 shifts color from green to blue when tilted.</li>
+        <ul class="bsp-step-list">
+          <li><strong>Security Thread:</strong> Metallic windowed or embedded thread bearing "BSP" and denomination value.</li>
+          <li><strong>Color-Shifting Ink (OVI):</strong> ₱1,000 numeral shifts color from green to blue when tilted.</li>
           <li><strong>Optically Variable Device (OVD):</strong> Reflective metallic patch featuring parrot (₱500) or pearl (₱1,000).</li>
-          <li><strong>Polymer ₱1,000 (2022):</strong> Transparent clear window with Philippine eagle and Sampaguita hologram.</li>
+          <li><strong>Polymer ₱1,000 (2022):</strong> Transparent clear window with Philippine eagle, Sampaguita, and dynamic holographic strip.</li>
         </ul>
       </div>
     </div>
@@ -71,15 +92,15 @@
   <!-- Linked Model Result Banner (Dynamic) -->
   <div class="model-linked-banner" id="modelLinkedBanner" style="display: none;">
     <div class="model-linked-title">
-      <i class="fa-solid fa-link" style="color: #38bdf8;"></i>
+      <i class="fa-solid fa-link" style="color: #38bdf8; font-size: 1.2rem;"></i>
       <div>
-        <strong>Linked Model Prediction:</strong>
-        <span id="linkedModelSummary" style="color: #94a3b8; margin-left: 6px;">--</span>
+        <strong style="font-size: 1.05rem;">Linked Model Prediction:</strong>
+        <span id="linkedModelSummary" style="color: #cbd5e1; margin-left: 6px; font-size: 1rem;">--</span>
       </div>
     </div>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <span class="badge-tag" id="linkedVerdictBadge">GENUINE</span>
-      <button type="button" class="btn btn-secondary" id="btnClearLinkedResult" style="padding: 4px 10px; font-size: 0.75rem;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span class="badge-tag" id="linkedVerdictBadge" style="font-size: 0.95rem; padding: 6px 14px;">GENUINE</span>
+      <button type="button" class="btn btn-secondary" id="btnClearLinkedResult" style="padding: 6px 14px; font-size: 0.85rem; min-height: 38px;">
         <i class="fa-solid fa-xmark"></i> Unlink
       </button>
     </div>
@@ -89,7 +110,9 @@
   <div class="card">
     <div class="card-header">
       <div class="card-title-group">
-        <i class="fa-solid fa-money-bill-wave card-title-icon"></i>
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
         <div>
           <h2 class="card-title">Denomination Security Features & Interactive Inspector</h2>
           <p class="card-subtitle">Select a denomination to inspect its official BSP security features and verify physical indicators</p>
@@ -97,153 +120,212 @@
       </div>
     </div>
 
-    <div class="card-body">
+    <!-- Denomination Selector: Large Tappable Cards / Pill Tabs -->
+    <div class="denom-tabs-nav" id="denomSelector" role="tablist" aria-label="Philippine Peso Denomination Selector">
+      <button type="button" class="denom-tab-btn active" data-denom="20" role="tab" aria-selected="true">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱20</span>
+          <span class="denom-color-pill" style="background-color: var(--denom-20); color: var(--denom-20);"></span>
+        </div>
+        <span class="denom-tab-sub">Twenty Pesos</span>
+      </button>
 
-      <!-- Denomination Selector Tabs -->
-      <div class="denom-tabs-nav" id="denomSelector" role="tablist">
-        <button type="button" class="denom-tab-btn active" data-denom="20">
-          <span class="denom-badge denom-20">₱20</span>
-          <span>Twenty Pesos</span>
-        </button>
-        <button type="button" class="denom-tab-btn" data-denom="50">
-          <span class="denom-badge denom-50">₱50</span>
-          <span>Fifty Pesos</span>
-        </button>
-        <button type="button" class="denom-tab-btn" data-denom="100">
-          <span class="denom-badge denom-100">₱100</span>
-          <span>One Hundred</span>
-        </button>
-        <button type="button" class="denom-tab-btn" data-denom="200">
-          <span class="denom-badge denom-200">₱200</span>
-          <span>Two Hundred</span>
-        </button>
-        <button type="button" class="denom-tab-btn" data-denom="500">
-          <span class="denom-badge denom-500">₱500</span>
-          <span>Five Hundred</span>
-        </button>
-        <button type="button" class="denom-tab-btn" data-denom="1000">
-          <span class="denom-badge denom-1000">₱1,000</span>
-          <span>One Thousand (Paper)</span>
-        </button>
-        <button type="button" class="denom-tab-btn" data-denom="1000_polymer">
-          <span class="denom-badge denom-1000" style="background: rgba(14, 165, 233, 0.3); border-color: #38bdf8;">₱1,000</span>
-          <span>Polymer (2022)</span>
-        </button>
-      </div>
+      <button type="button" class="denom-tab-btn" data-denom="50" role="tab" aria-selected="false">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱50</span>
+          <span class="denom-color-pill" style="background-color: var(--denom-50); color: var(--denom-50);"></span>
+        </div>
+        <span class="denom-tab-sub">Fifty Pesos</span>
+      </button>
 
-      <!-- Denomination Identity Card -->
-      <div class="denom-detail-header" id="denomHeaderCard" style="background: rgba(230, 126, 34, 0.08); border: 1px solid rgba(230, 126, 34, 0.3);">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span id="denomBigBadge" class="denom-badge denom-20" style="font-size: 1.1rem; padding: 6px 14px;">₱20</span>
-          <div>
-            <h3 id="denomTitle" style="margin: 0; font-size: 1.15rem; color: #fff;">Twenty Pesos (Sinaunang Serye)</h3>
-            <div id="denomSubtitle" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
-              Dominant Color: Orange | Substrate: 80% Cotton, 20% Abaca Paper
-            </div>
+      <button type="button" class="denom-tab-btn" data-denom="100" role="tab" aria-selected="false">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱100</span>
+          <span class="denom-color-pill" style="background-color: var(--denom-100); color: var(--denom-100);"></span>
+        </div>
+        <span class="denom-tab-sub">One Hundred</span>
+      </button>
+
+      <button type="button" class="denom-tab-btn" data-denom="200" role="tab" aria-selected="false">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱200</span>
+          <span class="denom-color-pill" style="background-color: var(--denom-200); color: var(--denom-200);"></span>
+        </div>
+        <span class="denom-tab-sub">Two Hundred</span>
+      </button>
+
+      <button type="button" class="denom-tab-btn" data-denom="500" role="tab" aria-selected="false">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱500</span>
+          <span class="denom-color-pill" style="background-color: var(--denom-500); color: var(--denom-500);"></span>
+        </div>
+        <span class="denom-tab-sub">Five Hundred</span>
+      </button>
+
+      <button type="button" class="denom-tab-btn" data-denom="1000" role="tab" aria-selected="false">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱1,000</span>
+          <span class="denom-color-pill" style="background-color: var(--denom-1000); color: var(--denom-1000);"></span>
+        </div>
+        <span class="denom-tab-sub">One Thousand (Paper)</span>
+      </button>
+
+      <button type="button" class="denom-tab-btn" data-denom="1000_polymer" role="tab" aria-selected="false">
+        <div class="denom-tab-top">
+          <span class="denom-tab-val">₱1,000</span>
+          <span class="denom-color-pill" style="background-color: #0284c7; color: #0284c7;"></span>
+        </div>
+        <span class="denom-tab-sub">Polymer (2022)</span>
+      </button>
+    </div>
+
+    <!-- Denomination Identity Card -->
+    <div class="denom-detail-header" id="denomHeaderCard" style="background: rgba(230, 126, 34, 0.12); border: 1px solid rgba(230, 126, 34, 0.45);">
+      <div class="denom-header-left">
+        <div id="denomBigBadge" class="denom-big-numeral">₱20</div>
+        <div class="denom-header-info">
+          <h3 id="denomTitle">Twenty Pesos (NGC Series)</h3>
+          <div id="denomSubtitle" class="denom-header-sub">
+            Dominant Color: Orange | Substrate: 80% Cotton, 20% Abaca Security Paper
           </div>
         </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <span id="denomSeriesTag" class="badge-tag" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">NGC Series</span>
-        </div>
       </div>
+      <div>
+        <span id="denomSeriesTag" class="denom-series-badge">NGC Series</span>
+      </div>
+    </div>
 
-      <!-- Denomination Metadata Grid -->
-      <div class="denom-meta-grid" id="denomMetaGrid">
-        <div class="denom-meta-item">
+    <!-- 2-Column Info Cards Grid -->
+    <div class="denom-meta-grid" id="denomMetaGrid">
+      <div class="denom-meta-card">
+        <div class="denom-meta-icon"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="denom-meta-content">
           <div class="denom-meta-label">Obverse (Front) Portrait</div>
-          <div class="denom-meta-value" id="denomFrontPortrait">Manuel L. Quezon</div>
+          <div class="denom-meta-val" id="denomFrontPortrait">Manuel L. Quezon</div>
         </div>
-        <div class="denom-meta-item">
+      </div>
+
+      <div class="denom-meta-card">
+        <div class="denom-meta-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+        <div class="denom-meta-content">
           <div class="denom-meta-label">Reverse (Back) Highlights</div>
-          <div class="denom-meta-value" id="denomReverseFeatures">Banaue Rice Terraces, Palm Civet (*Paradoxurus hermaphroditus*)</div>
+          <div class="denom-meta-val" id="denomReverseFeatures">Banaue Rice Terraces, Palm Civet (*Paradoxurus hermaphroditus*)</div>
         </div>
-        <div class="denom-meta-item">
+      </div>
+
+      <div class="denom-meta-card">
+        <div class="denom-meta-icon"><i class="fa-solid fa-fingerprint"></i></div>
+        <div class="denom-meta-content">
           <div class="denom-meta-label">Tactile Marks (Visually Impaired)</div>
-          <div class="denom-meta-value" id="denomTactileMarks">1 pair of short horizontal lines at edges</div>
+          <div class="denom-meta-val" id="denomTactileMarks">1 pair of short horizontal lines at edges</div>
         </div>
-        <div class="denom-meta-item">
+      </div>
+
+      <div class="denom-meta-card">
+        <div class="denom-meta-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="denom-meta-content">
           <div class="denom-meta-label">Security Thread Type</div>
-          <div class="denom-meta-value" id="denomThreadType">2mm wide embedded security thread</div>
+          <div class="denom-meta-val" id="denomThreadType">2mm wide embedded security thread</div>
         </div>
       </div>
+    </div>
 
-      <!-- Interactive Denomination Checklist -->
-      <div style="margin-top: 20px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-          <h4 style="font-size: 0.95rem; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-list-check" style="color: #38bdf8;"></i>
-            Physical Verification Checklist for <span id="checklistDenomLabel">₱20</span>
-          </h4>
-          <span id="checklistCounter" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">0 of 0 checked</span>
-        </div>
-
-        <div id="denomChecklistContainer" style="display: flex; flex-direction: column; gap: 8px;">
-          <!-- Populated dynamically based on denomination -->
-        </div>
-
-        <!-- Overall Assessment (Combines Physical + Model Prediction) -->
-        <div class="checklist-result pending" id="checklistResult">
-          <i class="fa-solid fa-clipboard-list" style="font-size: 1.2rem; flex-shrink: 0; margin-top: 2px;"></i>
-          <div id="checklistResultText">
-            Complete the physical checks above to evaluate this banknote against official BSP security standards.
-          </div>
-        </div>
+    <!-- Interactive Denomination Checklist Section -->
+    <div style="margin-top: 24px;">
+      <div class="checklist-section-header">
+        <h3 style="font-size: 1.35rem; color: #fff; margin: 0; display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-list-check" style="color: var(--color-primary);"></i>
+          Physical Verification Checklist for <span id="checklistDenomLabel" style="color: var(--color-primary); margin-left: 4px;">₱20</span>
+        </h3>
+        <span id="checklistCounter" style="font-size: 1rem; color: var(--text-muted); font-weight: 700;">0 of 8 features verified (0%)</span>
       </div>
 
+      <!-- Animated Progress Bar -->
+      <div class="checklist-progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="checklist-progress-bar" id="checklistProgressBar" style="width: 0%;"></div>
+      </div>
+
+      <!-- Dynamic Large Clickable Checklist Rows -->
+      <div class="checklist-items-stack" id="denomChecklistContainer">
+        <!-- Populated dynamically based on active denomination -->
+      </div>
+
+      <!-- Overall Assessment Status Message -->
+      <div class="checklist-result pending" id="checklistResult">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <div id="checklistResultText">
+          Complete the physical checks above to evaluate this banknote against official BSP security standards.
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- What To Do If You Suspect a Counterfeit Note -->
-  <div class="card" style="margin-top: 24px; border-left: 4px solid #ef4444;">
-    <div class="card-body">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
-        <h3 style="font-size: 1.05rem; color: #ef4444; margin: 0; display: flex; align-items: center; gap: 8px;">
+  <!-- What To Do If You Suspect a Counterfeit Note (Numbered Protocol Step Cards) -->
+  <div class="card" style="margin-top: 32px; border-left: 4px solid #ef4444;">
+    <div class="card-header" style="margin-bottom: 16px;">
+      <div class="card-title-group">
+        <div class="card-title-icon-box" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #ef4444;">
           <i class="fa-solid fa-triangle-exclamation"></i>
-          Official BSP Protocol: What To Do If You Suspect a Fake Note
-        </h3>
-        <span class="badge-tag" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">BSP Circular & Advisory</span>
+        </div>
+        <div>
+          <h2 class="card-title" style="color: #ef4444;">Official BSP Protocol: What To Do If You Suspect a Fake Note</h2>
+          <p class="card-subtitle">Mandatory procedures under BSP Circulars and Article 168 of the Revised Penal Code of the Philippines</p>
+        </div>
+      </div>
+      <span class="badge-tag" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35); font-weight: 700;">BSP Circular & Advisory</span>
+    </div>
+
+    <div class="protocol-steps-grid">
+      <div class="protocol-step-card">
+        <div class="protocol-step-num">1</div>
+        <div class="protocol-step-content">
+          <div class="protocol-step-title">Do NOT Pass or Spend</div>
+          <div class="protocol-step-body">Under Philippine law (Article 168 of the Revised Penal Code), knowingly circulating or passing counterfeit currency is punishable by imprisonment.</div>
+        </div>
       </div>
 
-      <div style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.7;">
-        <ol style="margin: 0; padding-left: 20px;">
-          <li style="margin-bottom: 8px;">
-            <strong>Do NOT pass or spend the banknote.</strong> Under Philippine law (Article 168 of the Revised Penal Code), knowingly circulating or passing counterfeit currency is punishable by imprisonment.
-          </li>
-          <li style="margin-bottom: 8px;">
-            <strong>Hold the banknote carefully and preserve evidence.</strong> Avoid excessive handling. Place the note in a clean envelope, transparent plastic sleeve, or document folder to preserve latent fingerprints and forensic marks.
-          </li>
-          <li style="margin-bottom: 8px;">
-            <strong>Record receiver details.</strong> Note the physical appearance of the person who gave you the note, companions, date, time, and vehicle license plate number if available.
-          </li>
-          <li style="margin-bottom: 8px;">
-            <strong>Surrender the note immediately to authorities:</strong>
-            <ul style="margin-top: 4px; padding-left: 18px; color: var(--text-muted); font-size: 0.84rem;">
-              <li><strong>Bangko Sentral ng Pilipinas (BSP):</strong> Currency Issue and Integrity Office (CIIO) / Payments and Currency Investigation Group (PCIG), Security Plant Complex, Quezon City, or any BSP Regional Office / Branch.</li>
-              <li><strong>Law Enforcement:</strong> Nearest Philippine National Police (PNP) station or National Bureau of Investigation (NBI) Anti-Fraud Division.</li>
-              <li><strong>Authorized Banks:</strong> Any commercial bank. Banks are legally mandated by BSP Circulars to issue an official receipt (BSP Confiscation Receipt) and transmit suspect notes to the BSP for technical analysis.</li>
-            </ul>
-          </li>
-        </ol>
+      <div class="protocol-step-card">
+        <div class="protocol-step-num">2</div>
+        <div class="protocol-step-content">
+          <div class="protocol-step-title">Preserve Forensic Evidence</div>
+          <div class="protocol-step-body">Avoid excessive handling. Place the banknote in a clean envelope or transparent sleeve to preserve latent fingerprints and forensic marks.</div>
+        </div>
       </div>
 
-      <!-- Official Links & Contact Reference -->
-      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.82rem;">
-        <div>
-          <span style="color: var(--text-muted);"><i class="fa-solid fa-globe" style="color: #38bdf8;"></i> BSP Portal:</span>
-          <a href="https://www.bsp.gov.ph" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; margin-left: 4px; text-decoration: none;">www.bsp.gov.ph</a>
+      <div class="protocol-step-card">
+        <div class="protocol-step-num">3</div>
+        <div class="protocol-step-content">
+          <div class="protocol-step-title">Record Transaction Details</div>
+          <div class="protocol-step-body">Note the physical appearance of the person who tendered the note, companions, date, time, and vehicle license plate number if available.</div>
         </div>
-        <div>
-          <span style="color: var(--text-muted);"><i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i> BSP Know Your Money:</span>
-          <a href="https://www.bsp.gov.ph/SitePages/MediaAndResearch/KnowYourMoney.aspx" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; margin-left: 4px; text-decoration: none;">bsp.gov.ph/KnowYourMoney</a>
+      </div>
+
+      <div class="protocol-step-card">
+        <div class="protocol-step-num">4</div>
+        <div class="protocol-step-content">
+          <div class="protocol-step-title">Surrender Immediately</div>
+          <div class="protocol-step-body">Turn in the note directly to the BSP Payments & Currency Investigation Group (PCIG), nearest PNP / NBI station, or any commercial bank for a formal Confiscation Receipt.</div>
         </div>
-        <div>
-          <span style="color: var(--text-muted);"><i class="fa-solid fa-phone" style="color: #38bdf8;"></i> BSP Inquiries:</span>
-          <span style="color: #e2e8f0; margin-left: 4px;">(02) 8708-7087 / bspmail@bsp.gov.ph</span>
-        </div>
-        <div>
-          <span style="color: var(--text-muted);"><i class="fa-solid fa-truck-medical" style="color: #ef4444;"></i> PNP Emergency:</span>
-          <span style="color: #e2e8f0; margin-left: 4px;">911 or Local Police Station</span>
-        </div>
+      </div>
+    </div>
+
+    <!-- Official Links & Contact Reference -->
+    <div class="protocol-contacts-grid">
+      <div class="contact-pill-item">
+        <i class="fa-solid fa-globe" style="color: #38bdf8; font-size: 1.15rem;"></i>
+        <span><strong>BSP Portal:</strong> <a href="https://www.bsp.gov.ph" target="_blank" rel="noopener noreferrer">www.bsp.gov.ph</a></span>
+      </div>
+      <div class="contact-pill-item">
+        <i class="fa-solid fa-shield-halved" style="color: #38bdf8; font-size: 1.15rem;"></i>
+        <span><strong>Know Your Money:</strong> <a href="https://www.bsp.gov.ph/SitePages/MediaAndResearch/KnowYourMoney.aspx" target="_blank" rel="noopener noreferrer">bsp.gov.ph/KnowYourMoney</a></span>
+      </div>
+      <div class="contact-pill-item">
+        <i class="fa-solid fa-phone" style="color: #38bdf8; font-size: 1.15rem;"></i>
+        <span><strong>BSP Inquiries:</strong> (02) 8708-7087 / bspmail@bsp.gov.ph</span>
+      </div>
+      <div class="contact-pill-item">
+        <i class="fa-solid fa-truck-medical" style="color: #ef4444; font-size: 1.15rem;"></i>
+        <span><strong>Emergency Hotline:</strong> 911 or Local Police Station</span>
       </div>
     </div>
   </div>
@@ -279,14 +361,14 @@ document.addEventListener("DOMContentLoaded", () => {
       threadType: "2mm wide embedded security thread with repetitive 'BSP 20'",
       series: "NGC Series (Paper)",
       features: [
-        { step: "FEEL", label: "Rough, fibrous texture from abaca-cotton blend (never smooth like bond paper)" },
+        { step: "FEEL", label: "Rough, fibrous texture from abaca-cotton blend (never smooth like ordinary paper)" },
         { step: "FEEL", label: "Tactile raised intaglio print on Manuel L. Quezon portrait and 'REPUBLIKA NG PILIPINAS'" },
         { step: "FEEL", label: "1 pair of embossed tactile lines at the far left and right edges" },
         { step: "LOOK", label: "Shadow watermark portrait of Manuel L. Quezon and numeral '20' visible against light" },
         { step: "LOOK", label: "Asymmetric serial number with ascending font size from left to right" },
-        { step: "LOOK", label: "See-through Baybayin pre-Hispanic character that completes when held to light" },
-        { step: "LOOK", label: "Red and blue security fibers randomly scattered across the surface" },
-        { step: "TILT", label: "2mm wide embedded metallic thread with 'BSP 20' continuous microtext" }
+        { step: "LOOK", label: "See-through Baybayin pre-Hispanic character that completes into 'PILIPINO' when held to light" },
+        { step: "LOOK", label: "Red and blue security fibers randomly scattered across the paper substrate" },
+        { step: "TILT", label: "2mm wide embedded metallic security thread with 'BSP 20' continuous microtext" }
       ]
     },
     "50": {
@@ -302,13 +384,13 @@ document.addEventListener("DOMContentLoaded", () => {
       series: "NGC Series (Paper)",
       features: [
         { step: "FEEL", label: "Rough, fibrous texture from abaca-cotton blend" },
-        { step: "FEEL", label: "Raised intaglio print on Sergio Osmeña portrait and text" },
+        { step: "FEEL", label: "Raised intaglio print on Sergio Osmeña portrait and typography" },
         { step: "FEEL", label: "2 pairs of embossed tactile lines at left and right edges" },
         { step: "LOOK", label: "Shadow watermark portrait of Sergio Osmeña and numeral '50' visible against light" },
         { step: "LOOK", label: "Asymmetric serial number with ascending font size" },
         { step: "LOOK", label: "See-through Baybayin mark completing against back-illumination" },
         { step: "LOOK", label: "Red and blue security fibers embedded in paper" },
-        { step: "TILT", label: "2mm wide embedded metallic security thread with 'BSP 50'" }
+        { step: "TILT", label: "2mm wide embedded metallic security thread with repetitive 'BSP 50'" }
       ]
     },
     "100": {
@@ -446,6 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const checklistDenomLabel = document.getElementById("checklistDenomLabel");
   const denomChecklistContainer = document.getElementById("denomChecklistContainer");
   const checklistCounter = document.getElementById("checklistCounter");
+  const checklistProgressBar = document.getElementById("checklistProgressBar");
   const checklistResult = document.getElementById("checklistResult");
   const checklistResultText = document.getElementById("checklistResultText");
   const modelLinkedBanner = document.getElementById("modelLinkedBanner");
@@ -518,8 +601,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabButtons = denomSelector.querySelectorAll(".denom-tab-btn");
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      tabButtons.forEach(b => b.classList.remove("active"));
+      tabButtons.forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-selected", "false");
+      });
       btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
       currentDenomKey = btn.dataset.denom;
       renderDenominationView(currentDenomKey);
     });
@@ -529,8 +616,10 @@ document.addEventListener("DOMContentLoaded", () => {
   tabButtons.forEach(btn => {
     if (btn.dataset.denom === currentDenomKey) {
       btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
     } else {
       btn.classList.remove("active");
+      btn.setAttribute("aria-selected", "false");
     }
   });
 
@@ -539,13 +628,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!data) return;
 
     // Header Card
-    denomBigBadge.className = `denom-badge ${data.badgeClass}`;
     denomBigBadge.textContent = key === "1000_polymer" ? "₱1,000" : `₱${key}`;
     denomTitle.textContent = `${data.name} (${data.series})`;
     denomSubtitle.textContent = `Dominant Color: ${data.dominantColor} | Substrate: ${data.substrate}`;
     denomSeriesTag.textContent = data.series;
-    denomHeaderCard.style.background = `rgba(${hexToRgb(data.colorHex)}, 0.08)`;
-    denomHeaderCard.style.borderColor = `rgba(${hexToRgb(data.colorHex)}, 0.35)`;
+    denomHeaderCard.style.background = `rgba(${hexToRgb(data.colorHex)}, 0.12)`;
+    denomHeaderCard.style.borderColor = `rgba(${hexToRgb(data.colorHex)}, 0.45)`;
 
     // Meta Grid
     denomFrontPortrait.textContent = data.frontPortrait;
@@ -562,29 +650,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let checklistHtml = "";
     data.features.forEach((feat, idx) => {
-      const isChecked = checklistState[key][idx] ? "checked" : "";
-      let stepColor = "#10b981";
-      if (feat.step === "LOOK") stepColor = "#38bdf8";
-      if (feat.step === "TILT") stepColor = "#f59e0b";
-
+      const isChecked = checklistState[key][idx];
       checklistHtml += `
-        <div class="security-checklist-item" data-idx="${idx}">
-          <input type="checkbox" id="chk_${key}_${idx}" ${isChecked}>
-          <label for="chk_${key}_${idx}">
-            <strong style="color: ${stepColor}; font-size: 0.78rem; text-transform: uppercase; margin-right: 6px;">[${feat.step}]</strong>
-            ${feat.label}
-          </label>
+        <div class="security-checklist-item ${isChecked ? 'verified' : ''}" data-idx="${idx}" role="checkbox" aria-checked="${isChecked ? 'true' : 'false'}" tabindex="0">
+          <div class="custom-checkbox" aria-hidden="true">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <span class="checklist-tag-pill checklist-tag-${feat.step.toLowerCase()}">${feat.step}</span>
+          <span class="checklist-text">${feat.label}</span>
         </div>
       `;
     });
     denomChecklistContainer.innerHTML = checklistHtml;
 
-    // Attach checkbox listeners
-    const checkboxes = denomChecklistContainer.querySelectorAll("input[type='checkbox']");
-    checkboxes.forEach((cb, idx) => {
-      cb.addEventListener("change", (e) => {
-        checklistState[key][idx] = e.target.checked;
+    // Attach click and keyboard listeners to large rows
+    const items = denomChecklistContainer.querySelectorAll(".security-checklist-item");
+    items.forEach((item) => {
+      const toggle = () => {
+        const idx = parseInt(item.dataset.idx, 10);
+        checklistState[key][idx] = !checklistState[key][idx];
+        const checkedNow = checklistState[key][idx];
+        item.classList.toggle("verified", checkedNow);
+        item.setAttribute("aria-checked", checkedNow ? "true" : "false");
         updateChecklistEvaluation();
+      };
+
+      item.addEventListener("click", toggle);
+      item.addEventListener("keydown", (e) => {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          toggle();
+        }
       });
     });
 
@@ -599,8 +695,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const state = checklistState[key] || [];
     const total = data.features.length;
     const checked = state.filter(Boolean).length;
+    const pct = total > 0 ? (checked / total) * 100 : 0;
 
-    checklistCounter.textContent = `${checked} of ${total} features verified`;
+    checklistCounter.textContent = `${checked} of ${total} features verified (${pct.toFixed(0)}%)`;
+    if (checklistProgressBar) {
+      checklistProgressBar.style.width = `${pct}%`;
+    }
 
     // Check if combined with machine learning result
     const hasML = linkedResult && linkedResult.verdict;
@@ -654,7 +754,7 @@ document.addEventListener("DOMContentLoaded", () => {
         checklistResult.className = "checklist-result partial";
         checklistResultText.innerHTML = `
           <strong><i class="fa-solid fa-clock"></i> Inspection In Progress:</strong>
-          ${checked} of ${total} features verified. Check the remaining ${total - checked} feature(s) before accepting the banknote.
+          ${checked} of ${total} features verified (${pct.toFixed(0)}%). Check the remaining ${total - checked} feature(s) before accepting the banknote.
         `;
       }
     }
