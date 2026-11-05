@@ -3,7 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0a0d14">
     <title>{% block title %}NoteGuard — Philippine Peso Banknote Authenticity Verifier{% endblock %}</title>
+
+    <!-- Critical Dark Mode Canvas (prevents white-screen flash during page switches) -->
+    <style>
+      :root, html, body {
+        background-color: #0a0d14 !important;
+        background: #0a0d14 !important;
+        color: #f1f5f9 !important;
+        color-scheme: dark;
+      }
+    </style>
+
+    <!-- Seamless Navigation Resolver (handles both Flask :5000 and Live Server / Static environments) -->
+    <script>
+      (function() {
+        var isStatic = window.location.protocol === "file:" || 
+                       (window.location.port !== "" && window.location.port !== "5000");
+
+        function resolveHref(target) {
+          if (!target) return target;
+          var clean = target.split("?")[0].split("#")[0];
+          if (clean === "/" || clean === "" || clean.endsWith("/index") || clean.endsWith("/index.html")) {
+            return isStatic ? "index.html" : "/";
+          }
+          if (clean === "/security" || clean.endsWith("/security") || clean.endsWith("/security.html")) {
+            return isStatic ? "security.html" : "/security";
+          }
+          if (clean === "/dashboard" || clean.endsWith("/dashboard") || clean.endsWith("/dashboard.html")) {
+            return isStatic ? "dashboard.html" : "/dashboard";
+          }
+          if (clean === "/about" || clean.endsWith("/about") || clean.endsWith("/about.html")) {
+            return isStatic ? "about.html" : "/about";
+          }
+          return target;
+        }
+
+        function fixAllNavLinks() {
+          if (!isStatic) return;
+          var links = document.querySelectorAll('a[href]');
+          for (var i = 0; i < links.length; i++) {
+            var raw = links[i].getAttribute("href");
+            if (raw && !raw.startsWith("#") && !raw.startsWith("http://") && !raw.startsWith("https://") && !raw.startsWith("mailto:")) {
+              var fixed = resolveHref(raw);
+              if (fixed && fixed !== raw) {
+                links[i].setAttribute("href", fixed);
+              }
+            }
+          }
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", fixAllNavLinks);
+        } else {
+          fixAllNavLinks();
+        }
+
+        // Global capture-phase click interceptor to prevent 404s/white screen on static servers
+        document.addEventListener("click", function(e) {
+          var a = e.target.closest("a");
+          if (!a) return;
+          var href = a.getAttribute("href");
+          if (!href || href.startsWith("#") || href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:")) return;
+          
+          if (isStatic) {
+            var target = resolveHref(href);
+            if (target && target !== href) {
+              e.preventDefault();
+              window.location.href = target;
+            }
+          }
+        }, true);
+      })();
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -3,11 +3,6 @@
 
 {% block title %}Model Evaluation Dashboard — NoteGuard{% endblock %}
 
-{% block head_extra %}
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-{% endblock %}
-
 {% block content %}
 <div class="container">
 
@@ -279,5 +274,7 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- Chart.js CDN loaded asynchronously to prevent render-blocking -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="/static/js/dashboard.js"></script>
 {% endblock %}

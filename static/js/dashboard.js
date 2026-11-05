@@ -177,7 +177,13 @@ function renderDashboard(data) {
 }
 
 function renderPerformanceChart(dt, rf) {
-  const ctx = document.getElementById("metricsComparisonChart").getContext("2d");
+  if (typeof Chart === "undefined") {
+    console.warn("Chart.js not loaded. Skipping performance chart.");
+    return;
+  }
+  const canvas = document.getElementById("metricsComparisonChart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
 
   // Calculate dynamic Y-axis minimum
   const allValues = [
@@ -253,7 +259,13 @@ function renderPerformanceChart(dt, rf) {
 }
 
 function renderFeatureImportanceChart(dt, rf) {
-  const ctx = document.getElementById("featureImportanceChart").getContext("2d");
+  if (typeof Chart === "undefined") {
+    console.warn("Chart.js not loaded. Skipping feature importance chart.");
+    return;
+  }
+  const canvas = document.getElementById("featureImportanceChart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
   const features = Object.keys(rf.feature_importances || dt.feature_importances || {});
   if (features.length === 0) return;
 

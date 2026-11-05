@@ -59,6 +59,12 @@
   padding: 0;
 }
 
+html {
+  background-color: var(--bg-dark);
+  background: var(--bg-dark);
+  color-scheme: dark;
+}
+
 body {
   font-family: var(--font-family);
   background-color: var(--bg-dark);

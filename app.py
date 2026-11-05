@@ -200,22 +200,26 @@ def handle_server_error(error):
 # ============================================================================
 
 @app.route("/")
+@app.route("/index.html")
 def index():
     best_model = METRICS.get("best_model", "random_forest")
     return render_template("index.html", best_model=best_model)
 
 
 @app.route("/dashboard")
+@app.route("/dashboard.html")
 def dashboard():
     return render_template("dashboard.html", metrics=METRICS, d_metrics=D_METRICS)
 
 
 @app.route("/security")
+@app.route("/security.html")
 def security():
     return render_template("security.html")
 
 
 @app.route("/about")
+@app.route("/about.html")
 def about():
     return render_template("about.html")
 
