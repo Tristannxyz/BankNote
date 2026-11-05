@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+{% set active_page = 'verify' %}
+
+{% block title %}Verify Banknote Authenticity — NoteGuard{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Hero Header -->
+  <div class="hero-header">
+    <h1 class="hero-title">Verify Banknote <span>Authenticity</span></h1>
+    <p class="hero-desc">
+      Detect counterfeit Philippine peso notes using Discrete Wavelet Transform analysis and high-accuracy Machine Learning classifiers trained on Philippine banknote images.
+    </p>
+  </div>
+
+  <!-- Global Alert Container -->
+  <div id="alertBox" class="alert alert-error" style="display: none;" role="alert">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <div id="alertText">An error occurred.</div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- UPLOAD CARD                                                         -->
+  <!-- =================================================================== -->
+  <div class="card upload-main-card">
+    <div class="card-header">
+      <div class="card-title-group">
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div>
+          <h2 class="card-title">Upload Currency Note</h2>
+          <p class="card-subtitle">Photograph or scan a Philippine peso banknote for automated wavelet feature analysis</p>
+        </div>
+      </div>
+      <!-- Model architecture select -->
+      <div class="model-select-group">
+        <label for="uploadModelSelect" class="form-label">Model Architecture</label>
+        <select id="uploadModelSelect" class="form-select">
+          <option value="random_forest" selected>Random Forest (Best Model)</option>
+          <option value="decision_tree">Decision Tree Classifier</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="uploadForm">
+        <div class="form-group">
+          <label class="form-label">
+            <span>Select Image File</span>
+          </label>
+
+          <!-- Photo Capture Tips Bar -->
+          <div class="capture-tips-box" id="captureTipsBox">
+            <div class="capture-tips-header" id="captureTipsToggle" role="button" tabindex="0">
+              <span class="capture-tips-title"><i class="fa-solid fa-camera" style="color: #f59e0b;"></i> Photo Capture Tips</span>
+              <i class="fa-solid fa-chevron-down capture-tips-chevron" id="captureTipsChevron"></i>
+            </div>
+            <div class="capture-tips-body" id="captureTipsBody" style="display: none;">
+              <ul>
+                <li><i class="fa-solid fa-circle" style="font-size: 0.35rem; color: #f59e0b; vertical-align: middle;"></i> Place the note <strong>flat on a plain dark background</strong> (black or dark table).</li>
+                <li><i class="fa-solid fa-circle" style="font-size: 0.35rem; color: #f59e0b; vertical-align: middle;"></i> Ensure <strong>even, bright lighting</strong> — avoid shadows and harsh reflections.</li>
+                <li><i class="fa-solid fa-circle" style="font-size: 0.35rem; color: #f59e0b; vertical-align: middle;"></i> <strong>Fill the camera frame</strong> with the banknote (minimize empty background).</li>
+                <li><i class="fa-solid fa-circle" style="font-size: 0.35rem; color: #f59e0b; vertical-align: middle;"></i> Keep camera <strong>parallel to the note</strong> — avoid angular perspective distortion.</li>
+                <li><i class="fa-solid fa-circle" style="font-size: 0.35rem; color: #f59e0b; vertical-align: middle;"></i> Ensure the image is <strong>sharp and in focus</strong> — no blur or compression.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Drag & Drop Zone (Supports side-by-side thumbnail on upload) -->
+          <div class="upload-dropzone" id="dropZone">
+            <div class="dropzone-left-col">
+              <i class="fa-regular fa-image dropzone-icon" id="dropIcon"></i>
+              <div class="dropzone-prompt">Drag & drop banknote image here</div>
+              <div class="dropzone-sub">or click to browse your files</div>
+
+              <div class="file-input-custom-row">
+                <button type="button" class="btn-file-select" id="browseBtn">
+                  Choose file
+                </button>
+                <span class="file-name-display" id="fileNameDisplay">No file chosen</span>
+              </div>
+
+              <!-- Native file input -->
+              <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;" aria-label="Upload banknote image file">
+            </div>
+
+            <!-- Uploaded Thumbnail Box (Right Side) -->
+            <div class="dropzone-preview-wrap" id="previewContainer" style="display: none;">
+              <div class="preview-thumb-card">
+                <button type="button" class="preview-clear-btn" id="clearPreviewBtn" title="Remove image" aria-label="Remove image">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <img id="imagePreview" class="preview-thumb-img" alt="Selected banknote preview">
+              </div>
+              <span class="preview-caption">Uploaded Image</span>
+            </div>
+          </div>
+
+          <div class="helper-text">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Supported formats: PNG, JPG, JPEG, GIF, BMP, WEBP (Max size: 16MB)</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-gold btn-block" id="btnAnalyzeUpload">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span id="btnUploadText">Analyze Currency Note</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- RESULTS CARD                                                        -->
+  <!-- =================================================================== -->
+  <div id="uploadResult" class="card result-main-card" style="display: none;">
+    
+    <!-- Top Result Grid: Verdict Box & Confidence Box -->
+    <div class="result-top-grid">
+      <!-- Left: Classification Verdict -->
+      <div class="verdict-box-card" id="verdictBoxCard">
+        <div class="verdict-card-label" id="verdictCardLabel">CLASSIFICATION VERDICT</div>
+        <div class="verdict-display-title" id="uploadVerdictBadge">
+          <i class="fa-solid fa-circle-check" id="verdictStatusIcon"></i>
+          <span id="uploadVerdictText">GENUINE</span>
+        </div>
+        <div class="verdict-tags-row">
+          <span class="verdict-tag-pill" id="verdictDenomTag">Detected: ₱200 Pesos (Green)</span>
+          <span class="verdict-tag-pill" id="verdictMatchTag">Pattern match 93%</span>
+        </div>
+      </div>
+
+      <!-- Right: Model Confidence -->
+      <div class="confidence-box-card">
+        <div class="confidence-card-label">MODEL CONFIDENCE</div>
+        <div class="confidence-val-row">
+          <span class="confidence-large-number" id="uploadConfidenceText">94.0%</span>
+        </div>
+        <div class="confidence-track">
+          <div class="confidence-fill" id="uploadConfidenceBar" style="width: 94%;"></div>
+        </div>
+        <div class="confidence-sub-info" id="uploadModelUsedPill">
+          <i class="fa-solid fa-code-branch" style="color: #f59e0b;"></i> Classified by Random Forest
+        </div>
+      </div>
+    </div>
+
+    <!-- Out of Distribution Warning Banner -->
+    <div id="oodWarningBanner" class="alert alert-warning" style="display: none; margin-top: 16px;">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem;"></i>
+      <div>
+        <strong>Out of Training Distribution Warning:</strong>
+        <div id="oodWarningMessage">The extracted features fall outside genuine training parameters. Result indicates counterfeit or scan anomaly.</div>
+        <div id="oodFeaturesList" style="margin-top: 4px;"></div>
+      </div>
+    </div>
+
+    <!-- Plain-language explanation -->
+    <div id="uploadExplanation" class="plain-explanation" style="display: none;">
+      <i class="fa-solid fa-comment-dots" style="color: #f59e0b; flex-shrink: 0; margin-top: 2px;"></i>
+      <span id="uploadExplanationText"></span>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- BSP Security Verification (FEEL • LOOK • TILT)                    -->
+    <!-- ================================================================= -->
+    <div class="bsp-verification-section" id="bspChecklistCard">
+      <div class="bsp-section-header">
+        <div class="bsp-title-group">
+          <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
+          <span class="bsp-header-title">BSP Security Verification</span>
+          <span class="bsp-header-subtitle">FEEL • LOOK • TILT</span>
+        </div>
+        <span class="bsp-header-badge" id="bspChecklistBadge">5 / 5 CHECKS PASSED</span>
+      </div>
+
+      <!-- Segmented progress indicator -->
+      <div class="bsp-progress-segments" id="bspSegmentsRow">
+        <div class="bsp-seg active"></div>
+        <div class="bsp-seg active"></div>
+        <div class="bsp-seg active"></div>
+        <div class="bsp-seg active"></div>
+        <div class="bsp-seg active"></div>
+      </div>
+
+      <!-- Verification Check Items -->
+      <div class="bsp-checks-list" id="bspChecklistItems">
+        <!-- Rendered dynamically via main.js -->
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- Extracted Wavelet Features Section                                -->
+    <!-- ================================================================= -->
+    <div class="wavelet-features-section">
+      <div class="wavelet-section-header">
+        <div class="wavelet-title-group">
+          <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>
+          <span class="wavelet-title-text">Extracted Wavelet Features</span>
+        </div>
+        <button type="button" class="btn btn-sm-ghost" id="btnSendToManual">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Send to Developer Testing
+        </button>
+      </div>
+
+      <div class="wavelet-table-wrap">
+        <table class="wavelet-range-table">
+          <thead>
+            <tr>
+              <th>FEATURE</th>
+              <th>EXTRACTED</th>
+              <th>TRAINING MEAN</th>
+              <th>POSITION IN TYPICAL RANGE</th>
+            </tr>
+          </thead>
+          <tbody id="extractedFeaturesTableBody">
+            <!-- Rendered dynamically with range track slider dots -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Legend -->
+      <div class="wavelet-legend">
+        <span><span class="legend-dot"></span> Extracted value</span>
+        <span class="legend-sep">|</span>
+        <span><span class="legend-tick"></span> Training mean</span>
+      </div>
+
+      <!-- Metadata summary pills -->
+      <div class="meta-pills-row">
+        <span class="meta-pill-tag" id="metaWavelet">Wavelet: db1</span>
+        <span class="meta-pill-tag" id="metaSize">Size: 1536x2048</span>
+        <span class="meta-pill-tag" id="metaCoeffs">Coefficients: cA (Approximation)</span>
+        <span class="meta-pill-tag" id="metaKurt">Sharpness HF: 0.00529</span>
+      </div>
+
+      <!-- Educational Disclaimer -->
+      <div class="disclaimer-banner">
+        <i class="fa-solid fa-circle-info" style="color: #f59e0b; flex-shrink: 0;"></i>
+        <span>Image-based screening only. It does not replace checking the physical security features (FEEL, LOOK, TILT). Always verify using the official BSP method.</span>
+      </div>
+
+      <!-- Two Action Buttons -->
+      <div class="result-actions-row">
+        <a href="/security" id="linkToSecurityCheck" class="btn btn-gold flex-btn">
+          <i class="fa-solid fa-shield-halved"></i> Verify Physical Security Features
+        </a>
+        <button type="button" class="btn btn-outline flex-btn" id="btnTryAnother">
+          <i class="fa-solid fa-rotate-right"></i> Try Another Note
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- COLLAPSIBLE DEVELOPER / MODEL TESTING ACCORDION                     -->
+  <!-- =================================================================== -->
+  <div class="card dev-accordion-card" style="margin-top: 24px;">
+    <div class="dev-section-toggle" id="devSectionToggle" role="button" tabindex="0" aria-expanded="false">
+      <div class="dev-toggle-left">
+        <i class="fa-solid fa-flask" style="color: #f59e0b; font-size: 1rem;"></i>
+        <span class="dev-toggle-title">Developer / Model Testing</span>
+        <span class="dev-toggle-hint">Technical test using statistical features. Not for verifying real notes.</span>
+      </div>
+      <i class="fa-solid fa-chevron-down" id="devChevron"></i>
+    </div>
+
+    <div class="dev-section-content" id="devSectionContent" style="display: none;">
+      <div class="dev-content-header">
+        <div>
+          <h3 style="font-size: 1rem; color: #fff; margin: 0 0 4px 0;">Model Diagnostic Interface</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Test arbitrary numerical feature vectors or inspect specimen vectors from the Philippine banknote training dataset.</p>
+        </div>
+        <div style="min-width: 200px;">
+          <label for="manualModelSelect" class="form-label" style="margin-bottom: 4px; font-size: 0.78rem;">
+            Architecture
+          </label>
+          <select id="manualModelSelect" class="form-select">
+            <option value="random_forest" selected>Random Forest (Best Model)</option>
+            <option value="decision_tree">Decision Tree Classifier</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Sample Filler Toolbar -->
+      <div class="samples-bar" style="background: rgba(15, 23, 42, 0.4); padding: 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.06); margin-bottom: 16px;">
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">
+          <i class="fa-solid fa-flask" style="color: #f59e0b;"></i> <strong>Technical Test Data:</strong> Pre-extracted specimen vectors from the training set. For model validation only — not for verifying physical banknotes.
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-sample genuine" id="btnFillGenuine">
+            <i class="fa-solid fa-circle-check" style="color: var(--color-genuine);"></i> Fill genuine test vector
+          </button>
+          <button type="button" class="btn-sample forged" id="btnFillForged">
+            <i class="fa-solid fa-triangle-exclamation" style="color: var(--color-forged);"></i> Fill forged test vector
+          </button>
+        </div>
+      </div>
+
+      <!-- Manual Entry Form -->
+      <form id="manualForm">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+          <!-- Variance -->
+          <div class="form-group">
+            <label for="inputVariance" class="form-label">
+              <span>Variance</span>
+              <span class="form-label-hint">[0.007 to 0.399]</span>
+            </label>
+            <input type="number" step="any" id="inputVariance" class="form-control" placeholder="e.g. 0.1250" required>
+            <div class="helper-text">
+              <i class="fa-solid fa-circle-info"></i> Variance of wavelet transformed image
+            </div>
+          </div>
+
+          <!-- Skewness -->
+          <div class="form-group">
+            <label for="inputSkewness" class="form-label">
+              <span>Skewness</span>
+              <span class="form-label-hint">[-3.79 to 2.58]</span>
+            </label>
+            <input type="number" step="any" id="inputSkewness" class="form-control" placeholder="e.g. -0.6876" required>
+            <div class="helper-text">
+              <i class="fa-solid fa-circle-info"></i> Skewness of wavelet transformed image
+            </div>
+          </div>
+
+          <!-- Curtosis -->
+          <div class="form-group">
+            <label for="inputCurtosis" class="form-label">
+              <span>Kurtosis</span>
+              <span class="form-label-hint">[-1.69 to 14.82]</span>
+            </label>
+            <input type="number" step="any" id="inputCurtosis" class="form-control" placeholder="e.g. -0.1371" required>
+            <div class="helper-text">
+              <i class="fa-solid fa-circle-info"></i> Excess kurtosis of transformed image
+            </div>
+          </div>
+
+          <!-- Entropy -->
+          <div class="form-group">
+            <label for="inputEntropy" class="form-label">
+              <span>Entropy</span>
+              <span class="form-label-hint">[-3.42 to 0.84]</span>
+            </label>
+            <input type="number" step="any" id="inputEntropy" class="form-control" placeholder="e.g. -0.4632" required>
+            <div class="helper-text">
+              <i class="fa-solid fa-circle-info"></i> Continuous Shannon entropy of note
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-gold" id="btnAnalyzeManual" style="margin-top: 14px;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span id="btnManualText">Analyze Banknote</span>
+        </button>
+      </form>
+
+      <!-- Manual Analysis Results -->
+      <div id="manualResult" class="result-card" style="display: none; margin-top: 16px;">
+        <div class="result-header">
+          <div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Classification Verdict</div>
+            <div id="manualVerdictBadge" class="verdict-badge genuine">
+              <i class="fa-solid fa-circle-check"></i>
+              <span id="manualVerdictText">GENUINE</span>
+            </div>
+          </div>
+          <div class="confidence-group">
+            <div class="confidence-label">Model Confidence</div>
+            <div class="confidence-value" id="manualConfidenceText">99.9%</div>
+            <div class="confidence-meter">
+              <div class="confidence-bar genuine" id="manualConfidenceBar" style="width: 99.9%;"></div>
+            </div>
+            <div style="margin-top: 6px;">
+              <span class="meta-pill" id="manualModelUsedPill">
+                <i class="fa-solid fa-code-branch" style="color: #f59e0b;"></i> Random Forest
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 0.9rem; color: var(--text-muted);">
+          <div>Probabilities: <strong id="manualProbGen" style="color: var(--color-genuine);">Genuine: --</strong> | <strong id="manualProbForg" style="color: var(--color-forged);">Forged: --</strong></div>
+        </div>
+
+        <!-- Educational Disclaimer -->
+        <div class="disclaimer-text">
+          <i class="fa-solid fa-circle-info" style="color: #f59e0b;"></i>
+          <span>Image-based screening only. It does not replace checking the physical security features (FEEL, LOOK, TILT). Always verify using the official BSP method.</span>
+        </div>
+
+        <!-- Try Another Note button -->
+        <button type="button" class="btn btn-secondary btn-try-another" id="btnTryAnotherManual">
+          <i class="fa-solid fa-rotate-right"></i> Reset Test Form
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/main.js"></script>
+{% endblock %}

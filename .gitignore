@@ -1,0 +1,35 @@
+# Python Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Large Datasets and Raw Image Crops (exceeds GitHub limits)
+crops/
+dataset/
+fake_dataset/
+
+# Local Backups
+backup_*/
+models/backup_*/
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Generated Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+

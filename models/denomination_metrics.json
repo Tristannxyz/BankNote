@@ -1,0 +1,378 @@
+{
+  "best_model": "denomination_rf",
+  "feature_names": [
+    "variance",
+    "skewness",
+    "curtosis",
+    "entropy",
+    "r_mean",
+    "g_mean",
+    "b_mean",
+    "r_std",
+    "g_std",
+    "b_std"
+  ],
+  "class_names": [
+    "20_Pesos",
+    "50_Pesos",
+    "100_Pesos",
+    "200_Pesos",
+    "500_Pesos",
+    "1000_Pesos",
+    "Polymer_1000_Pesos"
+  ],
+  "class_display_names": {
+    "20_Pesos": "\u20b120 Pesos",
+    "50_Pesos": "\u20b150 Pesos",
+    "100_Pesos": "\u20b1100 Pesos",
+    "200_Pesos": "\u20b1200 Pesos",
+    "500_Pesos": "\u20b1500 Pesos",
+    "1000_Pesos": "\u20b11000 Pesos",
+    "Polymer_1000_Pesos": "\u20b11000 Pesos (Polymer)"
+  },
+  "models": {
+    "denomination_rf": {
+      "accuracy": 0.868421052631579,
+      "precision": 0.8644294532200112,
+      "recall": 0.8656650294939533,
+      "f1_score": 0.8639315056333542,
+      "confusion_matrix": [
+        [
+          61,
+          2,
+          1,
+          0,
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          54,
+          0,
+          1,
+          1,
+          3,
+          2
+        ],
+        [
+          1,
+          3,
+          65,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          45,
+          2,
+          5,
+          1
+        ],
+        [
+          2,
+          0,
+          0,
+          4,
+          69,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          5,
+          2,
+          43,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          0,
+          4,
+          59
+        ]
+      ],
+      "per_class_metrics": {
+        "20_Pesos": {
+          "precision": 0.9104,
+          "recall": 0.8971,
+          "f1_score": 0.9037,
+          "support": 68
+        },
+        "50_Pesos": {
+          "precision": 0.9153,
+          "recall": 0.8438,
+          "f1_score": 0.878,
+          "support": 64
+        },
+        "100_Pesos": {
+          "precision": 0.9559,
+          "recall": 0.9155,
+          "f1_score": 0.9353,
+          "support": 71
+        },
+        "200_Pesos": {
+          "precision": 0.7627,
+          "recall": 0.8333,
+          "f1_score": 0.7965,
+          "support": 54
+        },
+        "500_Pesos": {
+          "precision": 0.8961,
+          "recall": 0.8625,
+          "f1_score": 0.879,
+          "support": 80
+        },
+        "1000_Pesos": {
+          "precision": 0.7167,
+          "recall": 0.8269,
+          "f1_score": 0.7679,
+          "support": 52
+        },
+        "Polymer_1000_Pesos": {
+          "precision": 0.8939,
+          "recall": 0.8806,
+          "f1_score": 0.8872,
+          "support": 67
+        }
+      },
+      "model_name": "Random Forest",
+      "best_params": {
+        "max_depth": null,
+        "max_features": "sqrt",
+        "n_estimators": 200
+      },
+      "feature_importances": {
+        "variance": 0.08581074719347667,
+        "skewness": 0.08848217038394879,
+        "curtosis": 0.0834429107136681,
+        "entropy": 0.08964646758925594,
+        "r_mean": 0.11020912004818781,
+        "g_mean": 0.09892035849546188,
+        "b_mean": 0.10560139692242718,
+        "r_std": 0.13318003942844356,
+        "g_std": 0.08732139286399197,
+        "b_std": 0.11738539636113816
+      }
+    },
+    "denomination_dt": {
+      "accuracy": 0.7368421052631579,
+      "precision": 0.7325946361777808,
+      "recall": 0.7267999270614999,
+      "f1_score": 0.7275496847810148,
+      "confusion_matrix": [
+        [
+          55,
+          5,
+          0,
+          2,
+          5,
+          1,
+          0
+        ],
+        [
+          4,
+          45,
+          1,
+          3,
+          6,
+          3,
+          2
+        ],
+        [
+          1,
+          5,
+          60,
+          1,
+          2,
+          1,
+          1
+        ],
+        [
+          1,
+          2,
+          0,
+          32,
+          4,
+          11,
+          4
+        ],
+        [
+          1,
+          2,
+          2,
+          4,
+          65,
+          4,
+          2
+        ],
+        [
+          1,
+          0,
+          2,
+          12,
+          1,
+          34,
+          2
+        ],
+        [
+          0,
+          0,
+          7,
+          6,
+          1,
+          8,
+          45
+        ]
+      ],
+      "per_class_metrics": {
+        "20_Pesos": {
+          "precision": 0.873,
+          "recall": 0.8088,
+          "f1_score": 0.8397,
+          "support": 68
+        },
+        "50_Pesos": {
+          "precision": 0.7627,
+          "recall": 0.7031,
+          "f1_score": 0.7317,
+          "support": 64
+        },
+        "100_Pesos": {
+          "precision": 0.8333,
+          "recall": 0.8451,
+          "f1_score": 0.8392,
+          "support": 71
+        },
+        "200_Pesos": {
+          "precision": 0.5333,
+          "recall": 0.5926,
+          "f1_score": 0.5614,
+          "support": 54
+        },
+        "500_Pesos": {
+          "precision": 0.7738,
+          "recall": 0.8125,
+          "f1_score": 0.7927,
+          "support": 80
+        },
+        "1000_Pesos": {
+          "precision": 0.5484,
+          "recall": 0.6538,
+          "f1_score": 0.5965,
+          "support": 52
+        },
+        "Polymer_1000_Pesos": {
+          "precision": 0.8036,
+          "recall": 0.6716,
+          "f1_score": 0.7317,
+          "support": 67
+        }
+      },
+      "model_name": "Decision Tree",
+      "best_params": {
+        "criterion": "entropy",
+        "max_depth": null,
+        "min_samples_split": 2
+      },
+      "feature_importances": {
+        "variance": 0.057143592589090395,
+        "skewness": 0.07400996737349533,
+        "curtosis": 0.06582768710149815,
+        "entropy": 0.07320324342109276,
+        "r_mean": 0.13628550687160815,
+        "g_mean": 0.11813432344081966,
+        "b_mean": 0.1359216265904149,
+        "r_std": 0.14282506827673588,
+        "g_std": 0.0737540867923728,
+        "b_std": 0.12289489754287213
+      }
+    }
+  },
+  "training_feature_ranges": {
+    "variance": {
+      "min": 0.0064,
+      "max": 0.5303,
+      "mean": 0.12042153121902874,
+      "std": 0.07414520596856668
+    },
+    "skewness": {
+      "min": -4.3076,
+      "max": 3.2769,
+      "mean": -0.41385755698711596,
+      "std": 0.7110720891834641
+    },
+    "curtosis": {
+      "min": -1.802,
+      "max": 36.1696,
+      "mean": 0.44957793607532215,
+      "std": 2.1365886416603463
+    },
+    "entropy": {
+      "min": -3.1722,
+      "max": 0.8983,
+      "mean": -0.11824138999008921,
+      "std": 0.5474028852668881
+    },
+    "r_mean": {
+      "min": 0.0472,
+      "max": 0.9843,
+      "mean": 0.5546236992071357,
+      "std": 0.1482835403943264
+    },
+    "g_mean": {
+      "min": 0.0741,
+      "max": 0.9558,
+      "mean": 0.5310405351833498,
+      "std": 0.14537434615478625
+    },
+    "b_mean": {
+      "min": 0.0569,
+      "max": 0.9529,
+      "mean": 0.5038853691774033,
+      "std": 0.14985020151542855
+    },
+    "r_std": {
+      "min": 0.0231,
+      "max": 0.4064,
+      "mean": 0.16882773785926658,
+      "std": 0.060684850418402846
+    },
+    "g_std": {
+      "min": 0.0468,
+      "max": 0.3595,
+      "mean": 0.16970116451932607,
+      "std": 0.052520644849553905
+    },
+    "b_std": {
+      "min": 0.0479,
+      "max": 0.3387,
+      "mean": 0.17621293359762139,
+      "std": 0.05380341620527758
+    }
+  },
+  "train_rows": 8072,
+  "test_rows": 456,
+  "dataset_source": "dataset/ (Philippine Banknotes Roboflow YOLO v8)",
+  "dataset_summary": {
+    "total_records": 8528,
+    "class_distribution": {
+      "20_Pesos": 1319,
+      "50_Pesos": 1084,
+      "100_Pesos": 1166,
+      "200_Pesos": 1150,
+      "500_Pesos": 1107,
+      "1000_Pesos": 1140,
+      "Polymer_1000_Pesos": 1106
+    }
+  }
+}

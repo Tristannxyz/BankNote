@@ -1,0 +1,677 @@
+{% extends "base.html" %}
+{% set active_page = 'security' %}
+
+{% block title %}BSP Security Features & Verification Guide — NoteGuard{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Hero Header -->
+  <div class="hero-header">
+    <h1 class="hero-title">BSP Security <span>Features & Verification</span></h1>
+    <p class="hero-desc">
+      Official Bangko Sentral ng Pilipinas (BSP) <strong>FEEL • LOOK • TILT</strong> verification guide and interactive checklist for New Generation Currency (NGC) banknotes.
+    </p>
+  </div>
+
+  <!-- The BSP 3-Step Verification Method Overview -->
+  <div class="card" style="border-left: 4px solid #38bdf8; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+      <h2 style="font-size: 1.1rem; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-book-open" style="color: #38bdf8;"></i>
+        The Official BSP 3-Step Verification Method
+      </h2>
+      <span class="badge-tag" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Bangko Sentral ng Pilipinas</span>
+    </div>
+    <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; margin-bottom: 16px;">
+      The BSP advises the public to practice the <strong>FEEL • LOOK • TILT</strong> technique to easily distinguish genuine banknotes from counterfeits without requiring special equipment.
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+      <!-- FEEL -->
+      <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.06);">
+        <div style="font-weight: 700; color: #10b981; font-size: 0.95rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-hand"></i> 1. FEEL (Substrate & Embossing)
+        </div>
+        <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+          <li><strong>Security Paper:</strong> 80% cotton, 20% Philippine abaca; distinctly rough and fibrous (never smooth/slippery like ordinary paper).</li>
+          <li><strong>Intaglio Embossed Print:</strong> Tactile roughness on the portrait, denomination numerals, and "REPUBLIKA NG PILIPINAS".</li>
+          <li><strong>Tactile Lines:</strong> Pairs of embossed short lines on the left and right edges for the visually impaired (1 to 6 pairs; 5 dots on polymer).</li>
+        </ul>
+      </div>
+
+      <!-- LOOK -->
+      <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.06);">
+        <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-eye"></i> 2. LOOK (Watermarks & Inks)
+        </div>
+        <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+          <li><strong>Shadow Watermark:</strong> Multi-tonal portrait and denomination numeral visible when held up against the light.</li>
+          <li><strong>Security Fibers:</strong> Red and blue fibers randomly scattered across the paper substrate.</li>
+          <li><strong>Asymmetric Serial Number:</strong> Digits ascending in font size from left to right.</li>
+          <li><strong>See-Through Baybayin:</strong> Incomplete pre-Hispanic script completes into "PILIPINO" when viewed against the light.</li>
+        </ul>
+      </div>
+
+      <!-- TILT -->
+      <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.06);">
+        <div style="font-weight: 700; color: #f59e0b; font-size: 0.95rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-arrows-rotate"></i> 3. TILT (Optical Elements)
+        </div>
+        <ul style="margin: 0; padding-left: 18px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+          <li><strong>Security Thread:</strong> Metallic windowed or embedded thread bearing "BSP" and denomination amount.</li>
+          <li><strong>Color-Shifting Ink (OVI):</strong> Denomination 1000 shifts color from green to blue when tilted.</li>
+          <li><strong>Optically Variable Device (OVD):</strong> Reflective metallic patch featuring parrot (₱500) or pearl (₱1,000).</li>
+          <li><strong>Polymer ₱1,000 (2022):</strong> Transparent clear window with Philippine eagle and Sampaguita hologram.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Linked Model Result Banner (Dynamic) -->
+  <div class="model-linked-banner" id="modelLinkedBanner" style="display: none;">
+    <div class="model-linked-title">
+      <i class="fa-solid fa-link" style="color: #38bdf8;"></i>
+      <div>
+        <strong>Linked Model Prediction:</strong>
+        <span id="linkedModelSummary" style="color: #94a3b8; margin-left: 6px;">--</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <span class="badge-tag" id="linkedVerdictBadge">GENUINE</span>
+      <button type="button" class="btn btn-secondary" id="btnClearLinkedResult" style="padding: 4px 10px; font-size: 0.75rem;">
+        <i class="fa-solid fa-xmark"></i> Unlink
+      </button>
+    </div>
+  </div>
+
+  <!-- Denomination Specific Verification Section -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title-group">
+        <i class="fa-solid fa-money-bill-wave card-title-icon"></i>
+        <div>
+          <h2 class="card-title">Denomination Security Features & Interactive Inspector</h2>
+          <p class="card-subtitle">Select a denomination to inspect its official BSP security features and verify physical indicators</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Denomination Selector Tabs -->
+      <div class="denom-tabs-nav" id="denomSelector" role="tablist">
+        <button type="button" class="denom-tab-btn active" data-denom="20">
+          <span class="denom-badge denom-20">₱20</span>
+          <span>Twenty Pesos</span>
+        </button>
+        <button type="button" class="denom-tab-btn" data-denom="50">
+          <span class="denom-badge denom-50">₱50</span>
+          <span>Fifty Pesos</span>
+        </button>
+        <button type="button" class="denom-tab-btn" data-denom="100">
+          <span class="denom-badge denom-100">₱100</span>
+          <span>One Hundred</span>
+        </button>
+        <button type="button" class="denom-tab-btn" data-denom="200">
+          <span class="denom-badge denom-200">₱200</span>
+          <span>Two Hundred</span>
+        </button>
+        <button type="button" class="denom-tab-btn" data-denom="500">
+          <span class="denom-badge denom-500">₱500</span>
+          <span>Five Hundred</span>
+        </button>
+        <button type="button" class="denom-tab-btn" data-denom="1000">
+          <span class="denom-badge denom-1000">₱1,000</span>
+          <span>One Thousand (Paper)</span>
+        </button>
+        <button type="button" class="denom-tab-btn" data-denom="1000_polymer">
+          <span class="denom-badge denom-1000" style="background: rgba(14, 165, 233, 0.3); border-color: #38bdf8;">₱1,000</span>
+          <span>Polymer (2022)</span>
+        </button>
+      </div>
+
+      <!-- Denomination Identity Card -->
+      <div class="denom-detail-header" id="denomHeaderCard" style="background: rgba(230, 126, 34, 0.08); border: 1px solid rgba(230, 126, 34, 0.3);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span id="denomBigBadge" class="denom-badge denom-20" style="font-size: 1.1rem; padding: 6px 14px;">₱20</span>
+          <div>
+            <h3 id="denomTitle" style="margin: 0; font-size: 1.15rem; color: #fff;">Twenty Pesos (Sinaunang Serye)</h3>
+            <div id="denomSubtitle" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
+              Dominant Color: Orange | Substrate: 80% Cotton, 20% Abaca Paper
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span id="denomSeriesTag" class="badge-tag" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">NGC Series</span>
+        </div>
+      </div>
+
+      <!-- Denomination Metadata Grid -->
+      <div class="denom-meta-grid" id="denomMetaGrid">
+        <div class="denom-meta-item">
+          <div class="denom-meta-label">Obverse (Front) Portrait</div>
+          <div class="denom-meta-value" id="denomFrontPortrait">Manuel L. Quezon</div>
+        </div>
+        <div class="denom-meta-item">
+          <div class="denom-meta-label">Reverse (Back) Highlights</div>
+          <div class="denom-meta-value" id="denomReverseFeatures">Banaue Rice Terraces, Palm Civet (*Paradoxurus hermaphroditus*)</div>
+        </div>
+        <div class="denom-meta-item">
+          <div class="denom-meta-label">Tactile Marks (Visually Impaired)</div>
+          <div class="denom-meta-value" id="denomTactileMarks">1 pair of short horizontal lines at edges</div>
+        </div>
+        <div class="denom-meta-item">
+          <div class="denom-meta-label">Security Thread Type</div>
+          <div class="denom-meta-value" id="denomThreadType">2mm wide embedded security thread</div>
+        </div>
+      </div>
+
+      <!-- Interactive Denomination Checklist -->
+      <div style="margin-top: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h4 style="font-size: 0.95rem; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-list-check" style="color: #38bdf8;"></i>
+            Physical Verification Checklist for <span id="checklistDenomLabel">₱20</span>
+          </h4>
+          <span id="checklistCounter" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">0 of 0 checked</span>
+        </div>
+
+        <div id="denomChecklistContainer" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Populated dynamically based on denomination -->
+        </div>
+
+        <!-- Overall Assessment (Combines Physical + Model Prediction) -->
+        <div class="checklist-result pending" id="checklistResult">
+          <i class="fa-solid fa-clipboard-list" style="font-size: 1.2rem; flex-shrink: 0; margin-top: 2px;"></i>
+          <div id="checklistResultText">
+            Complete the physical checks above to evaluate this banknote against official BSP security standards.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- What To Do If You Suspect a Counterfeit Note -->
+  <div class="card" style="margin-top: 24px; border-left: 4px solid #ef4444;">
+    <div class="card-body">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+        <h3 style="font-size: 1.05rem; color: #ef4444; margin: 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Official BSP Protocol: What To Do If You Suspect a Fake Note
+        </h3>
+        <span class="badge-tag" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">BSP Circular & Advisory</span>
+      </div>
+
+      <div style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.7;">
+        <ol style="margin: 0; padding-left: 20px;">
+          <li style="margin-bottom: 8px;">
+            <strong>Do NOT pass or spend the banknote.</strong> Under Philippine law (Article 168 of the Revised Penal Code), knowingly circulating or passing counterfeit currency is punishable by imprisonment.
+          </li>
+          <li style="margin-bottom: 8px;">
+            <strong>Hold the banknote carefully and preserve evidence.</strong> Avoid excessive handling. Place the note in a clean envelope, transparent plastic sleeve, or document folder to preserve latent fingerprints and forensic marks.
+          </li>
+          <li style="margin-bottom: 8px;">
+            <strong>Record receiver details.</strong> Note the physical appearance of the person who gave you the note, companions, date, time, and vehicle license plate number if available.
+          </li>
+          <li style="margin-bottom: 8px;">
+            <strong>Surrender the note immediately to authorities:</strong>
+            <ul style="margin-top: 4px; padding-left: 18px; color: var(--text-muted); font-size: 0.84rem;">
+              <li><strong>Bangko Sentral ng Pilipinas (BSP):</strong> Currency Issue and Integrity Office (CIIO) / Payments and Currency Investigation Group (PCIG), Security Plant Complex, Quezon City, or any BSP Regional Office / Branch.</li>
+              <li><strong>Law Enforcement:</strong> Nearest Philippine National Police (PNP) station or National Bureau of Investigation (NBI) Anti-Fraud Division.</li>
+              <li><strong>Authorized Banks:</strong> Any commercial bank. Banks are legally mandated by BSP Circulars to issue an official receipt (BSP Confiscation Receipt) and transmit suspect notes to the BSP for technical analysis.</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Official Links & Contact Reference -->
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.82rem;">
+        <div>
+          <span style="color: var(--text-muted);"><i class="fa-solid fa-globe" style="color: #38bdf8;"></i> BSP Portal:</span>
+          <a href="https://www.bsp.gov.ph" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; margin-left: 4px; text-decoration: none;">www.bsp.gov.ph</a>
+        </div>
+        <div>
+          <span style="color: var(--text-muted);"><i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i> BSP Know Your Money:</span>
+          <a href="https://www.bsp.gov.ph/SitePages/MediaAndResearch/KnowYourMoney.aspx" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; margin-left: 4px; text-decoration: none;">bsp.gov.ph/KnowYourMoney</a>
+        </div>
+        <div>
+          <span style="color: var(--text-muted);"><i class="fa-solid fa-phone" style="color: #38bdf8;"></i> BSP Inquiries:</span>
+          <span style="color: #e2e8f0; margin-left: 4px;">(02) 8708-7087 / bspmail@bsp.gov.ph</span>
+        </div>
+        <div>
+          <span style="color: var(--text-muted);"><i class="fa-solid fa-truck-medical" style="color: #ef4444;"></i> PNP Emergency:</span>
+          <span style="color: #e2e8f0; margin-left: 4px;">911 or Local Police Station</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Mobile nav hamburger toggle
+  const navHamburger = document.getElementById("navHamburger");
+  const navLinks = document.getElementById("navLinks");
+  if (navHamburger && navLinks) {
+    navHamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("open");
+    });
+  }
+
+  // =========================================================================
+  // OFFICIAL BSP DENOMINATION DATA REPOSITORY (Sourced from bsp.gov.ph)
+  // =========================================================================
+  const DENOMINATIONS = {
+    "20": {
+      name: "Twenty Pesos",
+      badgeClass: "denom-20",
+      colorHex: "#e67e22",
+      dominantColor: "Orange",
+      substrate: "80% Cotton, 20% Abaca Security Paper",
+      frontPortrait: "Manuel L. Quezon (Declaration of Filipino as National Language)",
+      reverseFeatures: "Banaue Rice Terraces, Palm Civet (*Paradoxurus hermaphroditus*)",
+      tactileMarks: "1 pair of short horizontal lines at edges (Enhanced NGC)",
+      threadType: "2mm wide embedded security thread with repetitive 'BSP 20'",
+      series: "NGC Series (Paper)",
+      features: [
+        { step: "FEEL", label: "Rough, fibrous texture from abaca-cotton blend (never smooth like bond paper)" },
+        { step: "FEEL", label: "Tactile raised intaglio print on Manuel L. Quezon portrait and 'REPUBLIKA NG PILIPINAS'" },
+        { step: "FEEL", label: "1 pair of embossed tactile lines at the far left and right edges" },
+        { step: "LOOK", label: "Shadow watermark portrait of Manuel L. Quezon and numeral '20' visible against light" },
+        { step: "LOOK", label: "Asymmetric serial number with ascending font size from left to right" },
+        { step: "LOOK", label: "See-through Baybayin pre-Hispanic character that completes when held to light" },
+        { step: "LOOK", label: "Red and blue security fibers randomly scattered across the surface" },
+        { step: "TILT", label: "2mm wide embedded metallic thread with 'BSP 20' continuous microtext" }
+      ]
+    },
+    "50": {
+      name: "Fifty Pesos",
+      badgeClass: "denom-50",
+      colorHex: "#e74c3c",
+      dominantColor: "Red",
+      substrate: "80% Cotton, 20% Abaca Security Paper",
+      frontPortrait: "Sergio Osmeña (First National Assembly 1907)",
+      reverseFeatures: "Taal Lake in Batangas, Maliputo (*Caranx ignobilis*)",
+      tactileMarks: "2 pairs of short horizontal lines at edges (Enhanced NGC)",
+      threadType: "2mm wide embedded security thread with repetitive 'BSP 50'",
+      series: "NGC Series (Paper)",
+      features: [
+        { step: "FEEL", label: "Rough, fibrous texture from abaca-cotton blend" },
+        { step: "FEEL", label: "Raised intaglio print on Sergio Osmeña portrait and text" },
+        { step: "FEEL", label: "2 pairs of embossed tactile lines at left and right edges" },
+        { step: "LOOK", label: "Shadow watermark portrait of Sergio Osmeña and numeral '50' visible against light" },
+        { step: "LOOK", label: "Asymmetric serial number with ascending font size" },
+        { step: "LOOK", label: "See-through Baybayin mark completing against back-illumination" },
+        { step: "LOOK", label: "Red and blue security fibers embedded in paper" },
+        { step: "TILT", label: "2mm wide embedded metallic security thread with 'BSP 50'" }
+      ]
+    },
+    "100": {
+      name: "One Hundred Pesos",
+      badgeClass: "denom-100",
+      colorHex: "#8e44ad",
+      dominantColor: "Violet",
+      substrate: "80% Cotton, 20% Abaca Security Paper",
+      frontPortrait: "Manuel A. Roxas (Inauguration of the Third Republic)",
+      reverseFeatures: "Mayon Volcano in Albay, Whale Shark (*Rhincodon typus*)",
+      tactileMarks: "3 pairs of short horizontal lines at edges (Enhanced NGC)",
+      threadType: "4mm wide windowed security thread with color-shift and 'BSP 100'",
+      series: "NGC Series (Paper)",
+      features: [
+        { step: "FEEL", label: "Rough, fibrous abaca-cotton security paper" },
+        { step: "FEEL", label: "Raised intaglio embossing on Manuel A. Roxas portrait and typography" },
+        { step: "FEEL", label: "3 pairs of embossed tactile lines at left and right edges" },
+        { step: "LOOK", label: "Shadow watermark portrait of Manuel A. Roxas and numeral '100'" },
+        { step: "LOOK", label: "Asymmetric serial number with ascending font size" },
+        { step: "LOOK", label: "See-through Baybayin mark completing into 'PILIPINO'" },
+        { step: "LOOK", label: "Red and blue security fibers visible under ambient and UV light" },
+        { step: "TILT", label: "4mm windowed security thread that shifts color and displays 'BSP 100' when tilted" }
+      ]
+    },
+    "200": {
+      name: "Two Hundred Pesos",
+      badgeClass: "denom-200",
+      colorHex: "#27ae60",
+      dominantColor: "Green",
+      substrate: "80% Cotton, 20% Abaca Security Paper",
+      frontPortrait: "Diosdado Macapagal (EDSA People Power II)",
+      reverseFeatures: "Chocolate Hills in Bohol, Philippine Tarsier (*Tarsius syrichta*)",
+      tactileMarks: "4 pairs of short horizontal lines at edges (Enhanced NGC)",
+      threadType: "4mm wide windowed security thread with 'BSP 200'",
+      series: "NGC Series (Paper)",
+      features: [
+        { step: "FEEL", label: "Rough abaca-cotton security substrate" },
+        { step: "FEEL", label: "Tactile intaglio print on Diosdado Macapagal portrait" },
+        { step: "FEEL", label: "4 pairs of embossed tactile lines at left and right edges" },
+        { step: "LOOK", label: "Shadow watermark of Diosdado Macapagal portrait and numeral '200'" },
+        { step: "LOOK", label: "Asymmetric serial number with ascending font size" },
+        { step: "LOOK", label: "See-through Baybayin mark aligned against light" },
+        { step: "LOOK", label: "Red and blue security fibers randomly scattered" },
+        { step: "TILT", label: "4mm windowed security thread with 'BSP 200' that shifts color when tilted" }
+      ]
+    },
+    "500": {
+      name: "Five Hundred Pesos",
+      badgeClass: "denom-500",
+      colorHex: "#f1c40f",
+      dominantColor: "Yellow / Gold",
+      substrate: "80% Cotton, 20% Abaca Security Paper",
+      frontPortrait: "Benigno Aquino Jr. and Corazon Aquino (EDSA People Power I)",
+      reverseFeatures: "Puerto Princesa Subterranean River, Blue-naped Parrot (*Tanygnathus lucionensis*)",
+      tactileMarks: "5 pairs of short horizontal lines at edges (Enhanced NGC)",
+      threadType: "4mm wide windowed security thread with 'BSP 500'",
+      series: "NGC Series (Paper)",
+      features: [
+        { step: "FEEL", label: "Rough abaca-cotton blend paper substrate" },
+        { step: "FEEL", label: "Heavy intaglio print on dual portraits of Benigno & Corazon Aquino" },
+        { step: "FEEL", label: "5 pairs of embossed tactile lines at left and right edges" },
+        { step: "LOOK", label: "Shadow watermark of Benigno and Corazon Aquino with numeral '500'" },
+        { step: "LOOK", label: "Asymmetric serial number with ascending font size" },
+        { step: "LOOK", label: "See-through Baybayin script completing when held up to light" },
+        { step: "LOOK", label: "Red and blue embedded security fibers" },
+        { step: "TILT", label: "4mm wide windowed security thread with metallic movement" },
+        { step: "TILT", label: "Optically Variable Device (OVD) metallic patch: Reflective Blue-naped Parrot changes appearance when tilted" }
+      ]
+    },
+    "1000": {
+      name: "One Thousand Pesos",
+      badgeClass: "denom-1000",
+      colorHex: "#2980b9",
+      dominantColor: "Blue",
+      substrate: "80% Cotton, 20% Abaca Security Paper",
+      frontPortrait: "José Abad Santos, Vicente Lim, and Josefa Llanes Escoda",
+      reverseFeatures: "Tubbataha Reefs Natural Park, South Sea Pearl (*Pinctada maxima*)",
+      tactileMarks: "6 pairs of short horizontal lines at edges (Enhanced NGC)",
+      threadType: "4mm wide windowed security thread with 'BSP 1000'",
+      series: "NGC Series (Paper)",
+      features: [
+        { step: "FEEL", label: "Rough, fibrous abaca-cotton security paper" },
+        { step: "FEEL", label: "Tactile intaglio print on the three war heroes portraits and numerals" },
+        { step: "FEEL", label: "6 pairs of embossed tactile lines at left and right edges" },
+        { step: "LOOK", label: "Shadow watermark of triple heroes and numeral '1000'" },
+        { step: "LOOK", label: "Asymmetric serial number with ascending font size" },
+        { step: "LOOK", label: "See-through Baybayin script completing into 'PILIPINO'" },
+        { step: "LOOK", label: "Red and blue security fibers throughout" },
+        { step: "TILT", label: "4mm wide windowed security thread showing dynamic color change" },
+        { step: "TILT", label: "Optically Variable Ink (OVI): 1000 numeral at bottom right shifts from green to blue when tilted" },
+        { step: "TILT", label: "Optically Variable Device (OVD) patch: Reflective South Sea Pearl metallic foil" }
+      ]
+    },
+    "1000_polymer": {
+      name: "One Thousand Pesos (Polymer)",
+      badgeClass: "denom-1000",
+      colorHex: "#0284c7",
+      dominantColor: "Blue / Aqua",
+      substrate: "Biaxially Oriented Polypropylene (BOPP) Polymer",
+      frontPortrait: "Philippine Eagle (*Pithecophaga jefferyi*) — Vertical Layout",
+      reverseFeatures: "Tubbataha Reefs Natural Park, South Sea Pearl, T'nalak weave design",
+      tactileMarks: "5 embossed tactile dots at top right edge for visually impaired",
+      threadType: "Shadow thread & holographic window (no traditional paper thread)",
+      series: "2022 Polymer Series",
+      features: [
+        { step: "FEEL", label: "Smooth, clean plastic polymer feel (water and dirt resistant)" },
+        { step: "FEEL", label: "Raised intaglio print on 'REPUBLIKA NG PILIPINAS' and numeral '1000'" },
+        { step: "FEEL", label: "5 embossed braille-like tactile dots near the top right margin" },
+        { step: "LOOK", label: "Transparent clear window with detailed Sampaguita flower and BSP seal" },
+        { step: "LOOK", label: "Sharp, high-detail vertical portrait of the Philippine Eagle" },
+        { step: "LOOK", label: "Micro-printing and fine intricate line work visible under magnification" },
+        { step: "TILT", label: "Holographic optical variable foil inside clear window showing color shifts" },
+        { step: "TILT", label: "Dynamic color-shifting effect and iridescent metallic strip on reverse" },
+        { step: "TILT", label: "Shadow vertical security thread visible through polymer substrate when held to light" }
+      ]
+    }
+  };
+
+  // State
+  let currentDenomKey = "20";
+  let checklistState = {};
+  let linkedResult = null;
+
+  // DOM Elements
+  const denomSelector = document.getElementById("denomSelector");
+  const denomHeaderCard = document.getElementById("denomHeaderCard");
+  const denomBigBadge = document.getElementById("denomBigBadge");
+  const denomTitle = document.getElementById("denomTitle");
+  const denomSubtitle = document.getElementById("denomSubtitle");
+  const denomSeriesTag = document.getElementById("denomSeriesTag");
+  const denomFrontPortrait = document.getElementById("denomFrontPortrait");
+  const denomReverseFeatures = document.getElementById("denomReverseFeatures");
+  const denomTactileMarks = document.getElementById("denomTactileMarks");
+  const denomThreadType = document.getElementById("denomThreadType");
+  const checklistDenomLabel = document.getElementById("checklistDenomLabel");
+  const denomChecklistContainer = document.getElementById("denomChecklistContainer");
+  const checklistCounter = document.getElementById("checklistCounter");
+  const checklistResult = document.getElementById("checklistResult");
+  const checklistResultText = document.getElementById("checklistResultText");
+  const modelLinkedBanner = document.getElementById("modelLinkedBanner");
+  const linkedModelSummary = document.getElementById("linkedModelSummary");
+  const linkedVerdictBadge = document.getElementById("linkedVerdictBadge");
+  const btnClearLinkedResult = document.getElementById("btnClearLinkedResult");
+
+  // Read URL query params (?denom=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const qDenom = urlParams.get("denom");
+
+  // Read sessionStorage for recent prediction result
+  try {
+    const rawStored = sessionStorage.getItem("noteguard_last_result");
+    if (rawStored) {
+      linkedResult = JSON.parse(rawStored);
+    }
+  } catch (e) {
+    // Ignore storage parse issues
+  }
+
+  // If query param specifies a denomination, map to key
+  if (qDenom) {
+    const cleanQ = qDenom.toLowerCase().replace("p", "").replace("pesos", "").replace("peso", "").trim();
+    if (DENOMINATIONS[cleanQ]) {
+      currentDenomKey = cleanQ;
+    } else if (cleanQ.includes("poly") || cleanQ === "1000p") {
+      currentDenomKey = "1000_polymer";
+    }
+  } else if (linkedResult && linkedResult.denomination) {
+    const cleanL = linkedResult.denomination.toLowerCase().replace("p", "").replace("pesos", "").trim();
+    if (DENOMINATIONS[cleanL]) {
+      currentDenomKey = cleanL;
+    }
+  }
+
+  // Render linked model banner if active
+  function updateLinkedBanner() {
+    if (linkedResult && linkedResult.verdict) {
+      const v = linkedResult.verdict.toUpperCase();
+      const conf = (linkedResult.confidence || 0).toFixed(1);
+      const dName = linkedResult.denomination_display || linkedResult.denomination || "Banknote";
+
+      linkedModelSummary.textContent = `Scanned ₱${dName} — ${v} with ${conf}% confidence`;
+      linkedVerdictBadge.textContent = v;
+      linkedVerdictBadge.className = `badge-tag ${v === "GENUINE" ? "genuine" : "forged"}`;
+      if (v === "GENUINE") {
+        linkedVerdictBadge.style.background = "rgba(16, 185, 129, 0.2)";
+        linkedVerdictBadge.style.color = "#10b981";
+      } else {
+        linkedVerdictBadge.style.background = "rgba(239, 68, 68, 0.2)";
+        linkedVerdictBadge.style.color = "#ef4444";
+      }
+      modelLinkedBanner.style.display = "flex";
+    } else {
+      modelLinkedBanner.style.display = "none";
+    }
+  }
+
+  if (btnClearLinkedResult) {
+    btnClearLinkedResult.addEventListener("click", () => {
+      linkedResult = null;
+      try { sessionStorage.removeItem("noteguard_last_result"); } catch(e){}
+      updateLinkedBanner();
+      updateChecklistEvaluation();
+    });
+  }
+
+  // Denomination switcher tabs
+  const tabButtons = denomSelector.querySelectorAll(".denom-tab-btn");
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentDenomKey = btn.dataset.denom;
+      renderDenominationView(currentDenomKey);
+    });
+  });
+
+  // Activate initial tab button
+  tabButtons.forEach(btn => {
+    if (btn.dataset.denom === currentDenomKey) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+
+  function renderDenominationView(key) {
+    const data = DENOMINATIONS[key];
+    if (!data) return;
+
+    // Header Card
+    denomBigBadge.className = `denom-badge ${data.badgeClass}`;
+    denomBigBadge.textContent = key === "1000_polymer" ? "₱1,000" : `₱${key}`;
+    denomTitle.textContent = `${data.name} (${data.series})`;
+    denomSubtitle.textContent = `Dominant Color: ${data.dominantColor} | Substrate: ${data.substrate}`;
+    denomSeriesTag.textContent = data.series;
+    denomHeaderCard.style.background = `rgba(${hexToRgb(data.colorHex)}, 0.08)`;
+    denomHeaderCard.style.borderColor = `rgba(${hexToRgb(data.colorHex)}, 0.35)`;
+
+    // Meta Grid
+    denomFrontPortrait.textContent = data.frontPortrait;
+    denomReverseFeatures.innerHTML = data.reverseFeatures;
+    denomTactileMarks.textContent = data.tactileMarks;
+    denomThreadType.textContent = data.threadType;
+
+    checklistDenomLabel.textContent = `₱${key === '1000_polymer' ? '1,000 (Polymer)' : key}`;
+
+    // Render Checklist
+    if (!checklistState[key]) {
+      checklistState[key] = new Array(data.features.length).fill(false);
+    }
+
+    let checklistHtml = "";
+    data.features.forEach((feat, idx) => {
+      const isChecked = checklistState[key][idx] ? "checked" : "";
+      let stepColor = "#10b981";
+      if (feat.step === "LOOK") stepColor = "#38bdf8";
+      if (feat.step === "TILT") stepColor = "#f59e0b";
+
+      checklistHtml += `
+        <div class="security-checklist-item" data-idx="${idx}">
+          <input type="checkbox" id="chk_${key}_${idx}" ${isChecked}>
+          <label for="chk_${key}_${idx}">
+            <strong style="color: ${stepColor}; font-size: 0.78rem; text-transform: uppercase; margin-right: 6px;">[${feat.step}]</strong>
+            ${feat.label}
+          </label>
+        </div>
+      `;
+    });
+    denomChecklistContainer.innerHTML = checklistHtml;
+
+    // Attach checkbox listeners
+    const checkboxes = denomChecklistContainer.querySelectorAll("input[type='checkbox']");
+    checkboxes.forEach((cb, idx) => {
+      cb.addEventListener("change", (e) => {
+        checklistState[key][idx] = e.target.checked;
+        updateChecklistEvaluation();
+      });
+    });
+
+    updateChecklistEvaluation();
+  }
+
+  function updateChecklistEvaluation() {
+    const key = currentDenomKey;
+    const data = DENOMINATIONS[key];
+    if (!data) return;
+
+    const state = checklistState[key] || [];
+    const total = data.features.length;
+    const checked = state.filter(Boolean).length;
+
+    checklistCounter.textContent = `${checked} of ${total} features verified`;
+
+    // Check if combined with machine learning result
+    const hasML = linkedResult && linkedResult.verdict;
+    const mlVerdict = hasML ? linkedResult.verdict.toUpperCase() : null;
+    const mlConf = hasML ? (linkedResult.confidence || 0).toFixed(1) : null;
+
+    if (checked === 0) {
+      checklistResult.className = "checklist-result pending";
+      if (hasML) {
+        checklistResultText.innerHTML = `
+          <strong>Model Scan Available:</strong> Wavelet model classified this note as <strong>${mlVerdict} (${mlConf}%)</strong>.
+          Inspect and check off the physical features above to generate a complete verification assessment.
+        `;
+      } else {
+        checklistResultText.innerHTML = `
+          Complete the physical checks above to evaluate this banknote against official BSP security standards.
+        `;
+      }
+    } else if (checked === total) {
+      if (hasML && mlVerdict === "GENUINE") {
+        checklistResult.className = "checklist-result complete";
+        checklistResultText.innerHTML = `
+          <strong><i class="fa-solid fa-circle-check"></i> High Authenticity Confidence:</strong>
+          Both the digital wavelet ML analysis (${mlConf}%) and all <strong>${total} of ${total}</strong> official BSP physical security features have been confirmed.
+          The banknote is consistent with genuine BSP standards.
+        `;
+      } else if (hasML && (mlVerdict === "FORGED" || mlVerdict === "SUSPICIOUS")) {
+        checklistResult.className = "checklist-result conflict";
+        checklistResultText.innerHTML = `
+          <strong><i class="fa-solid fa-triangle-exclamation"></i> Discrepancy Alert:</strong>
+          You checked all physical features as present, but the automated image scan flagged this note as <strong>${mlVerdict} (${mlConf}%)</strong>.
+          High-grade counterfeits may mimic visible elements. Inspect under ultraviolet light or have a bank authenticate.
+        `;
+      } else {
+        checklistResult.className = "checklist-result complete";
+        checklistResultText.innerHTML = `
+          <strong><i class="fa-solid fa-circle-check"></i> Physical Checks Passed:</strong>
+          All <strong>${total} of ${total}</strong> BSP physical security features verified.
+          For complete automated verification, <a href="/" style="color: #38bdf8; text-decoration: underline;">upload a photo on the Verify page</a>.
+        `;
+      }
+    } else {
+      if (hasML && (mlVerdict === "FORGED" || mlVerdict === "SUSPICIOUS")) {
+        checklistResult.className = "checklist-result conflict";
+        checklistResultText.innerHTML = `
+          <strong><i class="fa-solid fa-triangle-exclamation"></i> Caution:</strong>
+          ${checked} of ${total} features verified, and the automated model indicated <strong>${mlVerdict} (${mlConf}%)</strong>.
+          Exercise caution and complete the remaining checks.
+        `;
+      } else {
+        checklistResult.className = "checklist-result partial";
+        checklistResultText.innerHTML = `
+          <strong><i class="fa-solid fa-clock"></i> Inspection In Progress:</strong>
+          ${checked} of ${total} features verified. Check the remaining ${total - checked} feature(s) before accepting the banknote.
+        `;
+      }
+    }
+  }
+
+  function hexToRgb(hex) {
+    hex = hex.replace("#", "");
+    if (hex.length === 3) {
+      hex = hex.split("").map(c => c + c).join("");
+    }
+    const num = parseInt(hex, 16);
+    return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
+  }
+
+  // Initialize
+  updateLinkedBanner();
+  renderDenominationView(currentDenomKey);
+});
+</script>
+{% endblock %}

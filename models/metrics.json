@@ -1,0 +1,169 @@
+{
+  "best_model": "random_forest",
+  "feature_names": [
+    "variance",
+    "skewness",
+    "curtosis",
+    "entropy",
+    "r_mean",
+    "g_mean",
+    "b_mean",
+    "r_std",
+    "g_std",
+    "b_std"
+  ],
+  "wavelet_features": [
+    "variance",
+    "skewness",
+    "curtosis",
+    "entropy"
+  ],
+  "models": {
+    "decision_tree": {
+      "model_name": "Decision Tree",
+      "accuracy": 0.8633879781420765,
+      "precision": 0.8558558558558559,
+      "recall": 0.9134615384615384,
+      "f1_score": 0.8837209302325582,
+      "confusion_matrix": [
+        [
+          63,
+          16
+        ],
+        [
+          9,
+          95
+        ]
+      ],
+      "feature_importances": {
+        "variance": 0.044745605666925196,
+        "skewness": 0.3755517165092282,
+        "curtosis": 0.027624063149420487,
+        "entropy": 0.3568685529875745,
+        "r_mean": 0.06522182405987834,
+        "g_mean": 0.0,
+        "b_mean": 0.05375555105534572,
+        "r_std": 0.027163830852404727,
+        "g_std": 0.029618996460941814,
+        "b_std": 0.01944985925828109
+      },
+      "best_params": {
+        "criterion": "gini",
+        "max_depth": 6,
+        "min_samples_split": 5
+      }
+    },
+    "random_forest": {
+      "model_name": "Random Forest",
+      "accuracy": 0.8743169398907104,
+      "precision": 0.900990099009901,
+      "recall": 0.875,
+      "f1_score": 0.8878048780487805,
+      "confusion_matrix": [
+        [
+          69,
+          10
+        ],
+        [
+          13,
+          91
+        ]
+      ],
+      "feature_importances": {
+        "variance": 0.06382585374454429,
+        "skewness": 0.2322392168484089,
+        "curtosis": 0.05891668145211112,
+        "entropy": 0.22720994804408692,
+        "r_mean": 0.12369702055337543,
+        "g_mean": 0.07399725503598863,
+        "b_mean": 0.07111217675982634,
+        "r_std": 0.047054794210177546,
+        "g_std": 0.05653012931131781,
+        "b_std": 0.04541692404016296
+      },
+      "best_params": {
+        "max_depth": 15,
+        "max_features": "sqrt",
+        "min_samples_split": 2,
+        "n_estimators": 100
+      }
+    }
+  },
+  "dataset_summary": {
+    "dataset_source": "dataset/ (Philippine Banknotes YOLO dataset crops + realistic counterfeit simulations)",
+    "total_records": 868,
+    "genuine_count": 434,
+    "forged_count": 434,
+    "missing_values": 0,
+    "target_mapping": {
+      "0": "Genuine",
+      "1": "Forged"
+    }
+  },
+  "training_feature_ranges": {
+    "variance": {
+      "min": 0.0072,
+      "max": 0.3985,
+      "mean": 0.1612585401459854,
+      "std": 0.07417524790234599
+    },
+    "skewness": {
+      "min": -3.7921,
+      "max": 2.5818,
+      "mean": -0.5662080291970804,
+      "std": 0.6670083095279229
+    },
+    "curtosis": {
+      "min": -1.6877,
+      "max": 14.8199,
+      "mean": 0.1571290510948905,
+      "std": 1.571912267359309
+    },
+    "entropy": {
+      "min": -3.42,
+      "max": 0.8424,
+      "mean": 0.024572262773722625,
+      "std": 0.5628105946564899
+    },
+    "r_mean": {
+      "min": 0.0892,
+      "max": 0.8757,
+      "mean": 0.5641153284671533,
+      "std": 0.13541386004676464
+    },
+    "g_mean": {
+      "min": 0.0864,
+      "max": 0.8638,
+      "mean": 0.536651094890511,
+      "std": 0.12752611882272039
+    },
+    "b_mean": {
+      "min": 0.0592,
+      "max": 0.8361,
+      "mean": 0.49978277372262775,
+      "std": 0.12857809421129504
+    },
+    "r_std": {
+      "min": 0.0233,
+      "max": 0.3501,
+      "mean": 0.19142189781021898,
+      "std": 0.055289617210167515
+    },
+    "g_std": {
+      "min": 0.05,
+      "max": 0.3102,
+      "mean": 0.1943426277372263,
+      "std": 0.046603890032746384
+    },
+    "b_std": {
+      "min": 0.0455,
+      "max": 0.3073,
+      "mean": 0.1953559124087591,
+      "std": 0.045565044577622636
+    }
+  },
+  "test_set_size": 183,
+  "train_set_size": 685,
+  "positive_class": "1 (Forged)",
+  "negative_class": "0 (Genuine)"
+}

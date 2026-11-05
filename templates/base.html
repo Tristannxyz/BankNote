@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NoteGuard — Philippine Peso Banknote Authenticity Verifier{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- App Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('index') }}" class="brand">
+                <span class="brand-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                <div class="brand-text-col">
+                    <span class="brand-name">NoteGuard</span>
+                    <span class="brand-subtitle">Philippine Peso Verifier</span>
+                </div>
+            </a>
+
+            <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            {% set active_page = active_page|default('verify') %}
+            <nav class="nav-links" id="navLinks">
+                <a href="{{ url_for('index') }}" class="nav-link{% if active_page == 'verify' %} active{% endif %}">Verify</a>
+                <a href="{{ url_for('security') }}" class="nav-link{% if active_page == 'security' %} active{% endif %}">Security Features</a>
+                <a href="{{ url_for('dashboard') }}" class="nav-link{% if active_page == 'dashboard' %} active{% endif %}">Dashboard</a>
+                <a href="{{ url_for('about') }}" class="nav-link{% if active_page == 'about' %} active{% endif %}">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p><strong>NoteGuard</strong> &mdash; Philippine Peso Banknote Authenticity Verifier</p>
+            <p>Built with Python, scikit-learn, Flask, PyWavelets. Educational project.</p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
