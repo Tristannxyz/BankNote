@@ -53,9 +53,9 @@
 <div class="container">
 
   <!-- Hero Header -->
-  <div class="hero-header" style="text-align: left; margin-bottom: 24px;">
+  <div class="hero-header">
     <h1 class="hero-title">Model Evaluation <span>Dashboard</span></h1>
-    <p class="hero-desc" style="margin: 0;">
+    <p class="hero-desc">
       Comprehensive test set performance metrics, confusion matrices, and feature importance analysis for trained scikit-learn models.
     </p>
   </div>
@@ -70,7 +70,7 @@
     <div class="metric-card">
       <div class="metric-label">Genuine Notes (Class 0)</div>
       <div class="metric-value" id="genuineCount" style="color: var(--color-genuine);">434</div>
-      <div class="metric-sub">50.0% of dataset</div>
+      <div class="metric-sub">50.0% of dataset (Balanced)</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Forged Notes (Class 1)</div>
@@ -85,83 +85,82 @@
   </div>
 
   <!-- Best Model Highlight Banner -->
-  <div class="card" style="border-left: 4px solid #0a84ff; margin-bottom: 24px;">
-    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <div>
-        <div style="font-size: 0.8rem; text-transform: uppercase; color: #38bdf8; font-weight: 700; letter-spacing: 0.05em;">
-          <i class="fa-solid fa-trophy"></i> Best Performing Model (by F1-Score)
-        </div>
-        <h2 style="font-size: 1.5rem; color: #fff; margin-top: 4px;" id="bestModelTitle">
-          Random Forest Classifier
-        </h2>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;" id="bestModelSubtitle">
-          Selected automatically for highest test set F1-score on counterfeit detection.
-        </p>
+  <div class="best-model-banner">
+    <div>
+      <div class="best-model-tag">
+        <i class="fa-solid fa-trophy"></i> Best Performing Model (by F1-Score)
       </div>
-      <div style="display: flex; gap: 24px;">
-        <div style="text-align: center;">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Accuracy</div>
-          <div style="font-size: 1.4rem; font-weight: 700; color: #fff;" id="bestModelAcc">--%</div>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Precision</div>
-          <div style="font-size: 1.4rem; font-weight: 700; color: #fff;" id="bestModelPrec">--%</div>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Recall</div>
-          <div style="font-size: 1.4rem; font-weight: 700; color: #fff;" id="bestModelRec">--%</div>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">F1-Score</div>
-          <div style="font-size: 1.4rem; font-weight: 700; color: #38bdf8;" id="bestModelF1">--%</div>
-        </div>
+      <h2 class="best-model-name" id="bestModelTitle">
+        Random Forest Classifier
+      </h2>
+      <p class="best-model-sub" id="bestModelSubtitle">
+        Evaluated on 183 unseen Philippine banknote test specimens.
+      </p>
+    </div>
+    <div class="best-model-stats-row">
+      <div class="best-stat-box">
+        <div class="best-stat-label">Accuracy</div>
+        <div class="best-stat-val" id="bestModelAcc">--%</div>
+      </div>
+      <div class="best-stat-box">
+        <div class="best-stat-label">Precision</div>
+        <div class="best-stat-val" id="bestModelPrec">--%</div>
+      </div>
+      <div class="best-stat-box">
+        <div class="best-stat-label">Recall</div>
+        <div class="best-stat-val" id="bestModelRec">--%</div>
+      </div>
+      <div class="best-stat-box">
+        <div class="best-stat-label">F1-Score</div>
+        <div class="best-stat-val highlight" id="bestModelF1">--%</div>
       </div>
     </div>
   </div>
 
   <!-- Side-by-Side Model Comparison Cards -->
   <div class="models-comparison-grid">
+    
     <!-- Decision Tree Card -->
     <div class="model-spec-card" id="cardDecisionTree">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-        <h3 style="font-size: 1.2rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-tree" style="color: #10b981;"></i> Decision Tree
+      <div class="model-spec-header">
+        <h3 class="model-spec-title">
+          <i class="fa-solid fa-tree" style="color: var(--color-genuine);"></i> Decision Tree
         </h3>
         <span id="dtBadge" style="display: none;" class="best-badge"><i class="fa-solid fa-star"></i> Best Model</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px;">
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Accuracy</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #fff;" id="dtAcc">--%</div>
+      <div class="model-metrics-2x2">
+        <div class="metric-mini-tile">
+          <div class="label">Accuracy</div>
+          <div class="val" id="dtAcc">--%</div>
         </div>
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Precision</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #fff;" id="dtPrec">--%</div>
+        <div class="metric-mini-tile">
+          <div class="label">Precision</div>
+          <div class="val" id="dtPrec">--%</div>
         </div>
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Recall</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #fff;" id="dtRec">--%</div>
+        <div class="metric-mini-tile">
+          <div class="label">Recall</div>
+          <div class="val" id="dtRec">--%</div>
         </div>
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">F1-Score</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #38bdf8;" id="dtF1">--%</div>
+        <div class="metric-mini-tile">
+          <div class="label">F1-Score</div>
+          <div class="val highlight" id="dtF1">--%</div>
         </div>
       </div>
 
       <!-- Decision Tree Confusion Matrix -->
       <div style="margin-top: 14px;">
-        <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;" id="dtCmLabel">
+        <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;" id="dtCmLabel">
           Confusion Matrix (<span id="dtTestCount">183</span> test specimens):
         </div>
         <table class="confusion-matrix-table">
           <tr>
             <td style="font-size: 0.7rem; color: var(--text-faint); text-align: right;">Actual \ Pred</td>
-            <td style="font-size: 0.75rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Genuine</td>
-            <td style="font-size: 0.75rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Forged</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Genuine</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Forged</td>
           </tr>
           <tr>
-            <td style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Actual Genuine</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Actual Genuine</td>
             <td class="cm-cell hit">
               <span class="cm-val" id="dtTN">--</span>
               <span class="cm-desc">True Negative</span>
@@ -172,7 +171,7 @@
             </td>
           </tr>
           <tr>
-            <td style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Actual Forged</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Actual Forged</td>
             <td class="cm-cell miss">
               <span class="cm-val" id="dtFN">--</span>
               <span class="cm-desc">False Negative</span>
@@ -185,52 +184,52 @@
         </table>
       </div>
 
-      <div style="margin-top: 14px; font-size: 0.75rem; color: var(--text-faint);" id="dtParams">
+      <div class="model-params-footnote" id="dtParams">
         Best Hyperparameters: Criterion=gini, Max Depth=6, Min Samples Split=5
       </div>
     </div>
 
     <!-- Random Forest Card -->
     <div class="model-spec-card" id="cardRandomForest">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-        <h3 style="font-size: 1.2rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-network-wired" style="color: #38bdf8;"></i> Random Forest
+      <div class="model-spec-header">
+        <h3 class="model-spec-title">
+          <i class="fa-solid fa-code-branch" style="color: var(--color-primary);"></i> Random Forest
         </h3>
         <span id="rfBadge" style="display: none;" class="best-badge"><i class="fa-solid fa-star"></i> Best Model</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px;">
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Accuracy</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #fff;" id="rfAcc">--%</div>
+      <div class="model-metrics-2x2">
+        <div class="metric-mini-tile">
+          <div class="label">Accuracy</div>
+          <div class="val" id="rfAcc">--%</div>
         </div>
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Precision</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #fff;" id="rfPrec">--%</div>
+        <div class="metric-mini-tile">
+          <div class="label">Precision</div>
+          <div class="val" id="rfPrec">--%</div>
         </div>
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Recall</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #fff;" id="rfRec">--%</div>
+        <div class="metric-mini-tile">
+          <div class="label">Recall</div>
+          <div class="val" id="rfRec">--%</div>
         </div>
-        <div style="background: #141a29; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border);">
-          <div style="font-size: 0.75rem; color: var(--text-muted);">F1-Score</div>
-          <div style="font-size: 1.25rem; font-weight: 700; color: #38bdf8;" id="rfF1">--%</div>
+        <div class="metric-mini-tile">
+          <div class="label">F1-Score</div>
+          <div class="val highlight" id="rfF1">--%</div>
         </div>
       </div>
 
       <!-- Random Forest Confusion Matrix -->
       <div style="margin-top: 14px;">
-        <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;" id="rfCmLabel">
+        <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;" id="rfCmLabel">
           Confusion Matrix (<span id="rfTestCount">183</span> test specimens):
         </div>
         <table class="confusion-matrix-table">
           <tr>
             <td style="font-size: 0.7rem; color: var(--text-faint); text-align: right;">Actual \ Pred</td>
-            <td style="font-size: 0.75rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Genuine</td>
-            <td style="font-size: 0.75rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Forged</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Genuine</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); text-align: center; font-weight: 600;">Pred Forged</td>
           </tr>
           <tr>
-            <td style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Actual Genuine</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Actual Genuine</td>
             <td class="cm-cell hit">
               <span class="cm-val" id="rfTN">--</span>
               <span class="cm-desc">True Negative</span>
@@ -241,7 +240,7 @@
             </td>
           </tr>
           <tr>
-            <td style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Actual Forged</td>
+            <td style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Actual Forged</td>
             <td class="cm-cell miss">
               <span class="cm-val" id="rfFN">--</span>
               <span class="cm-desc">False Negative</span>
@@ -254,18 +253,19 @@
         </table>
       </div>
 
-      <div style="margin-top: 14px; font-size: 0.75rem; color: var(--text-faint);" id="rfParams">
-        Best Hyperparameters: N-Estimators=100, Max Depth=15, Min Samples Split=2
+      <div class="model-params-footnote" id="rfParams">
+        Best Hyperparameters: N-Estimators=100, Max Depth=12, Min Samples Split=2, Features=sqrt
       </div>
     </div>
+
   </div>
 
   <!-- Chart Visualizations -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 20px;">
+  <div class="chart-grid">
     <!-- Metrics Comparison Bar Chart -->
     <div class="chart-box">
       <div class="chart-title">
-        <i class="fa-solid fa-chart-simple" style="color: #38bdf8;"></i> Model Performance Comparison
+        <i class="fa-solid fa-chart-simple" style="color: var(--color-primary);"></i> Model Performance Comparison
       </div>
       <div style="position: relative; height: 280px;">
         <canvas id="metricsComparisonChart"></canvas>
@@ -275,7 +275,7 @@
     <!-- Feature Importance Chart -->
     <div class="chart-box">
       <div class="chart-title">
-        <i class="fa-solid fa-ranking-star" style="color: #38bdf8;"></i> Feature Importance by Model
+        <i class="fa-solid fa-ranking-star" style="color: var(--color-primary);"></i> Feature Importance by Model
       </div>
       <div style="position: relative; height: 280px;">
         <canvas id="featureImportanceChart"></canvas>
@@ -287,23 +287,25 @@
   <div class="card" style="margin-top: 20px;">
     <div class="card-header">
       <div class="card-title-group">
-        <i class="fa-solid fa-database card-title-icon"></i>
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-table-list" style="color: var(--color-primary);"></i>
+        </div>
         <div>
-          <h3 class="card-title" style="font-size: 1.1rem;">Training Data Distribution & Bounds</h3>
+          <h3 class="card-title">Training Data Distribution & Bounds</h3>
           <p class="card-subtitle">Empirical ranges used by NoteGuard for out-of-distribution detection</p>
         </div>
       </div>
     </div>
     <div class="card-body" style="padding: 0;">
-      <div class="features-table-wrap" style="margin: 0;">
-        <table class="features-table">
+      <div class="wavelet-table-wrap">
+        <table class="wavelet-range-table">
           <thead>
             <tr>
-              <th>Feature Name</th>
-              <th>Minimum</th>
-              <th>Maximum</th>
-              <th>Mean</th>
-              <th>Std Deviation</th>
+              <th>FEATURE NAME</th>
+              <th>MINIMUM</th>
+              <th>MAXIMUM</th>
+              <th>MEAN</th>
+              <th>STD DEVIATION</th>
             </tr>
           </thead>
           <tbody id="distributionTableBody">

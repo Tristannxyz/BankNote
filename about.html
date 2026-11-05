@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About — NoteGuard</title>
+    <title>About — NoteGuard Philippine Banknote Classifier</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,129 +53,233 @@
   <div class="hero-header">
     <h1 class="hero-title">About <span>NoteGuard</span></h1>
     <p class="hero-desc">
-      An image-based Philippine peso banknote authenticity screening tool powered by classical machine learning.
+      An intelligent Philippine peso banknote screening system combining Discrete Wavelet Transform (DWT) texture analysis, color gamut verification, and classical machine learning.
     </p>
   </div>
 
-  <!-- How It Works -->
+  <!-- Key Statistics Grid -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Training Dataset</div>
+      <div class="metric-value">868</div>
+      <div class="metric-sub">Philippine banknote images (50/50 balanced)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Extracted Features</div>
+      <div class="metric-value" style="color: var(--color-primary);">10</div>
+      <div class="metric-sub">4 Wavelet Texture + 6 RGB Gamut Moments</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Peak Test Accuracy</div>
+      <div class="metric-value" style="color: var(--color-genuine);">87.4%</div>
+      <div class="metric-sub">Random Forest (88.8% F1-score on holdout)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Supported Currency</div>
+      <div class="metric-value">₱20–₱1k</div>
+      <div class="metric-sub">New Generation Currency (NGC) & Polymer</div>
+    </div>
+  </div>
+
+  <!-- How It Works (Pipeline) -->
   <div class="card">
     <div class="card-header">
       <div class="card-title-group">
-        <i class="fa-solid fa-gears card-title-icon"></i>
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-gears" style="color: var(--color-primary);"></i>
+        </div>
         <div>
-          <h2 class="card-title">How It Works</h2>
-          <p class="card-subtitle">From image upload to authenticity verdict — a 4-step pipeline</p>
+          <h2 class="card-title">How NoteGuard Works</h2>
+          <p class="card-subtitle">End-to-end verification pipeline from photo capture to multi-modal verdict</p>
         </div>
       </div>
     </div>
+
     <div class="card-body">
-      <div style="display: flex; flex-direction: column; gap: 14px;">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <div>
-            <h4><i class="fa-solid fa-cloud-arrow-up" style="color: #38bdf8;"></i> Upload</h4>
-            <p>You photograph or upload an image of a Philippine peso banknote. The app accepts PNG, JPG, GIF, BMP, and WebP formats up to 16 MB.</p>
+      <div class="about-steps-list">
+        
+        <!-- Step 1 -->
+        <div class="about-step-card">
+          <div class="about-step-number">1</div>
+          <div class="about-step-content">
+            <div class="about-step-title">
+              <i class="fa-solid fa-camera" style="color: var(--color-primary);"></i>
+              Image Ingestion & Preprocessing
+            </div>
+            <div class="about-step-body">
+              The user uploads or captures a photo of a Philippine peso note. The image is validated for integrity, normalized to standard resolution, and separated into its grayscale luminance channel for micro-texture decomposition alongside RGB planes for color spectrum analysis.
+            </div>
           </div>
         </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <div>
-            <h4><i class="fa-solid fa-wave-square" style="color: #38bdf8;"></i> Feature Extraction</h4>
-            <p>The image is converted to grayscale and resized. A <strong>Discrete Wavelet Transform (Haar / db1)</strong> is applied, and statistical features — variance, skewness, kurtosis, and entropy — are computed from the approximation coefficients. Color channel means and standard deviations (R, G, B) are also extracted, giving a 10-dimensional feature vector.</p>
+
+        <!-- Step 2 -->
+        <div class="about-step-card">
+          <div class="about-step-number">2</div>
+          <div class="about-step-content">
+            <div class="about-step-title">
+              <i class="fa-solid fa-wave-square" style="color: var(--color-primary);"></i>
+              2D Discrete Wavelet Decomposition (DWT)
+            </div>
+            <div class="about-step-body">
+              Using the Haar wavelet basis (db1), the image undergoes single-level 2D wavelet decomposition. From the approximation coefficients (cA) and detail bands (cH, cV, cD), NoteGuard extracts statistical moments that characterize genuine abaca-cotton paper fibers vs smooth photocopier paper.
+            </div>
           </div>
         </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <div>
-            <h4><i class="fa-solid fa-brain" style="color: #38bdf8;"></i> Classification</h4>
-            <p>The feature vector is fed into a trained <strong>Random Forest</strong> or <strong>Decision Tree</strong> classifier (scikit-learn). The model compares the features against patterns learned from 868 Philippine banknote images.</p>
+
+        <!-- Step 3 -->
+        <div class="about-step-card">
+          <div class="about-step-number">3</div>
+          <div class="about-step-content">
+            <div class="about-step-title">
+              <i class="fa-solid fa-brain" style="color: var(--color-primary);"></i>
+              Supervised Machine Learning Classification
+            </div>
+            <div class="about-step-body">
+              The 10-dimensional feature vector is evaluated by trained <strong>Random Forest</strong> and <strong>Decision Tree</strong> classifiers. The models calculate class probabilities for <strong>Genuine</strong> vs <strong>Forged</strong> banknotes based on patterns learned from 868 Philippine currency specimens.
+            </div>
           </div>
         </div>
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <div>
-            <h4><i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i> Result</h4>
-            <p>The model returns a verdict — <strong>Genuine</strong>, <strong>Forged</strong>, or <strong>Suspicious</strong> — along with a confidence score. An out-of-distribution check flags images that fall outside the training data range.</p>
+
+        <!-- Step 4 -->
+        <div class="about-step-card">
+          <div class="about-step-number">4</div>
+          <div class="about-step-content">
+            <div class="about-step-title">
+              <i class="fa-solid fa-shield-halved" style="color: var(--color-primary);"></i>
+              Multi-Modal Heuristics & BSP Verification
+            </div>
+            <div class="about-step-body">
+              High-frequency energy (sharpness), color chemistry, and denomination patterns are checked against empirical genuine thresholds. An out-of-distribution safeguard flags unclassified images, and users are guided to verify physical <strong>FEEL • LOOK • TILT</strong> security features.
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- Training Data -->
-  <div class="card" style="margin-top: 24px;">
+  <!-- Mathematical Wavelet Texture Features -->
+  <div class="card">
     <div class="card-header">
       <div class="card-title-group">
-        <i class="fa-solid fa-database card-title-icon"></i>
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-square-root-variable" style="color: var(--color-primary);"></i>
+        </div>
         <div>
-          <h2 class="card-title">Training Data</h2>
-          <p class="card-subtitle">What the models learned from</p>
+          <h2 class="card-title">Wavelet Feature Foundations</h2>
+          <p class="card-subtitle">Statistical metrics derived from wavelet approximation coefficients</p>
         </div>
       </div>
     </div>
+
     <div class="card-body">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px;">
-        <div style="background: rgba(15,23,42,0.5); padding: 14px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 1.8rem; font-weight: 700; color: #38bdf8;">868</div>
-          <div style="font-size: 0.82rem; color: var(--text-muted);">Total Images</div>
+      <div class="wavelet-theory-grid">
+        
+        <div class="wavelet-theory-card">
+          <div class="wavelet-theory-title">
+            <i class="fa-solid fa-chart-line" style="color: var(--color-primary);"></i>
+            Variance
+          </div>
+          <div class="wavelet-theory-desc">
+            Measures the spread of wavelet coefficient energy. Genuine banknotes feature micro-relief and abaca fibers that yield consistent, high variance, whereas inkjet photocopies display flat, low variance.
+          </div>
         </div>
-        <div style="background: rgba(15,23,42,0.5); padding: 14px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 1.8rem; font-weight: 700; color: #10b981;">434</div>
-          <div style="font-size: 0.82rem; color: var(--text-muted);">Genuine (50%)</div>
+
+        <div class="wavelet-theory-card">
+          <div class="wavelet-theory-title">
+            <i class="fa-solid fa-chart-area" style="color: var(--color-primary);"></i>
+            Skewness
+          </div>
+          <div class="wavelet-theory-desc">
+            Quantifies the asymmetry of the coefficient distribution. Intaglio engraved portraits produce heavy directional shading that shifts the distribution skew away from normal Gaussian noise.
+          </div>
         </div>
-        <div style="background: rgba(15,23,42,0.5); padding: 14px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 1.8rem; font-weight: 700; color: #ef4444;">434</div>
-          <div style="font-size: 0.82rem; color: var(--text-muted);">Forged (50%)</div>
+
+        <div class="wavelet-theory-card">
+          <div class="wavelet-theory-title">
+            <i class="fa-solid fa-chart-simple" style="color: var(--color-primary);"></i>
+            Kurtosis (Excess)
+          </div>
+          <div class="wavelet-theory-desc">
+            Measures the peakedness and tail heaviness of wavelet coefficients. Sharp intaglio lines and fine guilloche borders produce pronounced peaks and heavy-tailed kurtosis values.
+          </div>
         </div>
-        <div style="background: rgba(15,23,42,0.5); padding: 14px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 1.8rem; font-weight: 700; color: #f59e0b;">10</div>
-          <div style="font-size: 0.82rem; color: var(--text-muted);">Features Extracted</div>
+
+        <div class="wavelet-theory-card">
+          <div class="wavelet-theory-title">
+            <i class="fa-solid fa-network-wired" style="color: var(--color-primary);"></i>
+            Shannon Entropy
+          </div>
+          <div class="wavelet-theory-desc">
+            Evaluates the information density and randomness of the banknote surface. Complex security patterns yield high entropy, while blurred or filtered counterfeit prints show reduced information entropy.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Training Data & Rigorous Validation -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title-group">
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-database" style="color: var(--color-primary);"></i>
+        </div>
+        <div>
+          <h2 class="card-title">Training Data & Validation Methodology</h2>
+          <p class="card-subtitle">Truthful documentation of dataset construction and machine learning validation</p>
         </div>
       </div>
-      <ul style="padding-left: 18px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; margin: 0;">
-        <li>Images sourced from <strong>Roboflow YOLO dataset crops</strong> of Philippine banknotes and realistic counterfeit simulations.</li>
-        <li>Features extracted using <strong>PyWavelets</strong> (Discrete Wavelet Transform) and <strong>OpenCV</strong> color analysis.</li>
-        <li>Balanced dataset (50/50 genuine/forged) split 80/20 for training/testing with <strong>GroupShuffleSplit</strong> to prevent data leakage from augmented crops of the same source image.</li>
+    </div>
+
+    <div class="card-body">
+      <ul style="padding-left: 20px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.8;">
+        <li><strong>Dataset Origin:</strong> 868 high-resolution crops of Philippine banknotes across all 6 New Generation Currency (NGC) denominations (₱20, ₱50, ₱100, ₱200, ₱500, ₱1,000) and realistic simulated counterfeits.</li>
+        <li><strong>Balanced Classes:</strong> Exactly 434 genuine specimens and 434 counterfeit specimens (50% / 50% class balance) to prevent majority-class prediction bias.</li>
+        <li><strong>Data Leakage Prevention:</strong> Split 80% train (685 images) and 20% test (183 images) using <strong>GroupShuffleSplit</strong> grouped by source image, guaranteeing no augmented versions of the same banknote appear in both training and test sets.</li>
+        <li><strong>Domain Adaptation:</strong> Feature extraction includes adaptive resolution scaling and empirical bounding to protect against out-of-distribution camera anomalies.</li>
       </ul>
     </div>
   </div>
 
   <!-- Technology Stack -->
-  <div class="card" style="margin-top: 24px;">
+  <div class="card">
     <div class="card-header">
       <div class="card-title-group">
-        <i class="fa-solid fa-microchip card-title-icon"></i>
+        <div class="card-title-icon-box">
+          <i class="fa-solid fa-microchip" style="color: var(--color-primary);"></i>
+        </div>
         <div>
           <h2 class="card-title">Technology Stack</h2>
+          <p class="card-subtitle">Open-source libraries powering NoteGuard</p>
         </div>
       </div>
     </div>
+
     <div class="card-body">
-      <div class="tech-grid">
-        <span class="meta-pill"><i class="fa-brands fa-python" style="color: #38bdf8;"></i> Python</span>
-        <span class="meta-pill"><i class="fa-solid fa-flask" style="color: #38bdf8;"></i> Flask</span>
-        <span class="meta-pill"><i class="fa-solid fa-brain" style="color: #38bdf8;"></i> scikit-learn</span>
-        <span class="meta-pill"><i class="fa-solid fa-wave-square" style="color: #38bdf8;"></i> PyWavelets</span>
-        <span class="meta-pill"><i class="fa-solid fa-eye" style="color: #38bdf8;"></i> OpenCV</span>
-        <span class="meta-pill"><i class="fa-solid fa-calculator" style="color: #38bdf8;"></i> NumPy</span>
-        <span class="meta-pill"><i class="fa-solid fa-table" style="color: #38bdf8;"></i> Pandas</span>
-        <span class="meta-pill"><i class="fa-brands fa-html5" style="color: #38bdf8;"></i> HTML / CSS / JS</span>
-        <span class="meta-pill"><i class="fa-solid fa-chart-bar" style="color: #38bdf8;"></i> Chart.js</span>
+      <div class="tech-stack-wrap">
+        <div class="tech-badge-pill"><i class="fa-brands fa-python" style="color: #f59e0b;"></i> Python 3.10+</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-flask" style="color: #f59e0b;"></i> Flask 3.x</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-brain" style="color: #f59e0b;"></i> scikit-learn</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-wave-square" style="color: #f59e0b;"></i> PyWavelets (DWT)</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-eye" style="color: #f59e0b;"></i> OpenCV / Pillow</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-calculator" style="color: #f59e0b;"></i> NumPy</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-table" style="color: #f59e0b;"></i> Pandas</div>
+        <div class="tech-badge-pill"><i class="fa-solid fa-chart-simple" style="color: #f59e0b;"></i> Chart.js</div>
       </div>
     </div>
   </div>
 
-  <!-- Disclaimer -->
-  <div class="card" style="margin-top: 24px; border-left: 4px solid #f59e0b;">
+  <!-- Educational Disclaimer -->
+  <div class="card" style="border-left: 4px solid var(--color-primary);">
     <div class="card-body">
-      <h3 style="font-size: 1rem; color: #f59e0b; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-triangle-exclamation"></i> Important Disclaimer
-      </h3>
-      <ul style="margin: 0; padding-left: 18px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.8;">
-        <li><strong>NoteGuard is an educational project and proof-of-concept.</strong> It is NOT a certified counterfeit detection system.</li>
-        <li>Image-based screening <strong>cannot replace physical inspection</strong> of security features (FEEL, LOOK, TILT) as recommended by the Bangko Sentral ng Pilipinas.</li>
-        <li>Always verify suspicious banknotes through <strong>official BSP channels</strong>: <span style="color: #38bdf8;">(02) 8708-7087</span> or <span style="color: #38bdf8;">bsp.gov.ph</span></li>
-      </ul>
+      <div style="font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Academic & Educational Project Disclaimer
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin: 0;">
+        NoteGuard is an academic machine learning proof-of-concept developed to demonstrate automated wavelet texture analysis. It is <strong>NOT an officially certified currency verification device</strong> and should never be used as the sole determinant for legal or commercial transactions. Always physically verify banknotes using the official <strong>FEEL • LOOK • TILT</strong> guidelines published by the <a href="https://www.bsp.gov.ph" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: underline;">Bangko Sentral ng Pilipinas (BSP)</a>.
+      </p>
     </div>
   </div>
 
@@ -194,8 +298,8 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var hamburger = document.getElementById('navHamburger');
-  var navLinks = document.getElementById('navLinks');
+  const hamburger = document.getElementById('navHamburger');
+  const navLinks = document.getElementById('navLinks');
   if (hamburger && navLinks) {
     hamburger.addEventListener('click', function() { navLinks.classList.toggle('open'); });
   }
