@@ -51,6 +51,36 @@
             <span>Select Image File</span>
           </label>
 
+          <!-- Quick Test Specimens Gallery -->
+          <div class="sample-specimens-card">
+            <div class="sample-specimens-header">
+              <span class="sample-specimens-title">
+                <i class="fa-solid fa-vial-circle-check" style="color: #f59e0b;"></i>
+                <strong>Quick Test Specimens:</strong> Click a specimen note to test immediately
+              </span>
+            </div>
+            <div class="sample-specimens-chips">
+              <button type="button" class="specimen-chip" data-sample="1000" data-filename="sample_1000.jpg" title="Test ₱1,000 Genuine Note">
+                <span class="chip-dot" style="background: #0284c7;"></span> ₱1,000 Blue
+              </button>
+              <button type="button" class="specimen-chip" data-sample="500" data-filename="sample_500.jpg" title="Test ₱500 Genuine Note">
+                <span class="chip-dot" style="background: #eab308;"></span> ₱500 Yellow
+              </button>
+              <button type="button" class="specimen-chip" data-sample="100" data-filename="sample_100.jpg" title="Test ₱100 Genuine Note">
+                <span class="chip-dot" style="background: #a855f7;"></span> ₱100 Violet
+              </button>
+              <button type="button" class="specimen-chip" data-sample="50" data-filename="sample_50.jpg" title="Test ₱50 Genuine Note">
+                <span class="chip-dot" style="background: #ef4444;"></span> ₱50 Red
+              </button>
+              <button type="button" class="specimen-chip" data-sample="20" data-filename="sample_20.jpg" title="Test ₱20 Genuine Note">
+                <span class="chip-dot" style="background: #f97316;"></span> ₱20 Orange
+              </button>
+              <button type="button" class="specimen-chip counterfeit" data-sample="counterfeit" data-filename="sample_counterfeit.jpg" title="Test Verified Counterfeit Note">
+                <span class="chip-dot" style="background: #ef4444;"></span> Counterfeit Note
+              </button>
+            </div>
+          </div>
+
           <!-- Photo Capture Tips Bar -->
           <div class="capture-tips-box" id="captureTipsBox">
             <div class="capture-tips-header" id="captureTipsToggle" role="button" tabindex="0">
@@ -237,23 +267,76 @@
         <span class="meta-pill-tag" id="metaKurt">Sharpness HF: 0.00529</span>
       </div>
 
+      <!-- 2D Wavelet Sub-Band Decomposition Visualizer -->
+      <div class="dwt-decomposition-box">
+        <div class="dwt-decomp-header">
+          <span><i class="fa-solid fa-cubes-stacked" style="color: #f59e0b; margin-right: 6px;"></i> 2D Wavelet Sub-Band Decomposition (Level-1 DWT)</span>
+          <span class="dwt-decomp-badge">Haar / Daubechies (db1)</span>
+        </div>
+        <div class="dwt-subbands-grid">
+          <div class="dwt-subband-cell">
+            <span class="subband-tag">LL (Low-Low) — Approximation</span>
+            <span class="subband-desc">Base luminance, watermark silhouette & macro portrait structure</span>
+            <span class="subband-energy" id="subbandEnergyLL">Energy: --</span>
+          </div>
+          <div class="dwt-subband-cell">
+            <span class="subband-tag">LH (Low-High) — Horizontal Details</span>
+            <span class="subband-desc">Horizontal intaglio ridges, tactile mark lines & microprinting</span>
+            <span class="subband-energy" id="subbandEnergyLH">Energy: --</span>
+          </div>
+          <div class="dwt-subband-cell">
+            <span class="subband-tag">HL (High-Low) — Vertical Details</span>
+            <span class="subband-desc">Vertical security thread fibers & guilloche borders</span>
+            <span class="subband-energy" id="subbandEnergyHL">Energy: --</span>
+          </div>
+          <div class="dwt-subband-cell">
+            <span class="subband-tag">HH (High-High) — Diagonal / Micro-Texture</span>
+            <span class="subband-desc">High-frequency paper substrate grain & micro-engraving fidelity</span>
+            <span class="subband-energy" id="subbandEnergyHH">Energy: --</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Educational Disclaimer -->
       <div class="disclaimer-banner">
         <i class="fa-solid fa-circle-info" style="color: #f59e0b; flex-shrink: 0;"></i>
         <span>Image-based screening only. It does not replace checking the physical security features (FEEL, LOOK, TILT). Always verify using the official BSP method.</span>
       </div>
 
-      <!-- Two Action Buttons -->
+      <!-- Action Buttons Row -->
       <div class="result-actions-row">
         <a href="/security" id="linkToSecurityCheck" class="btn btn-gold flex-btn">
           <i class="fa-solid fa-shield-halved"></i> Verify Physical Security Features
         </a>
+        <button type="button" class="btn btn-secondary flex-btn" id="btnExportReport">
+          <i class="fa-solid fa-file-shield"></i> Official Verification Certificate
+        </button>
         <button type="button" class="btn btn-outline flex-btn" id="btnTryAnother">
           <i class="fa-solid fa-rotate-right"></i> Try Another Note
         </button>
       </div>
     </div>
 
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- SESSION INSPECTION LOG (RECENT SCANS)                               -->
+  <!-- =================================================================== -->
+  <div class="card scan-history-card" id="scanHistoryCard" style="display: none; margin-top: 24px;">
+    <div class="scan-history-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-clock-rotate-left" style="color: #f59e0b; font-size: 1.1rem;"></i>
+        <h3 style="font-size: 1.1rem; color: #fff; margin: 0;">Session Inspection Log</h3>
+        <span class="badge" id="scanHistoryCount" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px;">0 scans</span>
+      </div>
+      <button type="button" class="btn btn-sm-ghost" id="btnClearHistory" style="font-size: 0.82rem;">
+        <i class="fa-solid fa-trash-can"></i> Clear Log
+      </button>
+    </div>
+    <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0 0 14px 0;">Notes inspected during this active browser session. Click any previous scan to review its verdict and features.</p>
+    <div class="scan-history-grid" id="scanHistoryGrid">
+      <!-- Injected dynamically -->
+    </div>
   </div>
 
   <!-- =================================================================== -->
@@ -397,6 +480,107 @@
         <!-- Try Another Note button -->
         <button type="button" class="btn btn-secondary btn-try-another" id="btnTryAnotherManual">
           <i class="fa-solid fa-rotate-right"></i> Reset Test Form
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Official Verification Certificate Modal -->
+  <div class="report-modal-backdrop" id="reportModal" style="display: none;">
+    <div class="report-modal-content">
+      <div class="report-modal-header">
+        <div class="report-modal-title">
+          <i class="fa-solid fa-certificate" style="color: #f59e0b;"></i>
+          <span>Banknote Authenticity Verification Certificate</span>
+        </div>
+        <button type="button" class="report-modal-close" id="btnCloseReportModal" aria-label="Close Certificate">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Printable Certificate Sheet -->
+      <div class="certificate-sheet" id="certificateSheet">
+        <div class="cert-header">
+          <div class="cert-seal">
+            <i class="fa-solid fa-stamp"></i>
+          </div>
+          <div class="cert-title-block">
+            <h2>NOTEGUARD AUTHENTICITY CERTIFICATE</h2>
+            <p>Philippine Peso Banknote Machine Vision & DWT Texture Analysis</p>
+            <div class="cert-meta-row">
+              <span><strong>Inspection ID:</strong> <span id="certInspectionId">NG-2026-0001</span></span>
+              <span><strong>Date & Time:</strong> <span id="certTimestamp">--</span></span>
+              <span><strong>Model:</strong> Random Forest Classifier</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cert-body-grid">
+          <div class="cert-thumb-col">
+            <div class="cert-thumb-frame">
+              <img id="certImageThumb" alt="Inspected Banknote">
+            </div>
+            <div class="cert-thumb-caption">Specimen Image</div>
+          </div>
+
+          <div class="cert-details-col">
+            <div class="cert-verdict-box" id="certVerdictBox">
+              <div class="cert-verdict-label">FINAL CLASSIFICATION VERDICT</div>
+              <div class="cert-verdict-title" id="certVerdictTitle">GENUINE</div>
+              <div class="cert-verdict-conf">Confidence Score: <span id="certConfidence">99.4%</span></div>
+            </div>
+
+            <div class="cert-spec-info">
+              <div><strong>Denomination Detected:</strong> <span id="certDenomination">₱1,000 Blue (NGC Series)</span></div>
+              <div><strong>Color Substrate Signature:</strong> <span id="certSubstrate">Matches genuine RGB/HSV distribution</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cert-section-title">BSP Physical Security Features Checklist</div>
+          <div class="cert-checks-grid" id="certChecksGrid">
+            <!-- Dynamic BSP items -->
+          </div>
+        </div>
+
+        <div>
+          <div class="cert-section-title">Extracted Discrete Wavelet Transform (DWT) Metrics</div>
+          <div class="cert-metrics-table-wrap">
+            <table class="cert-table">
+              <thead>
+                <tr>
+                  <th>Wavelet Feature</th>
+                  <th>Extracted Value</th>
+                  <th>Training Mean</th>
+                  <th>Distribution Evaluation</th>
+                </tr>
+              </thead>
+              <tbody id="certWaveletTableBody">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-disclaimer">
+            <strong>NOTICE & LEGAL DISCLAIMER:</strong> This report is generated algorithmically using Discrete Wavelet Transform texture analysis and supervised machine learning trained on Banknote Authentication benchmarks. Final legal determination of Philippine currency authenticity is solely governed by the Bangko Sentral ng Pilipinas (BSP).
+          </div>
+          <div class="cert-signature-block">
+            <div class="cert-sig-line"></div>
+            <div class="cert-sig-text">NoteGuard Automated Inspector</div>
+            <div class="cert-sig-date">ISO / BSP Reference Standard</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-modal-actions">
+        <button type="button" class="btn btn-gold" id="btnPrintCert">
+          <i class="fa-solid fa-print"></i> Print / Save as PDF
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCloseCertBtn">
+          Close
         </button>
       </div>
     </div>
