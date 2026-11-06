@@ -176,7 +176,23 @@ function renderDashboard(data) {
   renderDistributionTable(data.training_feature_ranges || {});
 }
 
+// Chart instances & cached models for theme reactivity
+let perfChartInstance = null;
+let featChartInstance = null;
+let cachedDt = null;
+let cachedRf = null;
+
+window.addEventListener("noteguard:themechange", () => {
+  if (cachedDt && cachedRf) {
+    renderPerformanceChart(cachedDt, cachedRf);
+    renderFeatureImportanceChart(cachedDt, cachedRf);
+  }
+});
+
 function renderPerformanceChart(dt, rf) {
+  cachedDt = dt;
+  cachedRf = rf;
+
   if (typeof Chart === "undefined") {
     console.warn("Chart.js not loaded. Skipping performance chart.");
     return;
@@ -184,6 +200,15 @@ function renderPerformanceChart(dt, rf) {
   const canvas = document.getElementById("metricsComparisonChart");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
+
+  if (perfChartInstance) {
+    perfChartInstance.destroy();
+  }
+
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  const textColor = isLight ? "#334155" : "#cbd5e1";
+  const titleColor = isLight ? "#0f172a" : "#f8fafc";
+  const gridColor = isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)";
 
   // Calculate dynamic Y-axis minimum
   const allValues = [
@@ -193,7 +218,7 @@ function renderPerformanceChart(dt, rf) {
   const minVal = Math.min(...allValues);
   const yMin = Math.max(0, Math.floor((minVal - 10) / 5) * 5); // Round down to nearest 5, at least 0
 
-  new Chart(ctx, {
+  perfChartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels: ["Accuracy", "Precision", "Recall", "F1-Score"],
@@ -206,8 +231,8 @@ function renderPerformanceChart(dt, rf) {
             (dt.recall * 100).toFixed(2),
             (dt.f1_score * 100).toFixed(2),
           ],
-          backgroundColor: "rgba(16, 185, 129, 0.7)",
-          borderColor: "#10b981",
+          backgroundColor: isLight ? "rgba(5, 150, 105, 0.75)" : "rgba(16, 185, 129, 0.7)",
+          borderColor: isLight ? "#059669" : "#10b981",
           borderWidth: 1.5,
           borderRadius: 4,
         },
@@ -219,8 +244,8 @@ function renderPerformanceChart(dt, rf) {
             (rf.recall * 100).toFixed(2),
             (rf.f1_score * 100).toFixed(2),
           ],
-          backgroundColor: "rgba(245, 158, 11, 0.75)",
-          borderColor: "#f59e0b",
+          backgroundColor: isLight ? "rgba(217, 119, 6, 0.8)" : "rgba(245, 158, 11, 0.75)",
+          borderColor: isLight ? "#d97706" : "#f59e0b",
           borderWidth: 1.5,
           borderRadius: 4,
         },
@@ -232,7 +257,7 @@ function renderPerformanceChart(dt, rf) {
       plugins: {
         legend: {
           labels: {
-            color: "#f8fafc",
+            color: titleColor,
             font: { family: "'IBM Plex Sans', sans-serif", size: 15, weight: "600" },
             padding: 18,
           },
@@ -250,9 +275,9 @@ function renderPerformanceChart(dt, rf) {
         y: {
           min: yMin,
           max: 100,
-          grid: { color: "rgba(255, 255, 255, 0.08)" },
+          grid: { color: gridColor },
           ticks: {
-            color: "#cbd5e1",
+            color: textColor,
             font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "500" },
             callback: (val) => `${val}%`,
           },
@@ -260,7 +285,7 @@ function renderPerformanceChart(dt, rf) {
         x: {
           grid: { display: false },
           ticks: {
-            color: "#cbd5e1",
+            color: textColor,
             font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "600" },
           },
         },
@@ -270,6 +295,9 @@ function renderPerformanceChart(dt, rf) {
 }
 
 function renderFeatureImportanceChart(dt, rf) {
+  cachedDt = dt;
+  cachedRf = rf;
+
   if (typeof Chart === "undefined") {
     console.warn("Chart.js not loaded. Skipping feature importance chart.");
     return;
@@ -277,6 +305,16 @@ function renderFeatureImportanceChart(dt, rf) {
   const canvas = document.getElementById("featureImportanceChart");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
+
+  if (featChartInstance) {
+    featChartInstance.destroy();
+  }
+
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  const textColor = isLight ? "#334155" : "#cbd5e1";
+  const titleColor = isLight ? "#0f172a" : "#f8fafc";
+  const gridColor = isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)";
+
   const features = Object.keys(rf.feature_importances || dt.feature_importances || {});
   if (features.length === 0) return;
 
@@ -284,7 +322,7 @@ function renderFeatureImportanceChart(dt, rf) {
   const rfImp = features.map((f) => ((rf.feature_importances && rf.feature_importances[f]) || 0) * 100);
   const labels = features.map((f) => f.toUpperCase());
 
-  new Chart(ctx, {
+  featChartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels: labels,
@@ -292,16 +330,16 @@ function renderFeatureImportanceChart(dt, rf) {
         {
           label: "Decision Tree (%)",
           data: dtImp.map((v) => v.toFixed(2)),
-          backgroundColor: "rgba(16, 185, 129, 0.7)",
-          borderColor: "#10b981",
+          backgroundColor: isLight ? "rgba(5, 150, 105, 0.75)" : "rgba(16, 185, 129, 0.7)",
+          borderColor: isLight ? "#059669" : "#10b981",
           borderWidth: 1.5,
           borderRadius: 4,
         },
         {
           label: "Random Forest (%)",
           data: rfImp.map((v) => v.toFixed(2)),
-          backgroundColor: "rgba(245, 158, 11, 0.75)",
-          borderColor: "#f59e0b",
+          backgroundColor: isLight ? "rgba(217, 119, 6, 0.8)" : "rgba(245, 158, 11, 0.75)",
+          borderColor: isLight ? "#d97706" : "#f59e0b",
           borderWidth: 1.5,
           borderRadius: 4,
         },
@@ -314,7 +352,7 @@ function renderFeatureImportanceChart(dt, rf) {
       plugins: {
         legend: {
           labels: {
-            color: "#f8fafc",
+            color: titleColor,
             font: { family: "'IBM Plex Sans', sans-serif", size: 15, weight: "600" },
             padding: 18,
           },
@@ -330,9 +368,9 @@ function renderFeatureImportanceChart(dt, rf) {
       },
       scales: {
         x: {
-          grid: { color: "rgba(255, 255, 255, 0.08)" },
+          grid: { color: gridColor },
           ticks: {
-            color: "#cbd5e1",
+            color: textColor,
             font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "500" },
             callback: (val) => `${val}%`,
           },
@@ -340,7 +378,7 @@ function renderFeatureImportanceChart(dt, rf) {
         y: {
           grid: { display: false },
           ticks: {
-            color: "#cbd5e1",
+            color: textColor,
             font: { family: "'IBM Plex Sans', sans-serif", size: 14, weight: "700" },
           },
         },

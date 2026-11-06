@@ -3,24 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
+    <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#0a0d14">
     <title>About — NoteGuard Philippine Banknote Classifier</title>
 
-    <!-- Critical Dark Mode Canvas & Text Size Initializer -->
+    <!-- Critical Theme & Text-Size Pre-Render Initializer (prevents flash of wrong theme) -->
     <style>
       :root, html, body {
-        background-color: #0a0d14 !important;
-        background: #0a0d14 !important;
-        color: #f1f5f9 !important;
+        background-color: #0a0d14;
+        color: #f1f5f9;
         color-scheme: dark;
+      }
+      html[data-theme="light"], html[data-theme="light"] body {
+        background-color: #f8fafc !important;
+        background: #f8fafc !important;
+        color: #1e293b !important;
+        color-scheme: light;
       }
     </style>
     <script>
       (function() {
         try {
-          var saved = localStorage.getItem("noteguard_text_size") || "normal";
-          document.documentElement.setAttribute("data-text-size", saved);
+          var savedTheme = localStorage.getItem("noteguard_theme") || "dark";
+          document.documentElement.setAttribute("data-theme", savedTheme);
+          var metaColor = document.querySelector('meta[name="theme-color"]');
+          if (metaColor) metaColor.setAttribute("content", savedTheme === "light" ? "#f8fafc" : "#0a0d14");
+        } catch (e) {}
+
+        try {
+          var savedSize = localStorage.getItem("noteguard_text_size") || "normal";
+          document.documentElement.setAttribute("data-text-size", savedSize);
         } catch (e) {}
       })();
     </script>
@@ -124,6 +136,12 @@
                     <a href="/dashboard.html" class="nav-link">Dashboard</a>
                     <a href="/about.html" class="nav-link active">About</a>
                 </nav>
+
+                <!-- Theme Switcher Mode Button -->
+                <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark or light theme" title="Switch Theme (Dark / Light)">
+                    <i class="fa-solid fa-moon" id="themeIcon"></i>
+                    <span class="theme-label" id="themeLabel">Dark</span>
+                </button>
 
                 <!-- Text-Size Accessibility Controls (A- / A / A+) -->
                 <div class="text-size-toggle" role="group" aria-label="Text Size Accessibility Controls">
@@ -385,6 +403,45 @@
             <p>Built with Python, scikit-learn, Flask, PyWavelets. Educational project.</p>
         </div>
     </footer>
+
+    <!-- Global Theme Mode Controller -->
+    <script>
+      (function() {
+        var root = document.documentElement;
+        var themeBtn = document.getElementById("themeToggleBtn");
+        var themeIcon = document.getElementById("themeIcon");
+        var themeLabel = document.getElementById("themeLabel");
+
+        function applyTheme(theme) {
+          root.setAttribute("data-theme", theme);
+          try { localStorage.setItem("noteguard_theme", theme); } catch(e){}
+          var metaColor = document.querySelector('meta[name="theme-color"]');
+          if (metaColor) metaColor.setAttribute("content", theme === "light" ? "#f8fafc" : "#0a0d14");
+          var metaScheme = document.querySelector('meta[name="color-scheme"]');
+          if (metaScheme) metaScheme.setAttribute("content", theme === "light" ? "light dark" : "dark");
+
+          if (themeIcon) {
+            themeIcon.className = theme === "light" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+          }
+          if (themeLabel) {
+            themeLabel.textContent = theme === "light" ? "Light" : "Dark";
+          }
+          window.dispatchEvent(new CustomEvent("noteguard:themechange", { detail: { theme: theme } }));
+        }
+
+        var currentTheme = "dark";
+        try { currentTheme = localStorage.getItem("noteguard_theme") || "dark"; } catch(e){}
+        applyTheme(currentTheme);
+
+        if (themeBtn) {
+          themeBtn.addEventListener("click", function() {
+            var active = root.getAttribute("data-theme") || "dark";
+            var next = active === "dark" ? "light" : "dark";
+            applyTheme(next);
+          });
+        }
+      })();
+    </script>
 
     <!-- Global Text Size Controller -->
     <script>
