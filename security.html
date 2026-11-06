@@ -7,6 +7,10 @@
     <meta name="theme-color" content="#0a0d14">
     <title>BSP Security Features & Verification Guide — NoteGuard</title>
 
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/noteguard-icon.svg">
+    <link rel="apple-touch-icon" href="/static/img/noteguard-app-icon.svg">
+
     <!-- Critical Theme & Text-Size Pre-Render Initializer (prevents flash of wrong theme) -->
     <style>
       :root, html, body {
@@ -116,10 +120,12 @@
     <!-- Header / Navbar -->
     <header class="navbar">
         <div class="container nav-container">
-            <a href="/index.html" class="brand">
-                <span class="brand-icon"><i class="fa-solid fa-shield-halved"></i></span>
+            <a href="/index.html" class="brand" aria-label="NoteGuard Home">
+                <span class="brand-icon">
+                    <img src="/static/img/noteguard-icon.svg" alt="NoteGuard Logo" class="brand-logo-img">
+                </span>
                 <div class="brand-text-col">
-                    <span class="brand-name">NoteGuard</span>
+                    <span class="brand-name">Note<span class="brand-name-accent">Guard</span></span>
                     <span class="brand-subtitle">Philippine Peso Verifier</span>
                 </div>
             </a>
@@ -519,8 +525,10 @@
         <div class="container footer-container">
             <div class="footer-col-brand">
                 <div class="footer-brand-header">
-                    <span class="footer-brand-icon"><i class="fa-solid fa-shield-halved"></i></span>
-                    <span class="footer-brand-title">NoteGuard</span>
+                    <span class="footer-brand-icon">
+                        <img src="/static/img/noteguard-icon.svg" alt="NoteGuard Logo" class="footer-logo-img">
+                    </span>
+                    <span class="footer-brand-title">Note<span class="brand-name-accent">Guard</span></span>
                 </div>
                 <p class="footer-desc">
                     Intelligent screening system for Philippine Peso banknotes utilizing 2D Discrete Wavelet Transform (DWT) texture decomposition, color gamut analysis, and machine learning.
