@@ -8,10 +8,38 @@
 
   <!-- Hero Header -->
   <div class="hero-header">
-    <h1 class="hero-title">Model Evaluation <span>Dashboard</span></h1>
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Machine Learning Analytics • 868 Benchmark Records</span>
+    </div>
+    <h1 class="hero-title">Model Evaluation <span class="gradient-text">Dashboard</span></h1>
     <p class="hero-desc">
-      Comprehensive test set performance metrics, confusion matrices, and feature importance analysis for trained scikit-learn models.
+      Comprehensive holdout test metrics, 2×2 confusion matrices, ROC precision-recall evaluations, and DWT feature importance analysis across scikit-learn classifiers.
     </p>
+    <div class="hero-features-ribbon">
+      <div class="hero-feature-item">
+        <div class="feature-icon-circle"><i class="fa-solid fa-database"></i></div>
+        <div>
+          <strong>868 Banknote Samples</strong>
+          <span>Balanced 50/50 genuine & forged training distribution</span>
+        </div>
+      </div>
+      <div class="hero-feature-item">
+        <div class="feature-icon-circle"><i class="fa-solid fa-trophy"></i></div>
+        <div>
+          <strong>Random Forest Peak F1</strong>
+          <span>Superior test set generalization on unseen notes</span>
+        </div>
+      </div>
+      <div class="hero-feature-item">
+        <div class="feature-icon-circle"><i class="fa-solid fa-cubes"></i></div>
+        <div>
+          <strong>GroupShuffleSplit Validation</strong>
+          <span>Zero specimen leakage across training and test folds</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Dataset Summary Cards -->

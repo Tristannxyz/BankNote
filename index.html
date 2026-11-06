@@ -102,7 +102,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -160,10 +160,38 @@
 
   <!-- Hero Header -->
   <div class="hero-header">
-    <h1 class="hero-title">Verify Banknote <span>Authenticity</span></h1>
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>Bangko Sentral ng Pilipinas (BSP) Inspection Protocol • AI Screening</span>
+    </div>
+    <h1 class="hero-title">Verify Banknote <span class="gradient-text">Authenticity</span></h1>
     <p class="hero-desc">
-      Detect counterfeit Philippine peso notes using Discrete Wavelet Transform analysis and high-accuracy Machine Learning classifiers trained on Philippine banknote images.
+      Detect counterfeit Philippine Peso notes using 2D Discrete Wavelet Transform (DWT) texture analysis, color gamut verification, and machine learning classifiers trained on authentic currency specimens.
     </p>
+    <div class="hero-features-ribbon">
+      <div class="hero-feature-item">
+        <div class="feature-icon-circle"><i class="fa-solid fa-wave-square"></i></div>
+        <div>
+          <strong>Wavelet Texture Analysis</strong>
+          <span>High-frequency fiber & substrate grain inspection</span>
+        </div>
+      </div>
+      <div class="hero-feature-item">
+        <div class="feature-icon-circle"><i class="fa-solid fa-brain"></i></div>
+        <div>
+          <strong>Random Forest ML</strong>
+          <span>Statistical pattern recognition across 10 distinct features</span>
+        </div>
+      </div>
+      <div class="hero-feature-item">
+        <div class="feature-icon-circle"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        <div>
+          <strong>FEEL • LOOK • TILT</strong>
+          <span>Official BSP physical security feature checklist</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Global Alert Container -->
@@ -744,9 +772,49 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p><strong>NoteGuard</strong> &mdash; Philippine Peso Banknote Authenticity Verifier</p>
-            <p>Built with Python, scikit-learn, Flask, PyWavelets. Educational project.</p>
+        <div class="container footer-container">
+            <div class="footer-col-brand">
+                <div class="footer-brand-header">
+                    <span class="footer-brand-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                    <span class="footer-brand-title">NoteGuard</span>
+                </div>
+                <p class="footer-desc">
+                    Intelligent screening system for Philippine Peso banknotes utilizing 2D Discrete Wavelet Transform (DWT) texture decomposition, color gamut analysis, and machine learning.
+                </p>
+                <div class="footer-compliance-pill">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span>Aligned with Bangko Sentral ng Pilipinas (BSP) Verification Standards</span>
+                </div>
+            </div>
+
+            <div class="footer-col-links">
+                <h4 class="footer-heading">Platform Navigation</h4>
+                <ul class="footer-links-list">
+                    <li><a href="/index.html"><i class="fa-solid fa-magnifying-glass"></i> Currency Verifier</a></li>
+                    <li><a href="/security.html"><i class="fa-solid fa-shield"></i> Security Features Guide</a></li>
+                    <li><a href="/dashboard.html"><i class="fa-solid fa-chart-line"></i> Model Evaluation Dashboard</a></li>
+                    <li><a href="/about.html"><i class="fa-solid fa-circle-info"></i> System Architecture</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col-tech">
+                <h4 class="footer-heading">Inspection Standards</h4>
+                <div class="footer-tags-grid">
+                    <span class="footer-tech-tag"><i class="fa-solid fa-wave-square"></i> 2D Wavelet (db1)</span>
+                    <span class="footer-tech-tag"><i class="fa-solid fa-brain"></i> Random Forest ML</span>
+                    <span class="footer-tech-tag"><i class="fa-solid fa-hand-holding-dollar"></i> FEEL • LOOK • TILT</span>
+                    <span class="footer-tech-tag"><i class="fa-solid fa-universal-access"></i> WCAG 2.1 AA</span>
+                </div>
+                <p class="footer-disclaimer-note">
+                    <strong>Notice:</strong> Machine learning screening aids rapid assessment. Legal authentication remains governed by the Bangko Sentral ng Pilipinas.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom-bar">
+            <div class="container footer-bottom-inner">
+                <span>&copy; 2026 NoteGuard Philippine Currency Classifier. Educational & Research Project.</span>
+                <span class="footer-status-indicator"><span class="badge-dot-live"></span> System Operational • Local Inference</span>
+            </div>
         </div>
     </footer>
 
