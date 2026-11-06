@@ -3665,6 +3665,12 @@ html[data-theme="light"] .cert-title-block h2 {
   border-color: rgba(239, 68, 68, 0.4);
 }
 
+.cert-verdict-box.suspicious,
+.cert-verdict-box.uncertain {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
 .cert-verdict-label {
   font-size: 0.78rem;
   font-weight: 800;
@@ -3680,6 +3686,11 @@ html[data-theme="light"] .cert-title-block h2 {
 
 .cert-verdict-box.forged .cert-verdict-title {
   color: #ef4444;
+}
+
+.cert-verdict-box.suspicious .cert-verdict-title,
+.cert-verdict-box.uncertain .cert-verdict-title {
+  color: #f59e0b;
 }
 
 .cert-verdict-conf {

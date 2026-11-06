@@ -578,18 +578,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ignore storage parse issues
   }
 
+  function normalizeDenomKey(input) {
+    if (!input) return null;
+    const str = String(input).toLowerCase();
+    if (str.includes("poly")) return "1000_polymer";
+    if (str.includes("1000") || str.includes("1,000")) return "1000";
+    if (str.includes("500")) return "500";
+    if (str.includes("200")) return "200";
+    if (str.includes("100")) return "100";
+    if (str.includes("50")) return "50";
+    if (str.includes("20")) return "20";
+    return null;
+  }
+
   // If query param specifies a denomination, map to key
   if (qDenom) {
-    const cleanQ = qDenom.toLowerCase().replace("p", "").replace("pesos", "").replace("peso", "").trim();
-    if (DENOMINATIONS[cleanQ]) {
-      currentDenomKey = cleanQ;
-    } else if (cleanQ.includes("poly") || cleanQ === "1000p") {
-      currentDenomKey = "1000_polymer";
+    const matchedKey = normalizeDenomKey(qDenom);
+    if (matchedKey && DENOMINATIONS[matchedKey]) {
+      currentDenomKey = matchedKey;
     }
-  } else if (linkedResult && linkedResult.denomination) {
-    const cleanL = linkedResult.denomination.toLowerCase().replace("p", "").replace("pesos", "").trim();
-    if (DENOMINATIONS[cleanL]) {
-      currentDenomKey = cleanL;
+  } else if (linkedResult && (linkedResult.denomination || linkedResult.denomination_display)) {
+    const matchedKey = normalizeDenomKey(linkedResult.denomination || linkedResult.denomination_display);
+    if (matchedKey && DENOMINATIONS[matchedKey]) {
+      currentDenomKey = matchedKey;
     }
   }
 
@@ -598,9 +609,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (linkedResult && linkedResult.verdict) {
       const v = linkedResult.verdict.toUpperCase();
       const conf = (linkedResult.confidence || 0).toFixed(1);
-      const dName = linkedResult.denomination_display || linkedResult.denomination || "Banknote";
+      const rawName = linkedResult.denomination_numeral || linkedResult.denomination_display || linkedResult.denomination || "Banknote";
+      const cleanName = rawName.startsWith("₱") ? rawName : `₱${rawName}`;
 
-      linkedModelSummary.textContent = `Scanned ₱${dName} — ${v} with ${conf}% confidence`;
+      linkedModelSummary.textContent = `Scanned ${cleanName} — ${v} with ${conf}% confidence`;
       linkedVerdictBadge.textContent = v;
       linkedVerdictBadge.className = `badge-tag ${v === "GENUINE" ? "genuine" : "forged"}`;
       if (v === "GENUINE") {
@@ -654,6 +666,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderDenominationView(key) {
     const data = DENOMINATIONS[key];
     if (!data) return;
+    currentDenomKey = key;
+
+    // Synchronize tab buttons
+    tabButtons.forEach(btn => {
+      const isMatch = btn.dataset.denom === key;
+      btn.classList.toggle("active", isMatch);
+      btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+    });
 
     // Header Card
     denomBigBadge.textContent = key === "1000_polymer" ? "₱1,000" : `₱${key}`;

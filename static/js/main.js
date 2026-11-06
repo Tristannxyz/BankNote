@@ -386,20 +386,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Denomination details mapping
-    const denomColors = {
-      "20": "Orange",
-      "50": "Red",
-      "100": "Violet",
-      "200": "Green",
-      "500": "Yellow",
-      "1000": "Blue"
-    };
+    function formatDenominationDisplay(d) {
+      if (!d) return "Philippine Peso Banknote";
+      const display = d.denomination_display || "";
+      if (display.includes("₱")) return display;
+      const match = (d.denomination_match || "").toLowerCase();
+      if (match.includes("poly") || match.includes("1000")) return "₱1,000 Pesos (Blue)";
+      if (match.includes("500")) return "₱500 Pesos (Yellow)";
+      if (match.includes("200")) return "₱200 Pesos (Green)";
+      if (match.includes("100")) return "₱100 Pesos (Violet)";
+      if (match.includes("50")) return "₱50 Pesos (Red)";
+      if (match.includes("20")) return "₱20 Pesos (Orange)";
+      return display ? `₱${display}` : "Philippine Peso Banknote";
+    }
+
+    function getDenominationNumeral(d) {
+      if (!d) return "₱ Note";
+      const str = (d.denomination_display || d.denomination_match || "").toString().toLowerCase();
+      if (str.includes("poly") || str.includes("1000") || str.includes("1,000")) return "₱1,000";
+      if (str.includes("500")) return "₱500";
+      if (str.includes("200")) return "₱200";
+      if (str.includes("100")) return "₱100";
+      if (str.includes("50")) return "₱50";
+      if (str.includes("20")) return "₱20";
+      return "₱ Note";
+    }
 
     if (verdictDenomTag) {
-      if (data.denomination_match) {
-        const cleanKey = data.denomination_match.replace("p", "").replace("_", "").toLowerCase();
-        const colorName = denomColors[cleanKey] || "Philippine Peso";
-        verdictDenomTag.textContent = `Detected: ₱${data.denomination_display || cleanKey} Pesos (${colorName})`;
+      if (data.denomination_match || data.denomination_display) {
+        verdictDenomTag.textContent = `Detected: ${formatDenominationDisplay(data)}`;
         verdictDenomTag.style.display = "inline-flex";
       } else {
         verdictDenomTag.textContent = "Detected: Philippine Banknote";
@@ -579,14 +594,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Record to session inspection log unless reviewing an existing snapshot
     if (!data._isHistorySnapshot) {
-      const denomDisplay = data.denomination_display || 
-        (data.denomination_match ? data.denomination_match.replace("p", "").replace("_", "") : "Peso");
       addScanToSessionHistory({
         id: "NG-" + Math.floor(100000 + Math.random() * 900000),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         prediction: data.prediction,
         confidence: data.confidence,
-        denomination_display: denomDisplay,
+        denomination_display: formatDenominationDisplay(data),
+        denomination_numeral: getDenominationNumeral(data),
         thumb: lastScanThumb,
         rawData: data
       });
@@ -778,7 +792,7 @@ document.addEventListener("DOMContentLoaded", () => {
       btnUploadText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading Specimen...';
 
       try {
-        const sampleUrl = `/static/samples/${filename}`;
+        const sampleUrl = `${API_BASE ? API_BASE : ''}/static/samples/${filename}`;
         const resp = await fetch(sampleUrl);
         if (!resp.ok) {
           throw new Error(`Failed to load specimen image (${resp.status})`);
@@ -798,7 +812,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Trigger form submission
           setTimeout(() => {
-            uploadForm.requestSubmit();
+            if (typeof uploadForm.requestSubmit === "function") {
+              uploadForm.requestSubmit();
+            } else {
+              uploadForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+            }
           }, 80);
         };
         reader.readAsDataURL(file);
@@ -858,11 +876,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const color = isGen ? "#10b981" : "#ef4444";
       const thumbSrc = item.thumb || "/static/samples/sample_20.jpg";
 
+      const label = item.denomination_numeral || item.denomination_display || "₱ Banknote";
+
       return `
         <div class="history-item-card" data-idx="${idx}" role="button" tabindex="0" title="Click to view scan results">
           <img src="${thumbSrc}" alt="Scan thumb" class="history-item-thumb">
           <div class="history-item-info">
-            <div class="history-item-denom">₱${item.denomination_display}</div>
+            <div class="history-item-denom">${label}</div>
             <div class="history-item-meta">
               <span style="display: inline-flex; align-items: center; gap: 4px; color: ${color}; font-weight: 700;">
                 <i class="fa-solid ${icon}"></i> ${(item.prediction || '').toUpperCase()}
@@ -885,10 +905,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const item = list[idx];
         if (item && item.rawData) {
           const snapshot = { ...item.rawData, _isHistorySnapshot: true };
+          const itemLabel = item.denomination_numeral || item.denomination_display || "₱ Banknote";
           if (item.thumb) {
             imagePreview.src = item.thumb;
             previewContainer.style.display = "flex";
-            fileNameDisplay.textContent = `History scan: ₱${item.denomination_display}`;
+            fileNameDisplay.textContent = `History scan: ${itemLabel}`;
           }
           displayUploadResult(snapshot, item.thumb);
         }
@@ -971,9 +992,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (certTimestamp) certTimestamp.textContent = new Date().toLocaleString();
     if (certImageThumb && thumbUrl) certImageThumb.src = thumbUrl;
 
-    const isGen = (data.prediction || "").toLowerCase() === "genuine";
+    const predLower = (data.prediction || "").toLowerCase();
+    const isGen = predLower === "genuine";
+    const isForg = predLower === "forged";
+
     if (certVerdictBox) {
-      certVerdictBox.className = `cert-verdict-box ${isGen ? "" : "forged"}`;
+      if (isGen) certVerdictBox.className = "cert-verdict-box genuine";
+      else if (isForg) certVerdictBox.className = "cert-verdict-box forged";
+      else certVerdictBox.className = "cert-verdict-box suspicious";
     }
     if (certVerdictTitle) {
       certVerdictTitle.textContent = (data.prediction || "UNKNOWN").toUpperCase();
@@ -982,9 +1008,7 @@ document.addEventListener("DOMContentLoaded", () => {
       certConfidence.textContent = `${(data.confidence || 0).toFixed(1)}%`;
     }
     if (certDenomination) {
-      certDenomination.textContent = data.denomination_display
-        ? `₱${data.denomination_display} Pesos (New Generation Currency)`
-        : "Philippine Peso Banknote";
+      certDenomination.textContent = formatDenominationDisplay(data);
     }
     if (certSubstrate) {
       certSubstrate.textContent = isGen
