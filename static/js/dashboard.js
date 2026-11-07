@@ -206,9 +206,9 @@ function renderPerformanceChart(dt, rf) {
   }
 
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
-  const textColor = isLight ? "#334155" : "#cbd5e1";
-  const titleColor = isLight ? "#0f172a" : "#f8fafc";
-  const gridColor = isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)";
+  const textColor = isLight ? "#3d4352" : "#cbd5e1";
+  const titleColor = isLight ? "#1f2433" : "#f8fafc";
+  const gridColor = isLight ? "rgba(44, 38, 28, 0.08)" : "rgba(255, 255, 255, 0.08)";
 
   // Calculate dynamic Y-axis minimum
   const allValues = [
@@ -311,9 +311,9 @@ function renderFeatureImportanceChart(dt, rf) {
   }
 
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
-  const textColor = isLight ? "#334155" : "#cbd5e1";
-  const titleColor = isLight ? "#0f172a" : "#f8fafc";
-  const gridColor = isLight ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)";
+  const textColor = isLight ? "#3d4352" : "#cbd5e1";
+  const titleColor = isLight ? "#1f2433" : "#f8fafc";
+  const gridColor = isLight ? "rgba(44, 38, 28, 0.08)" : "rgba(255, 255, 255, 0.08)";
 
   const features = Object.keys(rf.feature_importances || dt.feature_importances || {});
   if (features.length === 0) return;

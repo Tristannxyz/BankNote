@@ -19,9 +19,9 @@
         color-scheme: dark;
       }
       html[data-theme="light"], html[data-theme="light"] body {
-        background-color: #f8fafc !important;
-        background: #f8fafc !important;
-        color: #1e293b !important;
+        background-color: #f4efe6 !important;
+        background: #f4efe6 !important;
+        color: #2b303a !important;
         color-scheme: light;
       }
     </style>
@@ -34,7 +34,7 @@
           var savedTheme = localStorage.getItem("noteguard_theme") || "dark";
           document.documentElement.setAttribute("data-theme", savedTheme);
           var metaColor = document.querySelector('meta[name="theme-color"]');
-          if (metaColor) metaColor.setAttribute("content", savedTheme === "light" ? "#f8fafc" : "#0a0d14");
+          if (metaColor) metaColor.setAttribute("content", savedTheme === "light" ? "#f4efe6" : "#0a0d14");
         } catch (e) {}
 
         try {
@@ -471,7 +471,7 @@
           root.setAttribute("data-theme", theme);
           try { localStorage.setItem("noteguard_theme", theme); } catch(e){}
           var metaColor = document.querySelector('meta[name="theme-color"]');
-          if (metaColor) metaColor.setAttribute("content", theme === "light" ? "#f8fafc" : "#0a0d14");
+          if (metaColor) metaColor.setAttribute("content", theme === "light" ? "#f4efe6" : "#0a0d14");
           var metaScheme = document.querySelector('meta[name="color-scheme"]');
           if (metaScheme) metaScheme.setAttribute("content", theme === "light" ? "light dark" : "dark");
 
