@@ -7,7 +7,7 @@
 <div class="container">
 
   <!-- Hero Header -->
-  <div class="hero-header">
+  <div class="hero-header" data-animate="fade-up">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
       <i class="fa-solid fa-chart-line"></i>
@@ -17,22 +17,22 @@
     <p class="hero-desc">
       Comprehensive holdout test metrics, 2×2 confusion matrices, ROC precision-recall evaluations, and DWT feature importance analysis across scikit-learn classifiers.
     </p>
-    <div class="hero-features-ribbon">
-      <div class="hero-feature-item">
+    <div class="hero-features-ribbon" data-animate-group>
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-database"></i></div>
         <div>
           <strong>868 Banknote Samples</strong>
           <span>Balanced 50/50 genuine & forged training distribution</span>
         </div>
       </div>
-      <div class="hero-feature-item">
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-trophy"></i></div>
         <div>
           <strong>Random Forest Peak F1</strong>
           <span>Superior test set generalization on unseen notes</span>
         </div>
       </div>
-      <div class="hero-feature-item">
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-cubes"></i></div>
         <div>
           <strong>GroupShuffleSplit Validation</strong>
@@ -43,23 +43,23 @@
   </div>
 
   <!-- Dataset Summary Cards -->
-  <div class="metrics-grid" id="datasetSummaryCards">
-    <div class="metric-card">
+  <div class="metrics-grid" id="datasetSummaryCards" data-animate-group>
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Dataset Records</div>
       <div class="metric-value" id="totalRecords">868</div>
       <div class="metric-sub">Philippine Banknote Dataset</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Genuine Notes (Class 0)</div>
       <div class="metric-value" id="genuineCount" style="color: var(--color-genuine);">434</div>
       <div class="metric-sub">50.0% of dataset (Balanced)</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Forged Notes (Class 1)</div>
       <div class="metric-value" id="forgedCount" style="color: var(--color-forged);">434</div>
       <div class="metric-sub">50.0% of dataset (Positive Class)</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Train / Test Split</div>
       <div class="metric-value" id="splitRatio">80 / 20</div>
       <div class="metric-sub">685 train | 183 test (GroupShuffleSplit)</div>
@@ -67,7 +67,7 @@
   </div>
 
   <!-- Best Model Highlight Banner -->
-  <div class="best-model-banner">
+  <div class="best-model-banner" data-animate="fade-up">
     <div>
       <div class="best-model-tag">
         <i class="fa-solid fa-trophy"></i> Best Performing Model (by F1-Score)
@@ -103,7 +103,7 @@
   <div class="models-comparison-grid">
     
     <!-- Decision Tree Card -->
-    <div class="model-spec-card" id="cardDecisionTree">
+    <div class="model-spec-card" id="cardDecisionTree" data-animate="fade-left">
       <div class="model-spec-header">
         <h3 class="model-spec-title">
           <i class="fa-solid fa-tree" style="color: var(--color-genuine);"></i> Decision Tree
@@ -172,7 +172,7 @@
     </div>
 
     <!-- Random Forest Card -->
-    <div class="model-spec-card" id="cardRandomForest">
+    <div class="model-spec-card" id="cardRandomForest" data-animate="fade-right">
       <div class="model-spec-header">
         <h3 class="model-spec-title">
           <i class="fa-solid fa-code-branch" style="color: var(--color-primary);"></i> Random Forest
@@ -245,7 +245,7 @@
   <!-- Chart Visualizations -->
   <div class="chart-grid">
     <!-- Metrics Comparison Bar Chart -->
-    <div class="chart-box">
+    <div class="chart-box" data-animate="fade-left">
       <div class="chart-title">
         <i class="fa-solid fa-chart-simple" style="color: var(--color-primary);"></i> Model Performance Comparison
       </div>
@@ -255,7 +255,7 @@
     </div>
 
     <!-- Feature Importance Chart -->
-    <div class="chart-box">
+    <div class="chart-box" data-animate="fade-right">
       <div class="chart-title">
         <i class="fa-solid fa-ranking-star" style="color: var(--color-primary);"></i> Feature Importance by Model
       </div>
@@ -266,7 +266,7 @@
   </div>
 
   <!-- Training Set Distribution Reference -->
-  <div class="card" style="margin-top: 20px;">
+  <div class="card" style="margin-top: 20px;" data-animate="fade-up">
     <div class="card-header">
       <div class="card-title-group">
         <div class="card-title-icon-box">

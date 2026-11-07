@@ -7,7 +7,7 @@
 <div class="container">
 
   <!-- Hero Header -->
-  <div class="hero-header">
+  <div class="hero-header" data-animate="fade-up">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
       <i class="fa-solid fa-shield-halved"></i>
@@ -17,22 +17,22 @@
     <p class="hero-desc">
       Detect counterfeit Philippine Peso notes using 2D Discrete Wavelet Transform (DWT) texture analysis, color gamut verification, and machine learning classifiers trained on authentic currency specimens.
     </p>
-    <div class="hero-features-ribbon">
-      <div class="hero-feature-item">
+    <div class="hero-features-ribbon" data-animate-group>
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-wave-square"></i></div>
         <div>
           <strong>Wavelet Texture Analysis</strong>
           <span>High-frequency fiber & substrate grain inspection</span>
         </div>
       </div>
-      <div class="hero-feature-item">
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-brain"></i></div>
         <div>
           <strong>Random Forest ML</strong>
           <span>Statistical pattern recognition across 10 distinct features</span>
         </div>
       </div>
-      <div class="hero-feature-item">
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-hand-holding-dollar"></i></div>
         <div>
           <strong>FEEL • LOOK • TILT</strong>
@@ -43,7 +43,7 @@
   </div>
 
   <!-- Global Alert Container -->
-  <div id="alertBox" class="alert alert-error" style="display: none;" role="alert">
+  <div id="alertBox" class="alert alert-error" style="display: none;" role="alert" data-animate="fade">
     <i class="fa-solid fa-circle-exclamation"></i>
     <div id="alertText">An error occurred.</div>
   </div>
@@ -51,7 +51,7 @@
   <!-- =================================================================== -->
   <!-- UPLOAD CARD                                                         -->
   <!-- =================================================================== -->
-  <div class="card upload-main-card">
+  <div class="card upload-main-card" data-animate="fade-up">
     <div class="card-header">
       <div class="card-title-group">
         <div class="card-title-icon-box">
@@ -174,12 +174,12 @@
   <!-- =================================================================== -->
   <!-- RESULTS CARD                                                        -->
   <!-- =================================================================== -->
-  <div id="uploadResult" class="card result-main-card" style="display: none;">
+  <div id="uploadResult" class="card result-main-card" style="display: none;" data-animate="fade-up">
     
     <!-- Top Result Grid: Verdict Box & Confidence Box -->
-    <div class="result-top-grid">
+    <div class="result-top-grid" data-animate-group>
       <!-- Left: Classification Verdict -->
-      <div class="verdict-box-card" id="verdictBoxCard">
+      <div class="verdict-box-card" id="verdictBoxCard" data-animate="fade-up">
         <div class="verdict-card-label" id="verdictCardLabel">CLASSIFICATION VERDICT</div>
         <div class="verdict-display-title" id="uploadVerdictBadge">
           <i class="fa-solid fa-circle-check" id="verdictStatusIcon"></i>
@@ -192,7 +192,7 @@
       </div>
 
       <!-- Right: Model Confidence -->
-      <div class="confidence-box-card">
+      <div class="confidence-box-card" data-animate="fade-up">
         <div class="confidence-card-label">MODEL CONFIDENCE</div>
         <div class="confidence-val-row">
           <span class="confidence-large-number" id="uploadConfidenceText">94.0%</span>
@@ -207,7 +207,7 @@
     </div>
 
     <!-- Out of Distribution Warning Banner -->
-    <div id="oodWarningBanner" class="alert alert-warning" style="display: none; margin-top: 16px;">
+    <div id="oodWarningBanner" class="alert alert-warning" style="display: none; margin-top: 16px;" data-animate="fade-up">
       <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem;"></i>
       <div>
         <strong>Out of Training Distribution Warning:</strong>
@@ -217,7 +217,7 @@
     </div>
 
     <!-- Plain-language explanation -->
-    <div id="uploadExplanation" class="plain-explanation" style="display: none;">
+    <div id="uploadExplanation" class="plain-explanation" style="display: none;" data-animate="fade-up">
       <i class="fa-solid fa-comment-dots" style="color: #f59e0b; flex-shrink: 0; margin-top: 2px;"></i>
       <span id="uploadExplanationText"></span>
     </div>
@@ -225,7 +225,7 @@
     <!-- ================================================================= -->
     <!-- BSP Security Verification (FEEL • LOOK • TILT)                    -->
     <!-- ================================================================= -->
-    <div class="bsp-verification-section" id="bspChecklistCard">
+    <div class="bsp-verification-section" id="bspChecklistCard" data-animate="fade-up">
       <div class="bsp-section-header">
         <div class="bsp-title-group">
           <i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i>
@@ -253,7 +253,7 @@
     <!-- ================================================================= -->
     <!-- Extracted Wavelet Features Section                                -->
     <!-- ================================================================= -->
-    <div class="wavelet-features-section">
+    <div class="wavelet-features-section" data-animate="fade-up">
       <div class="wavelet-section-header">
         <div class="wavelet-title-group">
           <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>
@@ -288,36 +288,36 @@
       </div>
 
       <!-- Metadata summary pills -->
-      <div class="meta-pills-row">
-        <span class="meta-pill-tag" id="metaWavelet">Wavelet: db1</span>
-        <span class="meta-pill-tag" id="metaSize">Size: 1536x2048</span>
-        <span class="meta-pill-tag" id="metaCoeffs">Coefficients: cA (Approximation)</span>
-        <span class="meta-pill-tag" id="metaKurt">Sharpness HF: 0.00529</span>
+      <div class="meta-pills-row" data-animate-group>
+        <span class="meta-pill-tag" id="metaWavelet" data-animate="fade">Wavelet: db1</span>
+        <span class="meta-pill-tag" id="metaSize" data-animate="fade">Size: 1536x2048</span>
+        <span class="meta-pill-tag" id="metaCoeffs" data-animate="fade">Coefficients: cA (Approximation)</span>
+        <span class="meta-pill-tag" id="metaKurt" data-animate="fade">Sharpness HF: 0.00529</span>
       </div>
 
       <!-- 2D Wavelet Sub-Band Decomposition Visualizer -->
-      <div class="dwt-decomposition-box">
+      <div class="dwt-decomposition-box" data-animate="fade-up">
         <div class="dwt-decomp-header">
           <span><i class="fa-solid fa-cubes-stacked" style="color: #f59e0b; margin-right: 6px;"></i> 2D Wavelet Sub-Band Decomposition (Level-1 DWT)</span>
           <span class="dwt-decomp-badge">Haar / Daubechies (db1)</span>
         </div>
-        <div class="dwt-subbands-grid">
-          <div class="dwt-subband-cell">
+        <div class="dwt-subbands-grid" data-animate-group>
+          <div class="dwt-subband-cell" data-animate="fade-up">
             <span class="subband-tag">LL (Low-Low) — Approximation</span>
             <span class="subband-desc">Base luminance, watermark silhouette & macro portrait structure</span>
             <span class="subband-energy" id="subbandEnergyLL">Energy: --</span>
           </div>
-          <div class="dwt-subband-cell">
+          <div class="dwt-subband-cell" data-animate="fade-up">
             <span class="subband-tag">LH (Low-High) — Horizontal Details</span>
             <span class="subband-desc">Horizontal intaglio ridges, tactile mark lines & microprinting</span>
             <span class="subband-energy" id="subbandEnergyLH">Energy: --</span>
           </div>
-          <div class="dwt-subband-cell">
+          <div class="dwt-subband-cell" data-animate="fade-up">
             <span class="subband-tag">HL (High-Low) — Vertical Details</span>
             <span class="subband-desc">Vertical security thread fibers & guilloche borders</span>
             <span class="subband-energy" id="subbandEnergyHL">Energy: --</span>
           </div>
-          <div class="dwt-subband-cell">
+          <div class="dwt-subband-cell" data-animate="fade-up">
             <span class="subband-tag">HH (High-High) — Diagonal / Micro-Texture</span>
             <span class="subband-desc">High-frequency paper substrate grain & micro-engraving fidelity</span>
             <span class="subband-energy" id="subbandEnergyHH">Energy: --</span>
@@ -326,13 +326,13 @@
       </div>
 
       <!-- Educational Disclaimer -->
-      <div class="disclaimer-banner">
+      <div class="disclaimer-banner" data-animate="fade">
         <i class="fa-solid fa-circle-info" style="color: #f59e0b; flex-shrink: 0;"></i>
         <span>Image-based screening only. It does not replace checking the physical security features (FEEL, LOOK, TILT). Always verify using the official BSP method.</span>
       </div>
 
       <!-- Action Buttons Row -->
-      <div class="result-actions-row">
+      <div class="result-actions-row" data-animate="fade-up">
         <a href="/security" id="linkToSecurityCheck" class="btn btn-gold flex-btn">
           <i class="fa-solid fa-shield-halved"></i> Verify Physical Security Features
         </a>
@@ -350,7 +350,7 @@
   <!-- =================================================================== -->
   <!-- SESSION INSPECTION LOG (RECENT SCANS)                               -->
   <!-- =================================================================== -->
-  <div class="card scan-history-card" id="scanHistoryCard" style="display: none; margin-top: 24px;">
+  <div class="card scan-history-card" id="scanHistoryCard" style="display: none; margin-top: 24px;" data-animate="fade-up">
     <div class="scan-history-header">
       <div style="display: flex; align-items: center; gap: 8px;">
         <i class="fa-solid fa-clock-rotate-left" style="color: #f59e0b; font-size: 1.1rem;"></i>
@@ -370,7 +370,7 @@
   <!-- =================================================================== -->
   <!-- COLLAPSIBLE DEVELOPER / MODEL TESTING ACCORDION                     -->
   <!-- =================================================================== -->
-  <div class="card dev-accordion-card" style="margin-top: 24px;">
+  <div class="card dev-accordion-card" style="margin-top: 24px;" data-animate="fade-up">
     <div class="dev-section-toggle" id="devSectionToggle" role="button" tabindex="0" aria-expanded="false">
       <div class="dev-toggle-left">
         <i class="fa-solid fa-flask" style="color: #f59e0b; font-size: 1rem;"></i>

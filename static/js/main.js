@@ -608,6 +608,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Show result card
     uploadResult.style.display = "block";
+    if (typeof window.refreshScrollAnimations === "function") {
+      window.refreshScrollAnimations();
+    }
     uploadResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 

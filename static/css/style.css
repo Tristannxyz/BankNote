@@ -4029,32 +4029,62 @@ html[data-theme="light"] .footer-bottom-bar {
 
 /* ==========================================================================
    Scroll-Triggered Reveal / Fade In-Out Animation
-   Supports dynamic entering (fade-in, slide-up) when scrolling down into view
-   and smooth fading out when scrolled out of view.
+   Supports data-animate="fade", "fade-up", "fade-left", "fade-right"
+   Direction-aware (down/up), responsive, and accessible.
    ========================================================================== */
-.scroll-reveal {
+:root {
+  --anim-duration: 0.7s;
+  --anim-distance: 30px;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* Initial state only applied when JavaScript is active */
+.js-enabled [data-animate] {
   opacity: 0;
-  transform: translateY(48px) scale(0.96);
-  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity var(--anim-duration) ease,
+              transform var(--anim-duration) cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 
-.scroll-reveal.is-revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+/* Default / fade-up: rises when scrolling down into view */
+.js-enabled [data-animate="fade-up"],
+.js-enabled [data-animate=""] {
+  transform: translateY(var(--anim-distance));
 }
 
-/* Stagger delay classes for grid items (metric cards, feature cards, etc.) */
-.scroll-reveal.reveal-delay-1 { transition-delay: 0.08s; }
-.scroll-reveal.reveal-delay-2 { transition-delay: 0.16s; }
-.scroll-reveal.reveal-delay-3 { transition-delay: 0.24s; }
-.scroll-reveal.reveal-delay-4 { transition-delay: 0.32s; }
-.scroll-reveal.reveal-delay-5 { transition-delay: 0.40s; }
+/* Fade-only variant */
+.js-enabled [data-animate="fade"] {
+  transform: none;
+}
 
-/* Accessible fallback: respect user preference for reduced motion */
+/* Fade from left */
+.js-enabled [data-animate="fade-left"] {
+  transform: translateX(calc(-1 * var(--anim-distance)));
+}
+
+/* Fade from right */
+.js-enabled [data-animate="fade-right"] {
+  transform: translateX(var(--anim-distance));
+}
+
+/* Reverse vertical offset when entering from above (scrolling up) */
+.js-enabled [data-animate="fade-up"].scroll-enter-up,
+.js-enabled [data-animate=""].scroll-enter-up {
+  transform: translateY(calc(-1 * var(--anim-distance)));
+}
+
+/* Active / In-view state */
+.js-enabled [data-animate].is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Respect user preference for reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
+  .js-enabled [data-animate] {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
