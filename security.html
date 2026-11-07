@@ -644,6 +644,98 @@
       })();
     </script>
 
+    <!-- Global Scroll Fade In / Out Reveal Controller -->
+    <script>
+      (function() {
+        // Skip animation if user prefers reduced motion
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          return;
+        }
+
+        // Target all major content blocks across pages:
+        // Hero sections, cards, metric grids, comparison tables, charts, etc.
+        var targetSelectors = [
+          '.hero-header',
+          '.hero-features-ribbon',
+          '.card',
+          '.metrics-grid',
+          '.spec-grid',
+          '.security-step-card',
+          '.checklist-row',
+          '.suspect-flow-step',
+          '.architecture-diagram-card',
+          '.table-card',
+          '.chart-card',
+          '.guidelines-grid',
+          '.about-highlight-card',
+          '.footer-grid'
+        ];
+
+        function initScrollReveal() {
+          var elements = document.querySelectorAll(targetSelectors.join(', '));
+          if (!elements.length) return;
+
+          // Add base scroll-reveal class to matching elements
+          elements.forEach(function(el) {
+            // Avoid double-attaching or interfering with modal/certificate containers
+            if (!el.classList.contains('scroll-reveal') && !el.closest('#certModal')) {
+              el.classList.add('scroll-reveal');
+            }
+          });
+
+          // Add staggered delays for children within grids
+          document.querySelectorAll('.metrics-grid, .hero-features-ribbon, .spec-grid, .guidelines-grid').forEach(function(grid) {
+            var children = Array.from(grid.children);
+            children.forEach(function(child, index) {
+              if (index < 6) {
+                child.classList.add('reveal-delay-' + ((index % 5) + 1));
+              }
+            });
+          });
+
+          // IntersectionObserver with threshold & rootMargin to smoothly fade in on scroll down
+          // and fade out when scrolled out of view (scroll up or down)
+          if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+              entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-revealed');
+                } else {
+                  // Only remove revealed class if the element is not the primary visible hero at top of page
+                  // Check if element is below viewport or scrolled past
+                  var rect = entry.boundingClientRect;
+                  // If scrolled off-screen (below bottom or above top)
+                  if (rect.top > window.innerHeight || rect.bottom < 0) {
+                    entry.target.classList.remove('is-revealed');
+                  }
+                }
+              });
+            }, {
+              root: null,
+              rootMargin: '0px 0px -40px 0px',
+              threshold: 0.12
+            });
+
+            elements.forEach(function(el) {
+              observer.observe(el);
+            });
+          } else {
+            // Fallback for older browsers
+            elements.forEach(function(el) {
+              el.classList.add('is-revealed');
+            });
+          }
+        }
+
+        // Initialize on DOM ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initScrollReveal);
+        } else {
+          initScrollReveal();
+        }
+      })();
+    </script>
+
     
 <script>
 document.addEventListener("DOMContentLoaded", () => {
