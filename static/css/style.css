@@ -4090,3 +4090,758 @@ html, body {
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   HOW TO USE GUIDE MODAL & NAVBAR BUTTON
+   ========================================================================== */
+
+/* Navbar "How to Use" Button */
+.btn-how-to-use {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  min-height: 40px;
+  border-radius: 9999px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1;
+}
+
+.btn-how-to-use:hover {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+}
+
+.btn-how-to-use i {
+  font-size: 1rem;
+  color: var(--color-primary);
+  transition: transform 0.25s ease;
+}
+
+.btn-how-to-use:hover i {
+  transform: scale(1.15);
+}
+
+/* First-visit pulsing indicator dot */
+.btn-how-to-use.has-pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-primary);
+  border: 2px solid var(--bg-dark);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  animation: guidePulse 2s infinite;
+}
+
+@keyframes guidePulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+/* Body lock when modal is open */
+body.guide-modal-open {
+  overflow: hidden !important;
+}
+
+/* Modal Backdrop */
+.guide-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 13, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal Dialog Box */
+.guide-modal-dialog {
+  background: var(--bg-card);
+  border: 1px solid var(--card-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  width: 100%;
+  max-width: 660px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.95) translateY(12px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-modal-backdrop.is-open .guide-modal-dialog {
+  transform: scale(1) translateY(0);
+}
+
+/* Modal Header */
+.guide-modal-header {
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.guide-modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.guide-title-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.guide-modal-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.guide-modal-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.guide-modal-close-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.guide-modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+/* Stepper Progress Bar */
+.guide-stepper-bar {
+  padding: 14px 28px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.guide-step-counter {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.guide-stepper-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guide-step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s ease;
+}
+
+.guide-step-dot:hover {
+  background: rgba(245, 158, 11, 0.4);
+}
+
+.guide-step-dot.active {
+  background: var(--color-primary);
+  width: 26px;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+/* Modal Body Slides */
+.guide-modal-body {
+  padding: 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.guide-step-slide {
+  display: none;
+  opacity: 0;
+  transform: translateX(12px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-step-slide.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.guide-slide-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 12px;
+}
+
+.guide-slide-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.guide-slide-text {
+  font-size: 1rem;
+  color: var(--text-body);
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+
+/* Slide 1 Mockup */
+.guide-slide-card {
+  background: var(--bg-inset);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+
+.guide-mini-flow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.guide-nav-mockup {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.guide-pill-mockup {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.guide-pill-mockup.active {
+  background: var(--color-primary);
+  color: #0a0d14;
+  font-weight: 800;
+}
+
+.guide-card-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Slide 2 Tips Grid */
+.guide-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.guide-tip-item {
+  background: var(--bg-inset);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.guide-tip-item i {
+  font-size: 1.15rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.guide-tip-item strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.guide-tip-item span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+/* Slide 3 Upload Mockup */
+.guide-upload-preview-mockup {
+  background: var(--bg-inset);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+
+.guide-dropzone-mockup {
+  border: 2px dashed rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.04);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-body);
+  margin-bottom: 12px;
+}
+
+.guide-sample-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.guide-sample-strip-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.guide-sample-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+/* Slide 4 Pipeline */
+.guide-pipeline-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guide-pipeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-inset);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+}
+
+.pipeline-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #0a0d14;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pipeline-step-desc {
+  font-size: 0.88rem;
+  color: var(--text-body);
+  line-height: 1.5;
+}
+
+.pipeline-step-desc strong {
+  color: var(--text-main);
+}
+
+/* Slide 5 Verdicts Grid */
+.guide-verdicts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.guide-verdict-card {
+  padding: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.guide-verdict-card.genuine {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.guide-verdict-card.forged {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.guide-verdict-title {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guide-verdict-card.genuine .guide-verdict-title { color: #10b981; }
+.guide-verdict-card.forged .guide-verdict-title { color: #ef4444; }
+
+.guide-verdict-desc {
+  font-size: 0.8rem;
+  color: var(--text-body);
+  line-height: 1.45;
+}
+
+.guide-warning-callout {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  color: var(--text-body);
+  line-height: 1.5;
+}
+
+.guide-warning-callout strong {
+  color: #fbbf24;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Slide 6 Features & Disclaimer */
+.guide-features-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.guide-feature-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--bg-inset);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  color: var(--text-body);
+  line-height: 1.45;
+}
+
+.guide-feature-point i {
+  font-size: 1rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.guide-feature-point strong {
+  color: var(--text-main);
+}
+
+.guide-academic-disclaimer {
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.82rem;
+  color: var(--text-body);
+  line-height: 1.5;
+}
+
+.guide-academic-disclaimer strong {
+  color: #fbbf24;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Modal Footer */
+.guide-modal-footer {
+  padding: 18px 28px;
+  border-top: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guide-footer-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.btn-guide-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px 18px;
+  min-height: 42px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1;
+}
+
+.btn-guide-nav.outline {
+  background: transparent;
+  border: 1px solid var(--card-border-light);
+  color: var(--text-muted);
+}
+
+.btn-guide-nav.outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.btn-guide-nav.primary {
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: #0a0d14;
+  font-weight: 800;
+}
+
+.btn-guide-nav.primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+}
+
+.btn-guide-nav.gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #d97706 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #0a0d14;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.btn-guide-nav.gold:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+/* Light Theme Overrides */
+html[data-theme="light"] .btn-how-to-use {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #b45309;
+}
+
+html[data-theme="light"] .btn-how-to-use:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #d97706;
+  color: #78350f;
+}
+
+html[data-theme="light"] .guide-modal-backdrop {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+html[data-theme="light"] .guide-modal-dialog {
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .guide-stepper-bar {
+  background: #f8fafc;
+}
+
+html[data-theme="light"] .guide-step-dot {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .guide-step-dot.active {
+  background: var(--color-primary);
+}
+
+html[data-theme="light"] .guide-slide-card,
+html[data-theme="light"] .guide-tip-item,
+html[data-theme="light"] .guide-upload-preview-mockup,
+html[data-theme="light"] .guide-pipeline-step,
+html[data-theme="light"] .guide-feature-point {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="light"] .guide-nav-mockup,
+html[data-theme="light"] .guide-pill-mockup {
+  background: rgba(0, 0, 0, 0.05);
+  color: #334155;
+}
+
+html[data-theme="light"] .guide-nav-mockup {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .guide-pill-mockup.active {
+  background: var(--color-primary);
+  color: #0a0d14;
+}
+
+html[data-theme="light"] .guide-sample-badge {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #334155;
+}
+
+html[data-theme="light"] .btn-guide-nav.outline {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #475569;
+}
+
+html[data-theme="light"] .btn-guide-nav.outline:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .how-to-use-text {
+    display: none;
+  }
+  .btn-how-to-use {
+    padding: 8px 12px;
+    min-height: 38px;
+  }
+  .guide-tips-grid {
+    grid-template-columns: 1fr;
+  }
+  .guide-verdicts-grid {
+    grid-template-columns: 1fr;
+  }
+  .guide-modal-header {
+    padding: 16px 20px;
+  }
+  .guide-stepper-bar {
+    padding: 12px 20px;
+  }
+  .guide-modal-body {
+    padding: 20px;
+  }
+  .guide-modal-footer {
+    padding: 14px 20px;
+    flex-direction: column-reverse;
+  }
+  .guide-footer-actions-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .btn-guide-nav.outline {
+    width: 100%;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .guide-modal-backdrop,
+  .guide-modal-dialog,
+  .guide-step-slide,
+  .btn-how-to-use.has-pulse-dot::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
