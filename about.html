@@ -27,6 +27,9 @@
     </style>
     <script>
       (function() {
+        // Add js-enabled class to <html> immediately so animation initial state only activates with JS
+        document.documentElement.classList.add("js-enabled");
+
         try {
           var savedTheme = localStorage.getItem("noteguard_theme") || "dark";
           document.documentElement.setAttribute("data-theme", savedTheme);
@@ -165,7 +168,7 @@
 <div class="container">
 
   <!-- Hero Header -->
-  <div class="hero-header">
+  <div class="hero-header" data-animate="fade-up">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
       <i class="fa-solid fa-graduation-cap"></i>
@@ -175,22 +178,22 @@
     <p class="hero-desc">
       An intelligent Philippine peso banknote screening platform combining 2D Discrete Wavelet Transform (DWT) texture analysis, color gamut verification, and supervised machine learning.
     </p>
-    <div class="hero-features-ribbon">
-      <div class="hero-feature-item">
+    <div class="hero-features-ribbon" data-animate-group>
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-square-root-variable"></i></div>
         <div>
           <strong>Wavelet Mathematics</strong>
           <span>Haar db1 multiresolution sub-band analysis</span>
         </div>
       </div>
-      <div class="hero-feature-item">
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-palette"></i></div>
         <div>
           <strong>Color Gamut Moments</strong>
           <span>RGB / HSV substrate color consistency checking</span>
         </div>
       </div>
-      <div class="hero-feature-item">
+      <div class="hero-feature-item" data-animate="fade-up">
         <div class="feature-icon-circle"><i class="fa-solid fa-shield-halved"></i></div>
         <div>
           <strong>BSP Protocol Integration</strong>
@@ -201,23 +204,23 @@
   </div>
 
   <!-- Key Statistics Grid -->
-  <div class="metrics-grid">
-    <div class="metric-card">
+  <div class="metrics-grid" data-animate-group>
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Training Dataset</div>
       <div class="metric-value">868</div>
       <div class="metric-sub">Philippine banknote images (50/50 balanced)</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Extracted Features</div>
       <div class="metric-value" style="color: var(--color-primary);">10</div>
       <div class="metric-sub">4 Wavelet Texture + 6 RGB Gamut Moments</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Peak Test Accuracy</div>
       <div class="metric-value" style="color: var(--color-genuine);">87.4%</div>
       <div class="metric-sub">Random Forest (88.8% F1-score on holdout)</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" data-animate="fade-up">
       <div class="metric-label">Supported Currency</div>
       <div class="metric-value">₱20–₱1k</div>
       <div class="metric-sub">New Generation Currency (NGC) & Polymer</div>
@@ -225,7 +228,7 @@
   </div>
 
   <!-- How It Works (Pipeline) -->
-  <div class="card">
+  <div class="card" data-animate="fade-up">
     <div class="card-header">
       <div class="card-title-group">
         <div class="card-title-icon-box">
@@ -239,10 +242,10 @@
     </div>
 
     <div class="card-body">
-      <div class="about-steps-list">
+      <div class="about-steps-list" data-animate-group>
         
         <!-- Step 1 -->
-        <div class="about-step-card">
+        <div class="about-step-card" data-animate="fade-up">
           <div class="about-step-number">1</div>
           <div class="about-step-content">
             <div class="about-step-title">
@@ -256,7 +259,7 @@
         </div>
 
         <!-- Step 2 -->
-        <div class="about-step-card">
+        <div class="about-step-card" data-animate="fade-up">
           <div class="about-step-number">2</div>
           <div class="about-step-content">
             <div class="about-step-title">
@@ -270,7 +273,7 @@
         </div>
 
         <!-- Step 3 -->
-        <div class="about-step-card">
+        <div class="about-step-card" data-animate="fade-up">
           <div class="about-step-number">3</div>
           <div class="about-step-content">
             <div class="about-step-title">
@@ -284,7 +287,7 @@
         </div>
 
         <!-- Step 4 -->
-        <div class="about-step-card">
+        <div class="about-step-card" data-animate="fade-up">
           <div class="about-step-number">4</div>
           <div class="about-step-content">
             <div class="about-step-title">
@@ -302,7 +305,7 @@
   </div>
 
   <!-- Mathematical Wavelet Texture Features -->
-  <div class="card">
+  <div class="card" data-animate="fade-up">
     <div class="card-header">
       <div class="card-title-group">
         <div class="card-title-icon-box">
@@ -316,9 +319,9 @@
     </div>
 
     <div class="card-body">
-      <div class="wavelet-theory-grid">
+      <div class="wavelet-theory-grid" data-animate-group>
         
-        <div class="wavelet-theory-card">
+        <div class="wavelet-theory-card" data-animate="fade-up">
           <div class="wavelet-theory-title">
             <i class="fa-solid fa-chart-line" style="color: var(--color-primary);"></i>
             Variance
@@ -328,7 +331,7 @@
           </div>
         </div>
 
-        <div class="wavelet-theory-card">
+        <div class="wavelet-theory-card" data-animate="fade-up">
           <div class="wavelet-theory-title">
             <i class="fa-solid fa-chart-area" style="color: var(--color-primary);"></i>
             Skewness
@@ -338,7 +341,7 @@
           </div>
         </div>
 
-        <div class="wavelet-theory-card">
+        <div class="wavelet-theory-card" data-animate="fade-up">
           <div class="wavelet-theory-title">
             <i class="fa-solid fa-chart-simple" style="color: var(--color-primary);"></i>
             Kurtosis (Excess)
@@ -348,7 +351,7 @@
           </div>
         </div>
 
-        <div class="wavelet-theory-card">
+        <div class="wavelet-theory-card" data-animate="fade-up">
           <div class="wavelet-theory-title">
             <i class="fa-solid fa-network-wired" style="color: var(--color-primary);"></i>
             Shannon Entropy
@@ -363,7 +366,7 @@
   </div>
 
   <!-- Training Data & Rigorous Validation -->
-  <div class="card">
+  <div class="card" data-animate="fade-up">
     <div class="card-header">
       <div class="card-title-group">
         <div class="card-title-icon-box">
@@ -387,7 +390,7 @@
   </div>
 
   <!-- Technology Stack -->
-  <div class="card">
+  <div class="card" data-animate="fade-up">
     <div class="card-header">
       <div class="card-title-group">
         <div class="card-title-icon-box">
@@ -415,7 +418,7 @@
   </div>
 
   <!-- Educational Disclaimer -->
-  <div class="card" style="border-left: 4px solid var(--color-primary);">
+  <div class="card" style="border-left: 4px solid var(--color-primary);" data-animate="fade-up">
     <div class="card-body">
       <div style="font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
         <i class="fa-solid fa-triangle-exclamation"></i> Academic & Educational Project Disclaimer
@@ -431,7 +434,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" data-animate="fade">
         <div class="container footer-container">
             <div class="footer-col-brand">
                 <div class="footer-brand-header">
@@ -554,91 +557,8 @@
       })();
     </script>
 
-    <!-- Global Scroll Fade In / Out Reveal Controller -->
-    <script>
-      (function() {
-        // Skip animation if user prefers reduced motion
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          return;
-        }
-
-        // Target all major content blocks across pages:
-        // Hero sections, cards, metric grids, comparison tables, charts, etc.
-        var targetSelectors = [
-          '.hero-header',
-          '.hero-features-ribbon',
-          '.card',
-          '.metrics-grid',
-          '.spec-grid',
-          '.security-step-card',
-          '.checklist-row',
-          '.suspect-flow-step',
-          '.architecture-diagram-card',
-          '.table-card',
-          '.chart-card',
-          '.guidelines-grid',
-          '.about-highlight-card',
-          '.footer-grid'
-        ];
-
-        function initScrollReveal() {
-          var elements = document.querySelectorAll(targetSelectors.join(', '));
-          if (!elements.length) return;
-
-          // Add base scroll-reveal class to matching elements
-          elements.forEach(function(el) {
-            // Avoid double-attaching or interfering with modal/certificate containers
-            if (!el.classList.contains('scroll-reveal') && !el.closest('#certModal')) {
-              el.classList.add('scroll-reveal');
-            }
-          });
-
-          // Add staggered delays for children within grids
-          document.querySelectorAll('.metrics-grid, .hero-features-ribbon, .spec-grid, .guidelines-grid').forEach(function(grid) {
-            var children = Array.from(grid.children);
-            children.forEach(function(child, index) {
-              if (index < 6) {
-                child.classList.add('reveal-delay-' + ((index % 5) + 1));
-              }
-            });
-          });
-
-          // IntersectionObserver with threshold & rootMargin to smoothly fade in on scroll down
-          // and fade out when scrolled out of view (scroll up or down)
-          if ('IntersectionObserver' in window) {
-            var observer = new IntersectionObserver(function(entries) {
-              entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add('is-revealed');
-                } else {
-                  entry.target.classList.remove('is-revealed');
-                }
-              });
-            }, {
-              root: null,
-              rootMargin: '-30px 0px -40px 0px',
-              threshold: 0.08
-            });
-
-            elements.forEach(function(el) {
-              observer.observe(el);
-            });
-          } else {
-            // Fallback for older browsers
-            elements.forEach(function(el) {
-              el.classList.add('is-revealed');
-            });
-          }
-        }
-
-        // Initialize on DOM ready
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initScrollReveal);
-        } else {
-          initScrollReveal();
-        }
-      })();
-    </script>
+    <!-- Scroll Animations Script (defer, before body close) -->
+    <script src="/static/js/scroll-animations.js" defer></script>
 
     
 <script>
