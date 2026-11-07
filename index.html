@@ -146,6 +146,12 @@
                     <a href="/about.html" class="nav-link">About</a>
                 </nav>
 
+                <!-- How to Use Guide Button -->
+                <button type="button" class="btn-how-to-use" id="btnHowToUse" aria-haspopup="dialog" aria-controls="howToUseModal" aria-label="Open How to Use guide" title="How to Use NoteGuard">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span class="how-to-use-text">How to Use</span>
+                </button>
+
                 <!-- Theme Switcher Mode Button -->
                 <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark or light theme" title="Switch Theme (Dark / Light)">
                     <i class="fa-solid fa-moon" id="themeIcon"></i>
@@ -819,6 +825,247 @@
 
     </footer>
 
+    <!-- =================================================================== -->
+    <!-- HOW TO USE GUIDE ACCESSIBLE MODAL DIALOG                            -->
+    <!-- =================================================================== -->
+    <div class="guide-modal-backdrop" id="howToUseModal" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle" hidden>
+        <div class="guide-modal-dialog">
+            <!-- Modal Header -->
+            <div class="guide-modal-header">
+                <div class="guide-modal-title-wrap">
+                    <div class="guide-title-icon-box">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <div>
+                        <h2 class="guide-modal-title" id="guideModalTitle">How to Use NoteGuard</h2>
+                        <span class="guide-modal-subtitle">Philippine Peso Banknote Verification Guide</span>
+                    </div>
+                </div>
+                <button type="button" class="guide-modal-close-btn" id="btnCloseGuideModal" aria-label="Close guide modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Stepper Progress Header -->
+            <div class="guide-stepper-bar">
+                <span class="guide-step-counter" id="guideStepCounter">Step 1 of 6</span>
+                <div class="guide-stepper-dots" id="guideStepperDots" role="tablist" aria-label="Guide Steps Navigation">
+                    <button type="button" class="guide-step-dot active" data-step="0" aria-label="Step 1: Open the Verify Page" aria-current="step"></button>
+                    <button type="button" class="guide-step-dot" data-step="1" aria-label="Step 2: Prepare Your Banknote Photo"></button>
+                    <button type="button" class="guide-step-dot" data-step="2" aria-label="Step 3: Upload Banknote Image"></button>
+                    <button type="button" class="guide-step-dot" data-step="3" aria-label="Step 4: Run Machine Learning Analysis"></button>
+                    <button type="button" class="guide-step-dot" data-step="4" aria-label="Step 5: Understand Verification Results"></button>
+                    <button type="button" class="guide-step-dot" data-step="5" aria-label="Step 6: Explore Additional Features"></button>
+                </div>
+            </div>
+
+            <!-- Modal Content Slides Container -->
+            <div class="guide-modal-body">
+
+                <!-- Step 1: Open the Verify Page -->
+                <div class="guide-step-slide active" data-step="0">
+                    <div class="guide-slide-badge">
+                        <i class="fa-solid fa-compass"></i> Step 1: Getting Started
+                    </div>
+                    <h3 class="guide-slide-heading">Open the Verify Page</h3>
+                    <p class="guide-slide-text">
+                        Navigate to the <strong>Verify</strong> page using the top navigation bar. This is NoteGuard's primary interactive testing suite where you can inspect Philippine Peso banknotes for counterfeit characteristics.
+                    </p>
+                    <div class="guide-slide-card">
+                        <div class="guide-mini-flow">
+                            <span class="guide-nav-mockup"><i class="fa-solid fa-shield-halved"></i> Note<strong>Guard</strong></span>
+                            <i class="fa-solid fa-arrow-right" style="color: var(--color-primary);"></i>
+                            <span class="guide-pill-mockup active">Verify</span>
+                            <span class="guide-pill-mockup">Security Features</span>
+                            <span class="guide-pill-mockup">Dashboard</span>
+                        </div>
+                        <div class="guide-card-note">
+                            <i class="fa-solid fa-circle-check" style="color: var(--color-genuine);"></i>
+                            <span>You can access NoteGuard from any modern desktop, tablet, or smartphone browser.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Prepare your banknote photo -->
+                <div class="guide-step-slide" data-step="1" hidden>
+                    <div class="guide-slide-badge">
+                        <i class="fa-solid fa-camera"></i> Step 2: Best Photography Practices
+                    </div>
+                    <h3 class="guide-slide-heading">Prepare Your Banknote Photo</h3>
+                    <p class="guide-slide-text">
+                        The Discrete Wavelet Transform (DWT) relies on clear micro-texture patterns in intaglio engraving and abaca fibers. A high-quality photo ensures the most accurate classification.
+                    </p>
+                    <div class="guide-tips-grid">
+                        <div class="guide-tip-item">
+                            <i class="fa-solid fa-table-cells" style="color: #38bdf8;"></i>
+                            <div>
+                                <strong>Plain, Flat Background</strong>
+                                <span>Lay the note completely flat on a dark, non-reflective surface.</span>
+                            </div>
+                        </div>
+                        <div class="guide-tip-item">
+                            <i class="fa-solid fa-sun" style="color: #f59e0b;"></i>
+                            <div>
+                                <strong>Even Diffused Lighting</strong>
+                                <span>Avoid harsh glare, flashlight hotspots, or casting heavy hand shadows.</span>
+                            </div>
+                        </div>
+                        <div class="guide-tip-item">
+                            <i class="fa-solid fa-expand" style="color: #10b981;"></i>
+                            <div>
+                                <strong>All 4 Corners Visible</strong>
+                                <span>Fill the camera frame with the banknote so all edges and borders are in view.</span>
+                            </div>
+                        </div>
+                        <div class="guide-tip-item">
+                            <i class="fa-solid fa-file-image" style="color: #a855f7;"></i>
+                            <div>
+                                <strong>Sharp & In Focus</strong>
+                                <span>Supported formats: PNG, JPG, JPEG, GIF, BMP, WEBP (up to 16MB).</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Upload the image -->
+                <div class="guide-step-slide" data-step="2" hidden>
+                    <div class="guide-slide-badge">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Step 3: Uploading
+                    </div>
+                    <h3 class="guide-slide-heading">Upload the Banknote Image</h3>
+                    <p class="guide-slide-text">
+                        Drag and drop your image directly onto the dashed upload zone, or click <strong>"Choose file"</strong> to browse from your device storage or camera roll.
+                    </p>
+                    <div class="guide-upload-preview-mockup">
+                        <div class="guide-dropzone-mockup">
+                            <i class="fa-regular fa-image" style="font-size: 2rem; color: var(--color-primary); margin-bottom: 8px;"></i>
+                            <span>Drag & drop banknote photo or click <strong>Choose file</strong></span>
+                        </div>
+                        <div class="guide-sample-strip">
+                            <span class="guide-sample-strip-label"><i class="fa-solid fa-flask"></i> Quick Demo Specimens Available:</span>
+                            <span class="guide-sample-badge">₱20</span>
+                            <span class="guide-sample-badge">₱50</span>
+                            <span class="guide-sample-badge">₱100</span>
+                            <span class="guide-sample-badge">₱200</span>
+                            <span class="guide-sample-badge">₱500</span>
+                            <span class="guide-sample-badge">₱1,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Click Analyze Currency Note -->
+                <div class="guide-step-slide" data-step="3" hidden>
+                    <div class="guide-slide-badge">
+                        <i class="fa-solid fa-bolt"></i> Step 4: Inspection
+                    </div>
+                    <h3 class="guide-slide-heading">Run Machine Learning Analysis</h3>
+                    <p class="guide-slide-text">
+                        Click the golden <strong>"Analyze Currency Note"</strong> button. NoteGuard instantly executes full wavelet decomposition and color gamut extraction:
+                    </p>
+                    <div class="guide-pipeline-box">
+                        <div class="guide-pipeline-step">
+                            <div class="pipeline-step-num">1</div>
+                            <div class="pipeline-step-desc">
+                                <strong>DWT Decomposition:</strong> Extracts 4 Daubechies (db1) sub-bands (Approximation cA, Horizontal cH, Vertical cV, Diagonal cD).
+                            </div>
+                        </div>
+                        <div class="guide-pipeline-step">
+                            <div class="pipeline-step-num">2</div>
+                            <div class="pipeline-step-desc">
+                                <strong>Gamut Moments:</strong> Measures 6 RGB color distribution metrics to verify authentic government security dyes.
+                            </div>
+                        </div>
+                        <div class="guide-pipeline-step">
+                            <div class="pipeline-step-num">3</div>
+                            <div class="pipeline-step-desc">
+                                <strong>Ensemble Classification:</strong> Evaluated via trained <strong>Random Forest</strong> and <strong>Decision Tree</strong> models.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Read the result -->
+                <div class="guide-step-slide" data-step="4" hidden>
+                    <div class="guide-slide-badge">
+                        <i class="fa-solid fa-square-poll-vertical"></i> Step 5: Evaluation
+                    </div>
+                    <h3 class="guide-slide-heading">Understand Verification Results</h3>
+                    <p class="guide-slide-text">
+                        Review the resulting verdict card, model confidence score, and extracted wavelet values:
+                    </p>
+                    <div class="guide-verdicts-grid">
+                        <div class="guide-verdict-card genuine">
+                            <div class="guide-verdict-title"><i class="fa-solid fa-circle-check"></i> GENUINE</div>
+                            <div class="guide-verdict-desc">High texture relief and color moments consistent with authentic BSP currency specimens.</div>
+                        </div>
+                        <div class="guide-verdict-card forged">
+                            <div class="guide-verdict-title"><i class="fa-solid fa-triangle-exclamation"></i> FORGED</div>
+                            <div class="guide-verdict-desc">Texture variance, intaglio sharpness, or security ink deviations detected.</div>
+                        </div>
+                    </div>
+                    <div class="guide-warning-callout">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b; font-size: 1.2rem; flex-shrink: 0;"></i>
+                        <div>
+                            <strong>Yellow Out-of-Distribution Warning:</strong>
+                            <span>If features fall far outside normal banknote ranges, lighting was uneven or non-currency was scanned. Retake the photo following the tips in Step 2.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6: Explore more & Disclaimer -->
+                <div class="guide-step-slide" data-step="5" hidden>
+                    <div class="guide-slide-badge">
+                        <i class="fa-solid fa-compass-drafting"></i> Step 6: Advanced Tools
+                    </div>
+                    <h3 class="guide-slide-heading">Explore More NoteGuard Features</h3>
+                    <p class="guide-slide-text">
+                        Expand your understanding of banknote analysis using NoteGuard's specialized analytical tools:
+                    </p>
+                    <div class="guide-features-overview">
+                        <div class="guide-feature-point">
+                            <i class="fa-solid fa-flask" style="color: var(--color-primary);"></i>
+                            <div><strong>Developer Testing:</strong> Test custom numerical feature vectors or specimen vectors from the training set.</div>
+                        </div>
+                        <div class="guide-feature-point">
+                            <i class="fa-solid fa-chart-line" style="color: var(--color-primary);"></i>
+                            <div><strong>Evaluation Dashboard:</strong> Review accuracy, precision, recall, F1-scores, confusion matrices, and ROC curves.</div>
+                        </div>
+                        <div class="guide-feature-point">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--color-primary);"></i>
+                            <div><strong>Security Features Guide:</strong> Interactive FEEL • LOOK • TILT checklist for all NGC paper and polymer notes.</div>
+                        </div>
+                    </div>
+                    <div class="guide-academic-disclaimer">
+                        <i class="fa-solid fa-graduation-cap" style="color: #f59e0b; font-size: 1.2rem; flex-shrink: 0;"></i>
+                        <div>
+                            <strong>Educational Project Disclaimer:</strong>
+                            <span>NoteGuard is an academic machine learning proof-of-concept. <strong>Do not use it to verify real currency</strong> for financial or legal transactions. Always consult official Bangko Sentral ng Pilipinas (BSP) standards.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer Stepper Controls -->
+            <div class="guide-modal-footer">
+                <button type="button" class="btn-guide-nav outline" id="btnGuidePrev" style="visibility: hidden;">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <div class="guide-footer-actions-right">
+                    <button type="button" class="btn-guide-nav primary" id="btnGuideNext">
+                        Next <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn-guide-nav primary" id="btnGuideDone" style="display: none;">
+                        <i class="fa-solid fa-check"></i> Done
+                    </button>
+                    <button type="button" class="btn-guide-nav gold" id="btnGuideGoVerify">
+                        <i class="fa-solid fa-magnifying-glass"></i> Go to Verify Page
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Global Theme Mode Controller -->
     <script>
       (function() {
@@ -897,6 +1144,9 @@
         }
       })();
     </script>
+
+    <!-- How to Use Guide Script (defer, before body close) -->
+    <script src="/static/js/how-to-use.js" defer></script>
 
     <!-- Scroll Animations Script (defer, before body close) -->
     <script src="/static/js/scroll-animations.js" defer></script>
