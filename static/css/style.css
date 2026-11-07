@@ -3026,9 +3026,9 @@ html[data-theme="light"] .card {
 }
 
 html[data-theme="light"] .hero-features-ribbon {
-  background: var(--bg-card);
-  border-color: var(--card-border);
-  box-shadow: var(--card-shadow);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 html[data-theme="light"] .feature-icon-circle {
@@ -4146,101 +4146,101 @@ html[data-theme="light"] .hero-badge {
 }
 
 html[data-theme="light"] .hero-feature-item {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  background: var(--bg-card);
+  border-color: var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 html[data-theme="light"] .hero-feature-item:hover {
-  border-color: rgba(217, 119, 6, 0.45);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 24px rgba(44, 38, 28, 0.08);
 }
 
 html[data-theme="light"] .hero-feature-item strong {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 html[data-theme="light"] .card {
-  background: #ffffff !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08) !important;
+  background: var(--bg-card) !important;
+  border-color: var(--card-border) !important;
+  box-shadow: var(--card-shadow) !important;
 }
 
 html[data-theme="light"] .card:hover {
-  border-color: rgba(217, 119, 6, 0.4) !important;
-  box-shadow: 0 25px 55px -12px rgba(15, 23, 42, 0.12), 0 0 20px rgba(245, 158, 11, 0.12) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 14px 30px rgba(44, 38, 28, 0.09) !important;
 }
 
 html[data-theme="light"] .card-title {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 html[data-theme="light"] .upload-dropzone {
-  background: #f8fafc;
-  border-color: rgba(217, 119, 6, 0.4);
+  background: var(--input-bg);
+  border-color: var(--input-border);
 }
 
 html[data-theme="light"] .upload-dropzone:hover,
 html[data-theme="light"] .upload-dropzone.dragover {
-  background: #ffffff;
+  background: var(--bg-card-hover);
   border-color: var(--color-primary);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06), 0 0 20px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 16px 36px rgba(44, 38, 28, 0.06), 0 0 20px rgba(180, 95, 6, 0.12);
 }
 
 html[data-theme="light"] .dropzone-prompt {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 html[data-theme="light"] .btn-file-select {
-  background: #f1f5f9;
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #0f172a;
+  background: var(--bg-card-hover);
+  border-color: var(--card-border);
+  color: var(--text-main);
 }
 
 html[data-theme="light"] .btn-file-select:hover {
-  background: #e2e8f0;
+  background: #ede6d9;
   border-color: var(--color-primary);
 }
 
 html[data-theme="light"] .sample-specimens-card {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  background: var(--bg-card);
+  border-color: var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 html[data-theme="light"] .footer {
-  background: #ffffff;
-  border-top-color: rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  border-top-color: var(--card-border);
 }
 
 html[data-theme="light"] .footer-brand-title,
 html[data-theme="light"] .footer-heading {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 html[data-theme="light"] .footer-compliance-pill {
-  background: #f8fafc;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #334155;
+  background: var(--bg-card-hover);
+  border-color: var(--card-border);
+  color: var(--text-muted);
 }
 
 html[data-theme="light"] .footer-links-list a {
-  color: #475569;
+  color: var(--text-muted);
 }
 
 html[data-theme="light"] .footer-links-list a:hover {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 html[data-theme="light"] .footer-tech-tag {
-  background: #f8fafc;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #475569;
+  background: var(--bg-card-hover);
+  border-color: var(--card-border);
+  color: var(--text-muted);
 }
 
 html[data-theme="light"] .footer-bottom-bar {
-  background: #f1f5f9;
-  border-top-color: rgba(0, 0, 0, 0.06);
+  background: var(--bg-inset);
+  border-top-color: var(--card-border);
 }
 
 /* ==========================================================================
