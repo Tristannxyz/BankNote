@@ -212,6 +212,7 @@ small, .text-sm, .caption, .brand-subtitle, .card-subtitle, .helper-text, .metri
 .brand-name-accent {
   background: linear-gradient(135deg, #FFCB47 0%, #F28C00 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
 }
@@ -415,6 +416,7 @@ textarea:focus-visible,
 .gradient-text {
   background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 45%, #f59e0b 80%, #d97706 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
   text-shadow: 0 0 45px rgba(245, 158, 11, 0.35);
