@@ -1801,8 +1801,9 @@ textarea:focus-visible,
     flex-shrink: 0;
   }
 
-  /* Hide desktop text size toggle on mobile navbar */
-  .nav-controls-right > .text-size-toggle.desktop-only {
+  /* Completely remove text size controls (A- / A / A+) on mobile */
+  .text-size-toggle,
+  .text-size-toggle.desktop-only {
     display: none !important;
   }
 
@@ -2065,28 +2066,6 @@ textarea:focus-visible,
     font-size: 0.98rem;
     border-radius: var(--radius-sm);
     justify-content: flex-start;
-  }
-  .nav-mobile-drawer-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 8px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  .nav-mobile-label {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .nav-mobile-drawer-footer .text-size-toggle {
-    display: inline-flex;
-    margin-left: 0;
-    padding: 2px 4px;
   }
 }
 
