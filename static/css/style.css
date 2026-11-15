@@ -355,6 +355,10 @@ small, .text-sm, .caption, .brand-subtitle, .card-subtitle, .helper-text, .metri
   margin-left: 8px;
 }
 
+.nav-mobile-drawer-footer {
+  display: none;
+}
+
 .text-size-btn {
   background: transparent;
   border: 1px solid transparent;
@@ -1747,16 +1751,121 @@ textarea:focus-visible,
     padding: 0 16px;
   }
 
-  /* Header & Navbar */
-  .brand-name {
-    font-size: 1.15rem;
+  /* Header & Navbar for Mobile */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
   }
-  .brand-subtitle {
-    font-size: 0.68rem !important;
+  .nav-container {
+    height: 64px;
+    padding: 0 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand {
+    gap: 10px;
+    min-width: 0;
+    flex-shrink: 1;
   }
   .brand-icon {
     width: 38px;
     height: 38px;
+    flex-shrink: 0;
+    padding: 3px;
+  }
+  .brand-text-col {
+    overflow: hidden;
+    min-width: 0;
+  }
+  .brand-name {
+    font-size: 1.15rem;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand-subtitle {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-controls-right {
+    gap: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+
+  /* Hide desktop text size toggle on mobile navbar */
+  .nav-controls-right > .text-size-toggle.desktop-only {
+    display: none !important;
+  }
+
+  /* Compact Theme Toggle Button (Icon only on mobile) */
+  .theme-toggle-btn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    min-width: 38px;
+  }
+  .theme-toggle-btn .theme-label {
+    display: none !important;
+  }
+  .theme-toggle-btn i {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* Compact How to Use Button (Icon only on mobile) */
+  .btn-how-to-use {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    min-width: 38px;
+    min-height: 38px;
+  }
+  .how-to-use-text {
+    display: none !important;
+  }
+  .btn-how-to-use i {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* Hamburger Menu Button */
+  .nav-hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    min-width: 38px;
+    font-size: 1.05rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    color: #f1f5f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .nav-hamburger:hover,
+  .nav-hamburger:active {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   /* Hero Section */
@@ -1929,30 +2038,81 @@ textarea:focus-visible,
     line-height: 1.5;
   }
 
-  /* Navigation Drawer */
-  .nav-hamburger {
-    display: flex;
-  }
+  /* Navigation Drawer Dropdown */
   .nav-links {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: #0a0d14;
+    background: rgba(10, 13, 20, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     flex-direction: column;
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 100;
+    padding: 14px 18px 18px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65);
+    z-index: 200;
+    gap: 6px;
   }
   .nav-links.open {
     display: flex;
+    animation: navSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .nav-links.open .nav-link {
+  .nav-links .nav-link {
     width: 100%;
-    padding: 10px 14px;
-    font-size: 0.95rem;
+    padding: 12px 16px;
+    font-size: 0.98rem;
+    border-radius: var(--radius-sm);
+    justify-content: flex-start;
   }
+  .nav-mobile-drawer-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .nav-mobile-label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-mobile-drawer-footer .text-size-toggle {
+    display: inline-flex;
+    margin-left: 0;
+    padding: 2px 4px;
+  }
+}
+
+@keyframes navSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html[data-theme="light"] .nav-hamburger {
+  border-color: #d6cebe;
+  background: rgba(44, 38, 28, 0.05);
+  color: var(--text-main);
+}
+html[data-theme="light"] .nav-links {
+  background: rgba(244, 239, 230, 0.98);
+  border-bottom-color: var(--card-border);
+  box-shadow: 0 16px 36px rgba(44, 38, 28, 0.12);
+}
+html[data-theme="light"] .nav-mobile-drawer-footer {
+  border-top-color: var(--card-border);
 }
 
 /* Extra Compact Mobile Screens (<= 480px, e.g. iPhone SE, narrow webviews) */

@@ -133,10 +133,6 @@
                 </div>
             </a>
 
-            <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
             {% set active_page = active_page|default('verify') %}
             <div class="nav-controls-right">
                 <nav class="nav-links" id="navLinks">
@@ -144,6 +140,16 @@
                     <a href="{{ url_for('security') }}" class="nav-link{% if active_page == 'security' %} active{% endif %}">Security Features</a>
                     <a href="{{ url_for('dashboard') }}" class="nav-link{% if active_page == 'dashboard' %} active{% endif %}">Dashboard</a>
                     <a href="{{ url_for('about') }}" class="nav-link{% if active_page == 'about' %} active{% endif %}">About</a>
+
+                    <!-- Mobile Drawer Footer: Text Size accessibility -->
+                    <div class="nav-mobile-drawer-footer">
+                        <span class="nav-mobile-label"><i class="fa-solid fa-text-height"></i> Text Size</span>
+                        <div class="text-size-toggle" role="group" aria-label="Mobile Text Size Accessibility Controls">
+                            <button type="button" class="text-size-btn btn-text-dec" aria-label="Decrease text size" title="Smaller text">A-</button>
+                            <button type="button" class="text-size-btn btn-text-reset" aria-label="Reset text size" title="Default text size">A</button>
+                            <button type="button" class="text-size-btn btn-text-inc" aria-label="Increase text size" title="Larger text">A+</button>
+                        </div>
+                    </div>
                 </nav>
 
                 <!-- How to Use Guide Button -->
@@ -158,12 +164,17 @@
                     <span class="theme-label" id="themeLabel">Dark</span>
                 </button>
 
-                <!-- Text-Size Accessibility Controls (A- / A / A+) -->
-                <div class="text-size-toggle" role="group" aria-label="Text Size Accessibility Controls">
-                    <button type="button" class="text-size-btn" id="btnTextDec" aria-label="Decrease text size" title="Smaller text">A-</button>
-                    <button type="button" class="text-size-btn" id="btnTextReset" aria-label="Reset text size" title="Default text size (18px)">A</button>
-                    <button type="button" class="text-size-btn" id="btnTextInc" aria-label="Increase text size" title="Larger text">A+</button>
+                <!-- Desktop Text-Size Accessibility Controls (A- / A / A+) -->
+                <div class="text-size-toggle desktop-only" role="group" aria-label="Text Size Accessibility Controls">
+                    <button type="button" class="text-size-btn btn-text-dec" id="btnTextDec" aria-label="Decrease text size" title="Smaller text">A-</button>
+                    <button type="button" class="text-size-btn btn-text-reset" id="btnTextReset" aria-label="Reset text size" title="Default text size (18px)">A</button>
+                    <button type="button" class="text-size-btn btn-text-inc" id="btnTextInc" aria-label="Increase text size" title="Larger text">A+</button>
                 </div>
+
+                <!-- Hamburger Menu Trigger (Placed on far right) -->
+                <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -502,39 +513,42 @@
     <script>
       (function() {
         var root = document.documentElement;
-        var btnDec = document.getElementById("btnTextDec");
-        var btnReset = document.getElementById("btnTextReset");
-        var btnInc = document.getElementById("btnTextInc");
 
         function applyTextSize(size) {
           root.setAttribute("data-text-size", size);
           try { localStorage.setItem("noteguard_text_size", size); } catch(e){}
-          if (btnDec) btnDec.classList.toggle("active", size === "small");
-          if (btnReset) btnReset.classList.toggle("active", size === "normal");
-          if (btnInc) btnInc.classList.toggle("active", size === "large" || size === "xlarge");
+          document.querySelectorAll(".btn-text-dec").forEach(function(b) {
+            b.classList.toggle("active", size === "small");
+          });
+          document.querySelectorAll(".btn-text-reset").forEach(function(b) {
+            b.classList.toggle("active", size === "normal");
+          });
+          document.querySelectorAll(".btn-text-inc").forEach(function(b) {
+            b.classList.toggle("active", size === "large" || size === "xlarge");
+          });
         }
 
         var current = "normal";
         try { current = localStorage.getItem("noteguard_text_size") || "normal"; } catch(e){}
         applyTextSize(current);
 
-        if (btnDec) {
-          btnDec.addEventListener("click", function() {
+        document.querySelectorAll(".btn-text-dec").forEach(function(btn) {
+          btn.addEventListener("click", function() {
             var cur = root.getAttribute("data-text-size") || "normal";
             applyTextSize(cur === "xlarge" ? "large" : (cur === "large" ? "normal" : "small"));
           });
-        }
-        if (btnReset) {
-          btnReset.addEventListener("click", function() {
+        });
+        document.querySelectorAll(".btn-text-reset").forEach(function(btn) {
+          btn.addEventListener("click", function() {
             applyTextSize("normal");
           });
-        }
-        if (btnInc) {
-          btnInc.addEventListener("click", function() {
+        });
+        document.querySelectorAll(".btn-text-inc").forEach(function(btn) {
+          btn.addEventListener("click", function() {
             var cur = root.getAttribute("data-text-size") || "normal";
             applyTextSize(cur === "small" ? "normal" : (cur === "normal" ? "large" : "xlarge"));
           });
-        }
+        });
       })();
     </script>
 
