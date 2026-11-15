@@ -526,4 +526,16 @@ def get_denomination_metrics():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    import socket
+    host = os.environ.get("FLASK_HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", 5000))
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("8.8.8.8", 80))
+            lan_ip = s.getsockname()[0]
+    except OSError:
+        lan_ip = None
+    app.logger.info("Local URL:  http://127.0.0.1:%d", port)
+    if lan_ip:
+        app.logger.info("Phone/LAN:  http://%s:%d", lan_ip, port)
+    app.run(host=host, port=port, debug=False)

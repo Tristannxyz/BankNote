@@ -13,8 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelectorAll('a[href="/about"]').forEach(a => a.href = "about.html");
   }
 
-  const API_BASE = (window.location.port === "5500" || window.location.protocol === "file:")
-    ? "http://127.0.0.1:5000"
+  // Determine API base URL (supports both Flask :5000 and VS Code Live Server :5500 / mobile LAN)
+  const isStaticDev = window.location.port === "5500" || window.location.protocol === "file:";
+  const devHost = window.location.hostname && window.location.hostname !== "" ? window.location.hostname : "127.0.0.1";
+  const API_BASE = isStaticDev
+    ? `${window.location.protocol === "https:" ? "https:" : "http:"}//${devHost}:5000`
     : "";
 
   // Hamburger menu toggle

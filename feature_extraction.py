@@ -15,10 +15,42 @@ import os
 import json
 import numpy as np
 import scipy.stats as stats
-import pywt
 from PIL import Image
 
+try:
+    import pywt
+except (ImportError, OSError):
+    pywt = None
+
 DEFAULT_WAVELET = "db1"  # Haar wavelet
+
+
+def _haar_dwt2(arr: np.ndarray):
+    """
+    Compute single-level 2D Haar ('db1') DWT.
+    Uses PyWavelets when available, or an exact pure-NumPy fallback when pywt
+    cannot be loaded (e.g., if its native extension is blocked by Application Control).
+    """
+    if pywt is not None:
+        return pywt.dwt2(arr, DEFAULT_WAVELET)
+
+    data = np.asarray(arr, dtype=np.float64)
+    if data.shape[0] % 2 != 0:
+        data = np.vstack([data, data[-1:, :]])
+    if data.shape[1] % 2 != 0:
+        data = np.hstack([data, data[:, -1:]])
+
+    inv_sqrt2 = 1.0 / np.sqrt(2.0)
+    even_c = data[:, 0::2]
+    odd_c = data[:, 1::2]
+    lo_c = (even_c + odd_c) * inv_sqrt2
+    hi_c = (odd_c - even_c) * inv_sqrt2
+
+    cA = (lo_c[0::2, :] + lo_c[1::2, :]) * inv_sqrt2
+    cH = (lo_c[1::2, :] - lo_c[0::2, :]) * inv_sqrt2
+    cV = (hi_c[0::2, :] + hi_c[1::2, :]) * inv_sqrt2
+    cD = (hi_c[1::2, :] - hi_c[0::2, :]) * inv_sqrt2
+    return cA, (cH, cV, cD)
 TARGET_IMAGE_SIZE = (400, 400)
 ALLOWED_FORMATS = {"PNG", "JPEG", "JPG", "GIF", "BMP", "WEBP"}
 
@@ -101,7 +133,7 @@ def extract_features(
     norm_arr = np.asarray(img_resized, dtype=np.float64) / 255.0
 
     # 3. Apply 2D Discrete Wavelet Transform
-    cA, (cH, cV, cD) = pywt.dwt2(norm_arr, DEFAULT_WAVELET)
+    cA, (cH, cV, cD) = _haar_dwt2(norm_arr)
 
     # High-frequency detail energy (sharpness of intaglio printing / microprint)
     hf_energy = float(np.mean(cH**2 + cV**2 + cD**2))
