@@ -1799,6 +1799,7 @@ textarea:focus-visible,
     align-items: center;
     justify-content: flex-end;
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   /* Completely remove text size controls (A- / A / A+) on mobile */
