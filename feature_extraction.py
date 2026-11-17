@@ -13,6 +13,7 @@ Replicates and extends the feature extraction methodology of banknote authentica
 import io
 import os
 import json
+import colorsys
 import numpy as np
 import scipy.stats as stats
 from PIL import Image
@@ -23,6 +24,99 @@ except (ImportError, OSError):
     pywt = None
 
 DEFAULT_WAVELET = "db1"  # Haar wavelet
+
+
+def extract_banknote_foreground_color(img_rgb: Image.Image) -> dict:
+    """
+    Extracts color features specifically from the banknote foreground,
+    rejecting dark desks, black mousepads, white margins, and neutral backgrounds.
+    """
+    resized = img_rgb.resize((160, 160), Image.Resampling.BILINEAR)
+    arr = np.asarray(resized, dtype=np.float64) / 255.0
+    h, w, _ = arr.shape
+
+    # Sample perimeter/border pixels (outer 6% on each side) to model background
+    bx = max(2, int(w * 0.06))
+    by = max(2, int(h * 0.06))
+    border_pixels = np.concatenate([
+        arr[:by, :, :].reshape(-1, 3),
+        arr[-by:, :, :].reshape(-1, 3),
+        arr[:, :bx, :].reshape(-1, 3),
+        arr[:, -bx:, :].reshape(-1, 3),
+    ])
+    border_mean = border_pixels.mean(axis=0)
+    border_lum = 0.299 * border_mean[0] + 0.587 * border_mean[1] + 0.114 * border_mean[2]
+
+    r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
+    lum = 0.299 * r + 0.587 * g + 0.114 * b
+    max_c = np.maximum(np.maximum(r, g), b)
+    min_c = np.minimum(np.minimum(r, g), b)
+    sat_map = np.zeros_like(max_c)
+    nonzero = max_c > 1e-4
+    sat_map[nonzero] = (max_c[nonzero] - min_c[nonzero]) / max_c[nonzero]
+
+    color_dist = np.sqrt(np.sum((arr - border_mean) ** 2, axis=-1))
+
+    is_border_dark = border_lum < 0.35
+    is_border_light = border_lum > 0.85
+
+    fg_mask = np.ones((h, w), dtype=bool)
+    if is_border_dark:
+        fg_mask &= (lum > max(0.20, border_lum + 0.08))
+    elif is_border_light:
+        fg_mask &= (lum < min(0.92, border_lum - 0.05))
+
+    border_sat = (border_mean.max() - border_mean.min()) / max(border_mean.max(), 1e-4)
+    if border_sat < 0.15:
+        fg_mask &= ((sat_map > 0.07) | (color_dist > 0.15))
+    else:
+        fg_mask &= (color_dist > 0.10)
+
+    cy_min, cy_max = int(h * 0.15), int(h * 0.85)
+    cx_min, cx_max = int(w * 0.15), int(w * 0.85)
+    center_mask = np.zeros((h, w), dtype=bool)
+    center_mask[cy_min:cy_max, cx_min:cx_max] = True
+
+    valid_pixels = arr[fg_mask]
+    total_pixels = h * w
+    if len(valid_pixels) < (total_pixels * 0.10):
+        valid_pixels = arr[center_mask]
+    if len(valid_pixels) < (total_pixels * 0.05):
+        valid_pixels = arr.reshape(-1, 3)
+
+    fg_mean = valid_pixels.mean(axis=0)
+    fg_std = valid_pixels.std(axis=0)
+
+    r_val = float(fg_mean[0])
+    g_val = float(fg_mean[1])
+    b_val = float(fg_mean[2])
+
+    hsv = colorsys.rgb_to_hsv(r_val, g_val, b_val)
+    hue_deg = float(hsv[0] * 360.0)
+    sat_val = float(hsv[1])
+    val_val = float(hsv[2])
+
+    tot = r_val + g_val + b_val + 1e-6
+    coverage_pct = round((len(valid_pixels) / float(total_pixels)) * 100.0, 1)
+
+    return {
+        "r_mean": round(r_val, 4),
+        "g_mean": round(g_val, 4),
+        "b_mean": round(b_val, 4),
+        "r_std": round(float(fg_std[0]), 4),
+        "g_std": round(float(fg_std[1]), 4),
+        "b_std": round(float(fg_std[2]), 4),
+        "hue": round(hue_deg, 2),
+        "sat": round(sat_val, 4),
+        "val": round(val_val, 4),
+        "r_minus_g": round(r_val - g_val, 4),
+        "r_minus_b": round(r_val - b_val, 4),
+        "g_minus_b": round(g_val - b_val, 4),
+        "r_ratio": round(r_val / tot, 4),
+        "g_ratio": round(g_val / tot, 4),
+        "b_ratio": round(b_val / tot, 4),
+        "foreground_coverage_pct": coverage_pct,
+    }
 
 
 def _haar_dwt2(arr: np.ndarray):
@@ -112,19 +206,21 @@ def extract_features(
     # Convert to RGB for color features
     img_rgb = img.convert("RGB")
 
-    # RGB color statistics (downscaled for fast calculation)
+    # Foreground banknote color features (background-rejecting)
+    color_feats = extract_banknote_foreground_color(img_rgb)
+
+    # Global unsegmented color stats (for reference / backwards compatibility)
     small_rgb = img_rgb.resize((128, 128), Image.Resampling.BILINEAR)
     c_arr = np.asarray(small_rgb, dtype=np.float64) / 255.0
     c_means = c_arr.mean(axis=(0, 1))
     c_stds = c_arr.std(axis=(0, 1))
-
-    color_feats = {
-        "r_mean": round(float(c_means[0]), 4),
-        "g_mean": round(float(c_means[1]), 4),
-        "b_mean": round(float(c_means[2]), 4),
-        "r_std": round(float(c_stds[0]), 4),
-        "g_std": round(float(c_stds[1]), 4),
-        "b_std": round(float(c_stds[2]), 4),
+    raw_color_feats = {
+        "raw_r_mean": round(float(c_means[0]), 4),
+        "raw_g_mean": round(float(c_means[1]), 4),
+        "raw_b_mean": round(float(c_means[2]), 4),
+        "raw_r_std": round(float(c_stds[0]), 4),
+        "raw_g_std": round(float(c_stds[1]), 4),
+        "raw_b_std": round(float(c_stds[2]), 4),
     }
 
     # 2. Convert to grayscale ("L") & resize to 400x400
@@ -192,7 +288,7 @@ def extract_features(
     out_of_distribution = False
     warning_msg = None
 
-    all_features_dict = {**extracted_features, **color_feats}
+    all_features_dict = {**extracted_features, **color_feats, **raw_color_feats}
     if training_ranges:
         for feat, val in all_features_dict.items():
             if feat in training_ranges:

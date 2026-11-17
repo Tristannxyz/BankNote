@@ -14,6 +14,7 @@ Data splits are pre-labelled in the CSV ('split' column: train/valid/test).
 
 import os
 import json
+import colorsys
 import numpy as np
 import pandas as pd
 import joblib
@@ -34,6 +35,9 @@ METRICS_JSON = os.path.join(MODELS_DIR, "denomination_metrics.json")
 FEATURE_COLS = [
     "variance", "skewness", "curtosis", "entropy",
     "r_mean", "g_mean", "b_mean", "r_std", "g_std", "b_std",
+    "r_minus_g", "r_minus_b", "g_minus_b",
+    "r_ratio", "g_ratio", "b_ratio",
+    "hue", "sat"
 ]
 
 # Canonical ordered class list
@@ -44,21 +48,48 @@ CLASS_ORDER = [
 
 # Display labels for the UI
 CLASS_DISPLAY = {
-    "20_Pesos":           "₱20 Pesos",
-    "50_Pesos":           "₱50 Pesos",
-    "100_Pesos":          "₱100 Pesos",
-    "200_Pesos":          "₱200 Pesos",
-    "500_Pesos":          "₱500 Pesos",
-    "1000_Pesos":         "₱1000 Pesos",
-    "Polymer_1000_Pesos": "₱1000 Pesos (Polymer)",
+    "20_Pesos":           "₱20 Pesos (Orange/Brown)",
+    "50_Pesos":           "₱50 Pesos (Red)",
+    "100_Pesos":          "₱100 Pesos (Violet/Purple)",
+    "200_Pesos":          "₱200 Pesos (Green)",
+    "500_Pesos":          "₱500 Pesos (Yellow/Gold)",
+    "1000_Pesos":         "₱1,000 Pesos (Blue)",
+    "Polymer_1000_Pesos": "₱1,000 Polymer (2022 Philippine Eagle)",
 }
 
 
+def add_chromatic_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Compute chromatic contrast and HSV features from RGB channels."""
+    r = np.clip(df["r_mean"].values, 0.0, 1.0)
+    g = np.clip(df["g_mean"].values, 0.0, 1.0)
+    b = np.clip(df["b_mean"].values, 0.0, 1.0)
+    tot = r + g + b + 1e-6
+    df["r_ratio"] = r / tot
+    df["g_ratio"] = g / tot
+    df["b_ratio"] = b / tot
+    df["r_minus_g"] = r - g
+    df["r_minus_b"] = r - b
+    df["g_minus_b"] = g - b
+
+    hues, sats, vals = [], [], []
+    for ri, gi, bi in zip(r, g, b):
+        h, s, v = colorsys.rgb_to_hsv(ri, gi, bi)
+        hues.append(h * 360.0)
+        sats.append(s)
+        vals.append(v)
+    df["hue"] = hues
+    df["sat"] = sats
+    df["val"] = vals
+    return df
+
+
 def load_splits(csv_path: str):
-    """Load CSV and split into train/valid/test DataFrames."""
+    """Load CSV and split into train/valid/test DataFrames with chromatic features."""
     df = pd.read_csv(csv_path)
     # Keep only the 7 bill denominations
     df = df[df["class"].isin(CLASS_ORDER)].copy()
+
+    df = add_chromatic_features(df)
 
     missing = df[FEATURE_COLS].isnull().sum().sum()
     if missing > 0:
@@ -169,26 +200,22 @@ def main():
     # -------------------------------------------------------------------------
     # 1. Random Forest
     # -------------------------------------------------------------------------
-    rf_params = {
-        "n_estimators": [100, 200],
-        "max_depth":    [8, 12, None],
-        "max_features": ["sqrt", "log2"],
-    }
-    best_rf, rf_best_params = train_model_grid(
-        RandomForestClassifier, rf_params, X_train, y_train, "Random Forest"
+    print("\n[INFO] Training Random Forest...")
+    rf_best_params = {"n_estimators": 150, "max_depth": 14, "max_features": "sqrt"}
+    best_rf = RandomForestClassifier(
+        n_estimators=150, max_depth=14, max_features="sqrt", random_state=42
     )
+    best_rf.fit(X_train, y_train)
 
     # -------------------------------------------------------------------------
     # 2. Decision Tree
     # -------------------------------------------------------------------------
-    dt_params = {
-        "max_depth":        [6, 8, 12, None],
-        "min_samples_split": [2, 5, 10],
-        "criterion":        ["gini", "entropy"],
-    }
-    best_dt, dt_best_params = train_model_grid(
-        DecisionTreeClassifier, dt_params, X_train, y_train, "Decision Tree"
+    print("[INFO] Training Decision Tree...")
+    dt_best_params = {"max_depth": 10, "min_samples_split": 5, "criterion": "gini"}
+    best_dt = DecisionTreeClassifier(
+        max_depth=10, min_samples_split=5, criterion="gini", random_state=42
     )
+    best_dt.fit(X_train, y_train)
 
     # -------------------------------------------------------------------------
     # Evaluation on held-out test set

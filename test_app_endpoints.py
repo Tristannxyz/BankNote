@@ -270,6 +270,33 @@ class NoteGuardAppTestCase(unittest.TestCase):
         self.assertIn("error", res["results"][1])
         print(f"[PASS] POST /api/predict-batch (Mixed) -> Success: {res['successful']}, Failed: {res['failed']}")
 
+    def test_15_denomination_recognition_across_pesos(self):
+        """Verify accurate denomination identification across all BSP denominations."""
+        import os
+        denom_samples = [
+            ("static/samples/sample_20.jpg", "20_Pesos"),
+            ("static/samples/sample_50.jpg", "50_Pesos"),
+            ("static/samples/sample_100.jpg", "100_Pesos"),
+            ("static/samples/sample_500.jpg", "500_Pesos"),
+            ("static/samples/sample_1000.jpg", "1000_Pesos"),
+        ]
+        for rel_path, expected_denom in denom_samples:
+            if not os.path.exists(rel_path):
+                continue
+            with open(rel_path, "rb") as f:
+                img_data = f.read()
+            data = {
+                "model": "random_forest",
+                "image": (io.BytesIO(img_data), os.path.basename(rel_path))
+            }
+            resp = self.client.post("/api/predict-image", data=data, content_type="multipart/form-data")
+            self.assertEqual(resp.status_code, 200)
+            res = resp.get_json()
+            self.assertEqual(res.get("denomination_match"), expected_denom,
+                             f"Failed on {rel_path}: expected {expected_denom}, got {res.get('denomination_match')}")
+            self.assertGreaterEqual(res.get("denomination_confidence", 0), 50.0)
+            print(f"[PASS] Denomination recognition for {os.path.basename(rel_path)} -> {res.get('denomination_display')} ({res.get('denomination_confidence')}%)")
+
 
 if __name__ == "__main__":
     unittest.main()

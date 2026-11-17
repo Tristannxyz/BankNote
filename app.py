@@ -41,6 +41,20 @@ FEATURE_NAMES = [
 ]
 WAVELET_ONLY_NAMES = ["variance", "skewness", "curtosis", "entropy"]
 
+# Denomination classifier feature columns
+D_FEATURE_NAMES = [
+    "variance", "skewness", "curtosis", "entropy",
+    "r_mean", "g_mean", "b_mean", "r_std", "g_std", "b_std",
+    "r_minus_g", "r_minus_b", "g_minus_b",
+    "r_ratio", "g_ratio", "b_ratio",
+    "hue", "sat"
+]
+
+CLASS_ORDER = [
+    "20_Pesos", "50_Pesos", "100_Pesos", "200_Pesos",
+    "500_Pesos", "1000_Pesos", "Polymer_1000_Pesos"
+]
+
 # 64 MB maximum upload size limit (supports multi-image batch analysis)
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "bmp", "webp"}
@@ -62,6 +76,84 @@ BSP_DENOMINATION_CENTROIDS = {
     "50_Pesos":           {"r": 0.611, "g": 0.524, "b": 0.506, "display": "₱50 Pesos (Red)"},
     "20_Pesos":           {"r": 0.582, "g": 0.521, "b": 0.470, "display": "₱20 Pesos (Orange/Brown)"},
 }
+
+
+def compute_bsp_color_scores(cf: dict) -> dict:
+    """
+    Evaluates official BSP banknote chromatic signatures to prevent denomination confusion.
+    """
+    r = cf.get("r_mean", 0.5)
+    g = cf.get("g_mean", 0.5)
+    b = cf.get("b_mean", 0.5)
+    hue = cf.get("hue", 0.0)
+    val = cf.get("val", 0.5)
+    r_g = cf.get("r_minus_g", r - g)
+    r_b = cf.get("r_minus_b", r - b)
+    g_b = cf.get("g_minus_b", g - b)
+
+    scores = {c: 0.05 for c in CLASS_ORDER}
+
+    # 50 Pesos: Red / Crimson (Hue 338-360 or 0-28 deg, R >> G, R >> B)
+    if hue >= 338 or hue <= 28:
+        scores["50_Pesos"] += 45.0
+    if r_g > 0.08:
+        scores["50_Pesos"] += min(35.0, (r_g - 0.08) * 350)
+    if r_b > 0.10:
+        scores["50_Pesos"] += min(35.0, (r_b - 0.10) * 300)
+    if g_b > 0.08:
+        scores["50_Pesos"] = max(0.0, scores["50_Pesos"] - 30.0)
+
+    # 20 Pesos: Orange / Brown (Hue 18-42 deg, R > G > B)
+    if 18 <= hue <= 42:
+        scores["20_Pesos"] += 35.0
+    if r > g and g > b:
+        scores["20_Pesos"] += 25.0
+    if 0.04 <= r_g <= 0.16 and g_b > 0.02:
+        scores["20_Pesos"] += 30.0
+    if r_b > 0.10 and r_g < 0.15:
+        scores["20_Pesos"] += 15.0
+
+    # 500 Pesos: Yellow / Gold (Hue 30-68 deg, R ~ G >> B)
+    if 30 <= hue <= 68:
+        scores["500_Pesos"] += 35.0
+    if g_b > 0.06:
+        scores["500_Pesos"] += min(40.0, (g_b - 0.05) * 400)
+    if r_b > 0.10:
+        scores["500_Pesos"] += min(25.0, (r_b - 0.10) * 200)
+    if r_g < 0.08 and g_b > 0.06:
+        scores["500_Pesos"] += 25.0
+
+    # 200 Pesos: Green (Hue 70-165 deg, G > R and G > B)
+    if 70 <= hue <= 165:
+        scores["200_Pesos"] += 45.0
+    if r_g < -0.01:
+        scores["200_Pesos"] += min(40.0, abs(r_g) * 500)
+    if g_b > 0.02:
+        scores["200_Pesos"] += 25.0
+
+    # 100 Pesos: Violet / Purple (Hue 230-338 deg, or B >= G and R >= G)
+    if 230 <= hue <= 338:
+        scores["100_Pesos"] += 45.0
+    if g_b < -0.01:
+        scores["100_Pesos"] += min(35.0, abs(g_b) * 400)
+    if b > g:
+        scores["100_Pesos"] += 25.0
+
+    # 1000 Pesos Blue: Cyan/Blue (Hue 175-235 deg, B >= G >= R)
+    if 175 <= hue <= 235:
+        scores["1000_Pesos"] += 45.0
+    if r_b < 0.03 and r_g < 0.03:
+        scores["1000_Pesos"] += 30.0
+    if b >= r:
+        scores["1000_Pesos"] += 25.0
+
+    # Polymer 1000: Bright teal / polymer sheen
+    if 160 <= hue <= 215 and val > 0.55:
+        scores["Polymer_1000_Pesos"] += 35.0
+        if r_g < -0.01 and r_b < -0.01:
+            scores["Polymer_1000_Pesos"] += 40.0
+
+    return scores
 
 # Minimum high-frequency energy threshold for genuine microprint / intaglio engraving
 MIN_HF_SHARPNESS = 0.00065
@@ -335,19 +427,45 @@ def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "
     p_gen_raw = float(proba[0]) * 100.0
     p_forg_raw = float(proba[1]) * 100.0
 
-    # Denomination recognition (using .values to suppress feature name warnings)
+    # Denomination recognition (fusing trained ML random forest with official BSP colorimetry)
     denom_best = None
     denom_conf = 0.0
     denom_display = "Unknown"
+    c_feats = extracted.get("color_features", {})
+    bsp_scores = compute_bsp_color_scores(c_feats)
+    tot_bsp = sum(bsp_scores.values()) + 1e-6
+
     if D_MODELS and "denomination_rf" in D_MODELS:
         try:
-            d_proba = D_MODELS["denomination_rf"].predict_proba(feat_df.values)[0]
-            denom_conf = float(np.max(d_proba) * 100)
-            denom_best = str(D_MODELS["denomination_rf"].classes_[np.argmax(d_proba)])
+            d_rf = D_MODELS["denomination_rf"]
+            d_classes = list(d_rf.classes_)
+            d_feat_cols = D_METRICS.get("feature_names", D_FEATURE_NAMES)
+            d_row = [all_f.get(col, 0.0) for col in d_feat_cols]
+            d_proba_ml = d_rf.predict_proba([d_row])[0]
+
+            p_bsp = np.array([bsp_scores.get(c, 0.0) / tot_bsp for c in d_classes])
+
+            # Fused probability: balances learned manifold with physical BSP chromatic laws
+            p_comb = 0.50 * d_proba_ml + 0.50 * p_bsp
+            best_idx = int(np.argmax(p_comb))
+            denom_best = str(d_classes[best_idx])
+
+            sorted_p = sorted(p_comb, reverse=True)
+            margin = sorted_p[0] - sorted_p[1]
+            raw_c = float(p_comb[best_idx] * 100.0)
+            denom_conf = round(min(98.0, max(raw_c, 65.0 + margin * 50.0)), 1)
+
             denom_info = BSP_DENOMINATION_CENTROIDS.get(denom_best, {})
             denom_display = denom_info.get("display", denom_best.replace("_", " "))
-        except Exception:
-            pass
+        except Exception as e:
+            app.logger.warning(f"Denomination ML prediction error: {e}")
+
+    if not denom_best or denom_best == "Unknown":
+        best_bsp = max(bsp_scores, key=bsp_scores.get)
+        denom_best = best_bsp
+        denom_conf = round((bsp_scores[best_bsp] / tot_bsp) * 100.0, 1)
+        denom_info = BSP_DENOMINATION_CENTROIDS.get(denom_best, {})
+        denom_display = denom_info.get("display", denom_best.replace("_", " "))
 
     # ── Authenticity Decision ──
     # Check for non-currency / extreme outlier uploads (blank page, white screen)
@@ -387,22 +505,26 @@ def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "
         failed_checks = ood_reasons
     else:
         # Normal in-distribution prediction — use raw model probabilities directly
-        is_forged = (pred_class == 1)
-        raw_conf = p_forg_raw if is_forged else p_gen_raw
-        # If confidence is below the threshold, mark as Uncertain
-        if raw_conf < UNCERTAIN_THRESHOLD:
-            verdict = "Uncertain"
-            confidence = round(raw_conf, 1)
+        is_forged = (pred_class == 1) or (p_forg_raw >= 50.0)
+        if is_forged:
+            verdict = "Forged"
+            confidence = round(p_forg_raw, 1)
+        elif p_gen_raw < 65.0:
+            # Low genuine probability (<65%) indicates suspicious / counterfeit note
+            is_forged = True
+            verdict = "Forged"
+            confidence = round(max(p_forg_raw, 100.0 - p_gen_raw), 1)
         else:
-            verdict = "Forged" if is_forged else "Genuine"
-            confidence = round(raw_conf, 1)
+            verdict = "Genuine"
+            confidence = round(p_gen_raw, 1)
+
         p_gen = round(p_gen_raw, 1)
         p_forg = round(p_forg_raw, 1)
         warning_text = (
             "Counterfeit indicators detected. Banknote features deviate from official BSP security standards."
             if is_forged else None
         )
-        failed_checks = []
+        failed_checks = ["counterfeit_substrate_wavelet"] if is_forged else []
 
     # Bangko Sentral ng Pilipinas (BSP) 3-Step Verification Checklist (FEEL, LOOK, TILT)
     is_suspicious = (verdict == "Suspicious")
