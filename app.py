@@ -41,8 +41,8 @@ FEATURE_NAMES = [
 ]
 WAVELET_ONLY_NAMES = ["variance", "skewness", "curtosis", "entropy"]
 
-# 16 MB maximum upload size limit
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+# 64 MB maximum upload size limit (supports multi-image batch analysis)
+app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "bmp", "webp"}
 
 # Global caches
@@ -307,41 +307,15 @@ def predict_manual():
     })
 
 
-@app.route("/api/predict-image", methods=["POST", "OPTIONS"])
-def predict_image():
-    """Authenticity classification from an uploaded image file."""
-    if request.method == "OPTIONS":
-        return "", 200
-
-    if not MODELS:
-        return jsonify({"error": "Models not loaded."}), 503
-
-    if "image" not in request.files:
-        return jsonify({"error": "No image file provided in form field 'image'."}), 400
-
-    file = request.files["image"]
-    if not file.filename:
-        return jsonify({"error": "No file selected."}), 400
-    if not allowed_file(file.filename):
-        return jsonify({"error": f"Unsupported file type. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"}), 400
-
-    model_key = request.form.get("model", METRICS.get("best_model", "random_forest"))
+def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "random_forest") -> dict:
+    """Core banknote classification pipeline: wavelet features, ML model, denomination, and BSP checks."""
     if model_key not in MODELS:
-        model_key = "random_forest"
-
-    try:
-        image_bytes = file.read()
-    except Exception as e:
-        return jsonify({"error": f"Failed to read image: {str(e)}"}), 400
+        model_key = METRICS.get("best_model", "random_forest")
+        if model_key not in MODELS:
+            model_key = "random_forest"
 
     # Extract all features
-    try:
-        extracted = extract_features(image_bytes)
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        app.logger.error(f"Feature extraction error: {e}")
-        return jsonify({"error": f"Feature extraction failed: {str(e)}"}), 500
+    extracted = extract_features(image_bytes)
 
     feats = extracted["features"]
     hf_energy = extracted.get("hf_energy", 0.0)
@@ -495,7 +469,8 @@ def predict_image():
             f"The model is {confidence:.0f}% confident this is a counterfeit."
         )
 
-    return jsonify({
+    return {
+        "filename": filename,
         "prediction": verdict,
         "class_index": 1 if is_forged else 0,
         "confidence": round(confidence, 1),
@@ -515,6 +490,183 @@ def predict_image():
         "denomination_confidence": round(denom_conf, 1) if denom_conf > 0 else None,
         "bsp_checklist": bsp_checklist,
         "plain_explanation": plain_explanation,
+    }
+
+
+@app.route("/api/predict-image", methods=["POST", "OPTIONS"])
+def predict_image():
+    """Authenticity classification from one or more uploaded banknote image files."""
+    if request.method == "OPTIONS":
+        return "", 200
+
+    if not MODELS:
+        return jsonify({"error": "Models not loaded."}), 503
+
+    # Collect files from "images", "image", or any file fields in multipart/form-data
+    uploaded_files = []
+    if "images" in request.files:
+        uploaded_files = request.files.getlist("images")
+    elif "image" in request.files:
+        uploaded_files = request.files.getlist("image")
+    else:
+        for key in request.files:
+            uploaded_files.extend(request.files.getlist(key))
+
+    # Filter out empty entries
+    uploaded_files = [f for f in uploaded_files if f and f.filename]
+
+    if not uploaded_files:
+        return jsonify({"error": "No image file provided in form field 'image' or 'images'."}), 400
+
+    model_key = request.form.get("model", METRICS.get("best_model", "random_forest"))
+    if model_key not in MODELS:
+        model_key = "random_forest"
+
+    # Single-image mode (preserves 100% backward compatibility for single-file API callers and tests)
+    is_batch_explicit = request.form.get("batch_mode", "").lower() in ("true", "1")
+    if len(uploaded_files) == 1 and not is_batch_explicit:
+        file = uploaded_files[0]
+        if not allowed_file(file.filename):
+            return jsonify({"error": f"Unsupported file type. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}"}), 400
+        try:
+            image_bytes = file.read()
+        except Exception as e:
+            return jsonify({"error": f"Failed to read image: {str(e)}"}), 400
+
+        try:
+            result = classify_banknote(image_bytes, filename=file.filename, model_key=model_key)
+            return jsonify(result)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+        except Exception as e:
+            app.logger.error(f"Classification error: {e}")
+            return jsonify({"error": f"Feature extraction failed: {str(e)}"}), 500
+
+    # Multi-image Batch mode
+    results = []
+    for file in uploaded_files:
+        if not allowed_file(file.filename):
+            results.append({
+                "filename": file.filename,
+                "error": f"Unsupported file type. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+            })
+            continue
+
+        try:
+            image_bytes = file.read()
+            res = classify_banknote(image_bytes, filename=file.filename, model_key=model_key)
+            results.append(res)
+        except ValueError as e:
+            results.append({
+                "filename": file.filename,
+                "error": str(e)
+            })
+        except Exception as e:
+            app.logger.error(f"Error classifying {file.filename}: {e}")
+            results.append({
+                "filename": file.filename,
+                "error": f"Analysis failed: {str(e)}"
+            })
+
+    total = len(results)
+    successful = [r for r in results if "error" not in r]
+    failed = [r for r in results if "error" in r]
+
+    summary = {
+        "total": total,
+        "successful": len(successful),
+        "failed": len(failed),
+        "genuine": sum(1 for r in successful if r.get("prediction") == "Genuine"),
+        "forged": sum(1 for r in successful if r.get("prediction") == "Forged"),
+        "suspicious": sum(1 for r in successful if r.get("prediction") == "Suspicious"),
+        "uncertain": sum(1 for r in successful if r.get("prediction") == "Uncertain"),
+    }
+
+    return jsonify({
+        "batch": True,
+        "total": total,
+        "successful": len(successful),
+        "failed": len(failed),
+        "summary": summary,
+        "results": results
+    })
+
+
+@app.route("/api/predict-batch", methods=["POST", "OPTIONS"])
+def predict_batch():
+    """Batch authenticity classification endpoint for multiple banknote images."""
+    if request.method == "OPTIONS":
+        return "", 200
+
+    # Ensure batch mode is enabled even if only 1 image was uploaded
+    # Duplicate form data with batch_mode=true
+    form_data = request.form.to_dict()
+    form_data["batch_mode"] = "true"
+    
+    # Delegate to predict_image with batch_mode set
+    uploaded_files = []
+    if "images" in request.files:
+        uploaded_files = request.files.getlist("images")
+    elif "image" in request.files:
+        uploaded_files = request.files.getlist("image")
+    else:
+        for key in request.files:
+            uploaded_files.extend(request.files.getlist(key))
+
+    uploaded_files = [f for f in uploaded_files if f and f.filename]
+    if not uploaded_files:
+        return jsonify({"error": "No image files provided in form field 'images' or 'image'."}), 400
+
+    model_key = request.form.get("model", METRICS.get("best_model", "random_forest"))
+    if model_key not in MODELS:
+        model_key = "random_forest"
+
+    results = []
+    for file in uploaded_files:
+        if not allowed_file(file.filename):
+            results.append({
+                "filename": file.filename,
+                "error": f"Unsupported file type. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+            })
+            continue
+
+        try:
+            image_bytes = file.read()
+            res = classify_banknote(image_bytes, filename=file.filename, model_key=model_key)
+            results.append(res)
+        except ValueError as e:
+            results.append({
+                "filename": file.filename,
+                "error": str(e)
+            })
+        except Exception as e:
+            app.logger.error(f"Error classifying {file.filename}: {e}")
+            results.append({
+                "filename": file.filename,
+                "error": f"Analysis failed: {str(e)}"
+            })
+
+    total = len(results)
+    successful = [r for r in results if "error" not in r]
+    failed = [r for r in results if "error" in r]
+
+    summary = {
+        "total": total,
+        "successful": len(successful),
+        "failed": len(failed),
+        "genuine": sum(1 for r in successful if r.get("prediction") == "Genuine"),
+        "forged": sum(1 for r in successful if r.get("prediction") == "Forged"),
+        "suspicious": sum(1 for r in successful if r.get("prediction") == "Suspicious"),
+        "uncertain": sum(1 for r in successful if r.get("prediction") == "Uncertain"),
+    }
+
+    return jsonify({
+        "batch": True,
+        "total": total,
+        "successful": len(successful),
+        "failed": len(failed),
+        "summary": summary,
+        "results": results
     })
 
 

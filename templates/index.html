@@ -121,39 +121,47 @@
             </div>
           </div>
 
-          <!-- Drag & Drop Zone (Supports side-by-side thumbnail on upload) -->
+          <!-- Drag & Drop Zone (Supports single and multi-image uploads) -->
           <div class="upload-dropzone" id="dropZone">
             <div class="dropzone-left-col">
-              <i class="fa-regular fa-image dropzone-icon" id="dropIcon"></i>
-              <div class="dropzone-prompt">Drag & drop banknote image here</div>
-              <div class="dropzone-sub">or click to browse your files</div>
+              <i class="fa-regular fa-images dropzone-icon" id="dropIcon"></i>
+              <div class="dropzone-prompt">Drag & drop banknote image(s) here</div>
+              <div class="dropzone-sub">or click to browse multiple files at once</div>
 
               <div class="file-input-custom-row">
                 <button type="button" class="btn-file-select" id="browseBtn">
-                  Choose file
+                  <i class="fa-solid fa-folder-open"></i> Choose files
                 </button>
-                <span class="file-name-display" id="fileNameDisplay">No file chosen</span>
+                <span class="file-name-display" id="fileNameDisplay">No files chosen</span>
               </div>
 
-              <!-- Native file input -->
-              <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;" aria-label="Upload banknote image file">
+              <!-- Native file input with multiple -->
+              <input type="file" id="imageInput" accept="image/*" multiple capture="environment" style="display: none;" aria-label="Upload banknote image files">
             </div>
 
-            <!-- Uploaded Thumbnail Box (Right Side) -->
+            <!-- Uploaded Thumbnail Box (Multi-preview support) -->
             <div class="dropzone-preview-wrap" id="previewContainer" style="display: none;">
-              <div class="preview-thumb-card">
-                <button type="button" class="preview-clear-btn" id="clearPreviewBtn" title="Remove image" aria-label="Remove image">
-                  <i class="fa-solid fa-xmark"></i>
+              <div class="preview-header-row" id="previewHeaderRow">
+                <span class="preview-count-pill" id="previewCountBadge">1 image selected</span>
+                <button type="button" class="preview-clear-all-btn" id="clearAllPreviewBtn" title="Remove all selected images" aria-label="Remove all selected images">
+                  <i class="fa-solid fa-trash-can"></i> Clear All
                 </button>
-                <img id="imagePreview" class="preview-thumb-img" alt="Selected banknote preview">
               </div>
-              <span class="preview-caption">Uploaded Image</span>
+              <div class="preview-cards-list" id="previewCardsList">
+                <div class="preview-thumb-card" id="singlePreviewCard">
+                  <button type="button" class="preview-clear-btn" id="clearPreviewBtn" title="Remove image" aria-label="Remove image">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                  <img id="imagePreview" class="preview-thumb-img" alt="Selected banknote preview">
+                  <span class="preview-thumb-caption" id="previewThumbCaption">Uploaded Image</span>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="helper-text">
             <i class="fa-solid fa-circle-info"></i>
-            <span>Supported formats: PNG, JPG, JPEG, GIF, BMP, WEBP (Max size: 16MB)</span>
+            <span>Supported formats: PNG, JPG, JPEG, GIF, BMP, WEBP (Max 16MB per file, multi-image upload supported)</span>
           </div>
         </div>
 
@@ -167,9 +175,51 @@
   </div>
 
   <!-- =================================================================== -->
+  <!-- BATCH RESULTS CARD (When multiple banknotes analyzed)               -->
+  <!-- =================================================================== -->
+  <div id="batchResultCard" class="card batch-main-card" style="display: none;" data-animate="fade-up">
+    <div class="batch-card-header">
+      <div class="batch-header-title-group">
+        <div class="batch-header-icon-box">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div>
+          <h2 class="batch-title">Batch Verification Results</h2>
+          <p class="batch-subtitle" id="batchSubtitle">Summary for multiple banknote specimens analyzed simultaneously</p>
+        </div>
+      </div>
+      <div class="batch-summary-chips" id="batchSummaryChips">
+        <span class="batch-stat-chip total" id="batchStatTotal"><i class="fa-solid fa-images"></i> <strong>0</strong> Total</span>
+        <span class="batch-stat-chip genuine" id="batchStatGen"><i class="fa-solid fa-circle-check"></i> <strong>0</strong> Genuine</span>
+        <span class="batch-stat-chip forged" id="batchStatForg"><i class="fa-solid fa-triangle-exclamation"></i> <strong>0</strong> Forged</span>
+        <span class="batch-stat-chip suspicious" id="batchStatSusp" style="display: none;"><i class="fa-solid fa-circle-question"></i> <strong>0</strong> Suspicious</span>
+      </div>
+    </div>
+
+    <div class="batch-instruction-banner">
+      <i class="fa-solid fa-hand-pointer" style="color: #f59e0b;"></i>
+      <span>Click any banknote card below to inspect its detailed BSP security verification checklist, wavelet feature metrics, and official certificate.</span>
+    </div>
+
+    <!-- Batch specimen cards grid -->
+    <div class="batch-specimens-grid" id="batchCardsGrid">
+      <!-- Populated dynamically by main.js -->
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
   <!-- RESULTS CARD                                                        -->
   <!-- =================================================================== -->
   <div id="uploadResult" class="card result-main-card" style="display: none;" data-animate="fade-up">
+    
+    <!-- Active Note Banner when in Batch Mode -->
+    <div id="batchActiveNoteBanner" class="batch-active-note-banner" style="display: none;">
+      <div class="active-note-info">
+        <i class="fa-solid fa-eye" style="color: #f59e0b;"></i>
+        <span>Inspecting Specimen: <strong id="activeNoteFileName">note_1.jpg</strong></span>
+      </div>
+      <span class="active-note-nav-hint"><i class="fa-solid fa-arrows-up-down"></i> Select other notes in the grid above</span>
+    </div>
     
     <!-- Top Result Grid: Verdict Box & Confidence Box -->
     <div class="result-top-grid" data-animate-group>

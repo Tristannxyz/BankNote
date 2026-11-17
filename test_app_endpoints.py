@@ -222,6 +222,54 @@ class NoteGuardAppTestCase(unittest.TestCase):
         self.assertIn(res["prediction"], ["Suspicious", "Forged"])
         print(f"[PASS] White image upload -> Prediction: {res['prediction']}, Conf: {res['confidence']}%")
 
+    def test_13_predict_multiple_images_batch(self):
+        """Batch upload with multiple banknote images via /api/predict-image."""
+        data = {
+            "model": "random_forest",
+            "images": [
+                (io.BytesIO(self.valid_png_bytes), "note_1.png"),
+                (io.BytesIO(self.valid_jpeg_bytes), "note_2.jpg"),
+            ]
+        }
+        resp = self.client.post(
+            "/api/predict-image",
+            data=data,
+            content_type="multipart/form-data"
+        )
+        self.assertEqual(resp.status_code, 200)
+        res = resp.get_json()
+        self.assertTrue(res.get("batch"))
+        self.assertEqual(res.get("total"), 2)
+        self.assertEqual(res.get("successful"), 2)
+        self.assertEqual(len(res.get("results")), 2)
+        self.assertEqual(res["results"][0]["filename"], "note_1.png")
+        self.assertEqual(res["results"][1]["filename"], "note_2.jpg")
+        print(f"[PASS] POST /api/predict-image (Multiple) -> Total: {res['total']}, Successful: {res['successful']}")
+
+    def test_14_predict_batch_endpoint_with_invalid_item(self):
+        """Batch upload via /api/predict-batch containing one valid and one corrupted image."""
+        fake_png = b"corrupted data"
+        data = {
+            "model": "random_forest",
+            "images": [
+                (io.BytesIO(self.valid_png_bytes), "valid_note.png"),
+                (io.BytesIO(fake_png), "broken_note.png"),
+            ]
+        }
+        resp = self.client.post(
+            "/api/predict-batch",
+            data=data,
+            content_type="multipart/form-data"
+        )
+        self.assertEqual(resp.status_code, 200)
+        res = resp.get_json()
+        self.assertTrue(res.get("batch"))
+        self.assertEqual(res["total"], 2)
+        self.assertEqual(res["successful"], 1)
+        self.assertEqual(res["failed"], 1)
+        self.assertIn("error", res["results"][1])
+        print(f"[PASS] POST /api/predict-batch (Mixed) -> Success: {res['successful']}, Failed: {res['failed']}")
+
 
 if __name__ == "__main__":
     unittest.main()

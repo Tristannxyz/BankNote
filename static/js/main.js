@@ -69,9 +69,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const previewContainer = document.getElementById("previewContainer");
   const imagePreview = document.getElementById("imagePreview");
   const clearPreviewBtn = document.getElementById("clearPreviewBtn");
+  const previewHeaderRow = document.getElementById("previewHeaderRow");
+  const previewCountBadge = document.getElementById("previewCountBadge");
+  const clearAllPreviewBtn = document.getElementById("clearAllPreviewBtn");
+  const previewCardsList = document.getElementById("previewCardsList");
   const uploadModelSelect = document.getElementById("uploadModelSelect");
   const btnAnalyzeUpload = document.getElementById("btnAnalyzeUpload");
   const btnUploadText = document.getElementById("btnUploadText");
+
+  // Elements: Batch Result
+  const batchResultCard = document.getElementById("batchResultCard");
+  const batchSubtitle = document.getElementById("batchSubtitle");
+  const batchStatTotal = document.getElementById("batchStatTotal");
+  const batchStatGen = document.getElementById("batchStatGen");
+  const batchStatForg = document.getElementById("batchStatForg");
+  const batchStatSusp = document.getElementById("batchStatSusp");
+  const batchCardsGrid = document.getElementById("batchCardsGrid");
+  const batchActiveNoteBanner = document.getElementById("batchActiveNoteBanner");
+  const activeNoteFileName = document.getElementById("activeNoteFileName");
 
   // Elements: Upload Result
   const uploadResult = document.getElementById("uploadResult");
@@ -113,7 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const manualProbForg = document.getElementById("manualProbForg");
 
   // State
+  let selectedFiles = []; // Array of { file, id, dataUrl }
   let currentFile = null;
+  let batchResultsData = null;
+  let activeBatchIndex = 0;
   let cachedSamples = null;
   let genuineSampleIndex = 0;
   let forgedSampleIndex = 0;
@@ -193,11 +211,40 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
-  // FILE HANDLING & DRAG-AND-DROP
+  // DENOMINATION FORMATTING HELPERS
+  // =========================================================================
+  function formatDenominationDisplay(d) {
+    if (!d) return "Philippine Peso Banknote";
+    const display = d.denomination_display || "";
+    if (display.includes("₱")) return display;
+    const match = (d.denomination_match || "").toLowerCase();
+    if (match.includes("poly") || match.includes("1000")) return "₱1,000 Pesos (Blue)";
+    if (match.includes("500")) return "₱500 Pesos (Yellow)";
+    if (match.includes("200")) return "₱200 Pesos (Green)";
+    if (match.includes("100")) return "₱100 Pesos (Violet)";
+    if (match.includes("50")) return "₱50 Pesos (Red)";
+    if (match.includes("20")) return "₱20 Pesos (Orange)";
+    return display ? `₱${display}` : "Philippine Peso Banknote";
+  }
+
+  function getDenominationNumeral(d) {
+    if (!d) return "₱ Note";
+    const str = (d.denomination_display || d.denomination_match || "").toString().toLowerCase();
+    if (str.includes("poly") || str.includes("1000") || str.includes("1,000")) return "₱1,000";
+    if (str.includes("500")) return "₱500";
+    if (str.includes("200")) return "₱200";
+    if (str.includes("100")) return "₱100";
+    if (str.includes("50")) return "₱50";
+    if (str.includes("20")) return "₱20";
+    return "₱ Note";
+  }
+
+  // =========================================================================
+  // FILE HANDLING & DRAG-AND-DROP (Supports Multiple Banknote Images)
   // =========================================================================
   browseBtn.addEventListener("click", () => imageInput.click());
   dropZone.addEventListener("click", (e) => {
-    if (e.target !== browseBtn && !browseBtn.contains(e.target) && e.target !== clearPreviewBtn) {
+    if (e.target !== browseBtn && !browseBtn.contains(e.target) && !e.target.closest(".preview-clear-btn") && !e.target.closest(".preview-clear-all-btn")) {
       imageInput.click();
     }
   });
@@ -221,62 +268,174 @@ document.addEventListener("DOMContentLoaded", () => {
   dropZone.addEventListener("drop", (e) => {
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
-      handleFileSelected(files[0]);
+      handleFilesSelected(files);
     }
   });
 
   imageInput.addEventListener("change", () => {
     if (imageInput.files && imageInput.files.length > 0) {
-      handleFileSelected(imageInput.files[0]);
+      handleFilesSelected(imageInput.files);
     }
   });
 
-  clearPreviewBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    resetFileInput();
-  });
+  if (clearAllPreviewBtn) {
+    clearAllPreviewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetFileInput();
+    });
+  }
+
+  if (clearPreviewBtn) {
+    clearPreviewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetFileInput();
+    });
+  }
 
   function resetFileInput() {
+    selectedFiles = [];
     currentFile = null;
+    batchResultsData = null;
+    activeBatchIndex = 0;
     imageInput.value = "";
-    fileNameDisplay.textContent = "No file chosen";
-    imagePreview.src = "";
+    fileNameDisplay.textContent = "No files chosen";
+    if (imagePreview) imagePreview.src = "";
+    if (previewCardsList) previewCardsList.innerHTML = "";
     previewContainer.style.display = "none";
     uploadResult.style.display = "none";
+    if (batchResultCard) batchResultCard.style.display = "none";
+    if (batchActiveNoteBanner) batchActiveNoteBanner.style.display = "none";
+    btnUploadText.textContent = "Analyze Currency Note";
     hideAlert();
   }
 
-  function handleFileSelected(file) {
+  function handleFilesSelected(fileList) {
     hideAlert();
     uploadResult.style.display = "none";
+    if (batchResultCard) batchResultCard.style.display = "none";
+    if (batchActiveNoteBanner) batchActiveNoteBanner.style.display = "none";
 
-    const ext = file.name.split(".").pop().toLowerCase();
-    if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      showAlert(`Unsupported file extension (.${ext}). Allowed formats: PNG, JPG, JPEG, GIF, BMP, WEBP.`);
+    const filesArray = Array.from(fileList);
+    if (!filesArray.length) return;
+
+    let rejectedExt = 0;
+    let rejectedSize = 0;
+
+    filesArray.forEach((file) => {
+      const ext = file.name.split(".").pop().toLowerCase();
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        rejectedExt++;
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        rejectedSize++;
+        return;
+      }
+
+      // Avoid exact duplicates
+      const exists = selectedFiles.some(
+        (item) => item.file.name === file.name && item.file.size === file.size
+      );
+      if (!exists) {
+        selectedFiles.push({
+          file: file,
+          id: "f_" + Math.random().toString(36).substring(2, 10),
+          dataUrl: null
+        });
+      }
+    });
+
+    if (rejectedExt > 0) {
+      showAlert(`Some files were skipped: unsupported extension. Allowed formats: PNG, JPG, JPEG, GIF, BMP, WEBP.`);
+    } else if (rejectedSize > 0) {
+      showAlert(`Some files were skipped because they exceed the 16MB limit.`);
+    }
+
+    if (!selectedFiles.length) {
       resetFileInput();
       return;
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      showAlert(`Selected file is too large (${(file.size / (1024 * 1024)).toFixed(2)} MB). Maximum allowed size is 16MB.`);
+    currentFile = selectedFiles[0].file;
+
+    // Read DataURLs for thumbnail rendering
+    let pendingReads = 0;
+    selectedFiles.forEach((item) => {
+      if (!item.dataUrl) {
+        pendingReads++;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          item.dataUrl = e.target.result;
+          pendingReads--;
+          if (pendingReads === 0) {
+            renderPreviews();
+          }
+        };
+        reader.onerror = () => {
+          pendingReads--;
+          if (pendingReads === 0) {
+            renderPreviews();
+          }
+        };
+        reader.readAsDataURL(item.file);
+      }
+    });
+
+    if (pendingReads === 0) {
+      renderPreviews();
+    }
+  }
+
+  function renderPreviews() {
+    if (!selectedFiles.length) {
       resetFileInput();
       return;
     }
 
-    currentFile = file;
-    fileNameDisplay.textContent = file.name;
+    currentFile = selectedFiles[0].file;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.src = e.target.result;
-      if (resultThumb) resultThumb.src = e.target.result;
-      previewContainer.style.display = "flex";
-    };
-    reader.onerror = () => {
-      showAlert("Failed to read image file.");
-      resetFileInput();
-    };
-    reader.readAsDataURL(file);
+    if (selectedFiles.length === 1) {
+      fileNameDisplay.textContent = selectedFiles[0].file.name;
+      btnUploadText.textContent = "Analyze Currency Note";
+    } else {
+      fileNameDisplay.textContent = `${selectedFiles.length} files selected`;
+      btnUploadText.textContent = `Analyze ${selectedFiles.length} Currency Notes`;
+    }
+
+    if (previewCountBadge) {
+      previewCountBadge.textContent = `${selectedFiles.length} image${selectedFiles.length === 1 ? '' : 's'} selected`;
+    }
+
+    if (previewCardsList) {
+      previewCardsList.innerHTML = selectedFiles.map((item) => `
+        <div class="preview-thumb-card" data-id="${item.id}">
+          <button type="button" class="preview-clear-btn" data-id="${item.id}" title="Remove ${item.file.name}" aria-label="Remove image">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="${item.dataUrl || ''}" class="preview-thumb-img" alt="${item.file.name}">
+          <span class="preview-thumb-caption" title="${item.file.name}">${item.file.name}</span>
+        </div>
+      `).join("");
+
+      // Bind individual remove buttons
+      previewCardsList.querySelectorAll(".preview-clear-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const targetId = btn.getAttribute("data-id");
+          selectedFiles = selectedFiles.filter((f) => f.id !== targetId);
+          renderPreviews();
+        });
+      });
+    }
+
+    if (imagePreview && selectedFiles[0]?.dataUrl) {
+      imagePreview.src = selectedFiles[0].dataUrl;
+    }
+    if (resultThumb && selectedFiles[0]?.dataUrl) {
+      resultThumb.src = selectedFiles[0].dataUrl;
+    }
+
+    previewContainer.style.display = "flex";
   }
 
   // =========================================================================
@@ -303,23 +462,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
-  // UPLOAD FORM SUBMISSION (/api/predict-image)
+  // UPLOAD FORM SUBMISSION (/api/predict-image or /api/predict-batch)
   // =========================================================================
   uploadForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     hideAlert();
 
-    if (!currentFile) {
-      showAlert("Please choose or drag-and-drop a banknote image first.");
+    if (!selectedFiles.length) {
+      showAlert("Please choose or drag-and-drop banknote image(s) first.");
       return;
     }
 
+    const count = selectedFiles.length;
     btnAnalyzeUpload.disabled = true;
-    btnUploadText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Currency Note...';
+    btnUploadText.innerHTML = count > 1
+      ? `<i class="fa-solid fa-spinner fa-spin"></i> Analyzing ${count} Currency Notes...`
+      : `<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Currency Note...`;
 
     const formData = new FormData();
-    formData.append("image", currentFile);
     formData.append("model", uploadModelSelect.value);
+
+    // Append each file to 'images' and 'image'
+    selectedFiles.forEach((item) => {
+      formData.append("images", item.file);
+      formData.append("image", item.file);
+    });
 
     try {
       const resp = await fetch(`${API_BASE}/api/predict-image`, {
@@ -333,20 +500,185 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(data.error || `Server returned error (${resp.status})`);
       }
 
-      displayUploadResult(data);
+      if (data.batch && data.results) {
+        displayBatchResults(data, selectedFiles);
+      } else {
+        if (batchResultCard) batchResultCard.style.display = "none";
+        if (batchActiveNoteBanner) batchActiveNoteBanner.style.display = "none";
+        displayUploadResult(data, selectedFiles[0]?.dataUrl);
+      }
     } catch (err) {
       console.warn("Prediction API error:", err);
       if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
         const targetBackend = API_BASE || window.location.origin;
         showAlert(`⚠️ Could not connect to NoteGuard Flask backend at ${targetBackend}. Please start Flask (python app.py) in your VS Code terminal.`);
       } else {
-        showAlert(err.message || "An error occurred while analyzing the image.");
+        showAlert(err.message || "An error occurred while analyzing the banknote images.");
       }
     } finally {
       btnAnalyzeUpload.disabled = false;
-      btnUploadText.textContent = "Analyze Currency Note";
+      btnUploadText.textContent = selectedFiles.length > 1
+        ? `Analyze ${selectedFiles.length} Currency Notes`
+        : "Analyze Currency Note";
     }
   });
+
+  // =========================================================================
+  // BATCH RESULTS RENDERING & INTERACTIVE SELECTION
+  // =========================================================================
+  function displayBatchResults(batchData, filesList) {
+    batchResultsData = batchData;
+    const results = batchData.results || [];
+    if (!results.length) {
+      showAlert("No results returned for the uploaded banknotes.");
+      return;
+    }
+
+    if (batchStatTotal) batchStatTotal.innerHTML = `<i class="fa-solid fa-images"></i> <strong>${batchData.total}</strong> Total`;
+    if (batchStatGen) batchStatGen.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>${batchData.summary.genuine}</strong> Genuine`;
+    if (batchStatForg) batchStatForg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>${batchData.summary.forged}</strong> Forged`;
+    if (batchStatSusp) {
+      const flagged = (batchData.summary.suspicious || 0) + (batchData.summary.uncertain || 0);
+      if (flagged > 0) {
+        batchStatSusp.style.display = "inline-flex";
+        batchStatSusp.innerHTML = `<i class="fa-solid fa-circle-question"></i> <strong>${flagged}</strong> Flagged`;
+      } else {
+        batchStatSusp.style.display = "none";
+      }
+    }
+
+    if (batchSubtitle) {
+      batchSubtitle.textContent = `Completed analysis for ${batchData.total} banknote specimens (${batchData.summary.genuine} Genuine, ${batchData.summary.forged} Forged)`;
+    }
+
+    // Render cards grid
+    if (batchCardsGrid) {
+      batchCardsGrid.innerHTML = results.map((item, idx) => {
+        const predLower = (item.prediction || "").toLowerCase();
+        const isGen = predLower === "genuine";
+        const isForg = predLower === "forged";
+        const isSusp = predLower === "suspicious";
+
+        let badgeClass = "uncertain";
+        let badgeIcon = "fa-circle-question";
+        let badgeText = item.prediction || "UNCERTAIN";
+
+        if (isGen) {
+          badgeClass = "genuine";
+          badgeIcon = "fa-circle-check";
+          badgeText = "GENUINE";
+        } else if (isForg) {
+          badgeClass = "forged";
+          badgeIcon = "fa-triangle-exclamation";
+          badgeText = "FORGED";
+        } else if (isSusp) {
+          badgeClass = "suspicious";
+          badgeIcon = "fa-triangle-exclamation";
+          badgeText = "SUSPICIOUS";
+        }
+
+        // Find thumbnail URL from filesList
+        const matchingFile = filesList.find((f) => f.file.name === item.filename) || filesList[idx];
+        const thumbUrl = matchingFile ? matchingFile.dataUrl : "";
+
+        const conf = typeof item.confidence === "number" ? item.confidence.toFixed(1) : "0.0";
+        const denom = item.denomination_display || item.denomination_match || "Philippine Banknote";
+
+        return `
+          <div class="batch-specimen-card" data-index="${idx}" role="button" tabindex="0" title="Click to view detailed inspection for ${item.filename}">
+            <div class="batch-card-top">
+              <div class="batch-card-thumb-frame">
+                <img src="${thumbUrl || ''}" alt="${item.filename}">
+              </div>
+              <div class="batch-card-info">
+                <div class="batch-card-filename">${item.filename}</div>
+                <div class="batch-card-denom">${denom}</div>
+                <div class="batch-card-badge-row">
+                  <span class="batch-verdict-badge ${badgeClass}">
+                    <i class="fa-solid ${badgeIcon}"></i> ${badgeText}
+                  </span>
+                  <span class="batch-conf-val">${conf}%</span>
+                </div>
+              </div>
+            </div>
+            <div class="batch-progress-mini">
+              <div class="batch-progress-bar ${badgeClass}" style="width: ${Math.max(item.confidence || 0, 12)}%;"></div>
+            </div>
+            <div class="batch-card-footer">
+              <span><i class="fa-solid fa-microchip"></i> ${item.model_used || 'Random Forest'}</span>
+              <span class="batch-card-inspect-hint">Inspect Note <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // Bind card click event
+      batchCardsGrid.querySelectorAll(".batch-specimen-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          const idx = parseInt(card.getAttribute("data-index"), 10);
+          selectBatchNote(idx);
+        });
+      });
+    }
+
+    if (batchResultCard) {
+      batchResultCard.style.display = "block";
+    }
+
+    // Auto-select first forged note if exists, otherwise first note
+    let defaultIndex = results.findIndex((r) => (r.prediction || "").toLowerCase() === "forged");
+    if (defaultIndex === -1) defaultIndex = 0;
+    selectBatchNote(defaultIndex);
+
+    // Save each to session scan history
+    results.forEach((item, idx) => {
+      const matchFile = filesList.find((f) => f.file.name === item.filename) || filesList[idx];
+      addScanToSessionHistory({
+        id: "NG-" + Math.floor(100000 + Math.random() * 900000),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        prediction: item.prediction,
+        confidence: item.confidence,
+        denomination_display: formatDenominationDisplay(item),
+        denomination_numeral: getDenominationNumeral(item),
+        thumb: matchFile?.dataUrl || "",
+        rawData: item
+      });
+    });
+
+    if (batchResultCard) {
+      batchResultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function selectBatchNote(index) {
+    if (!batchResultsData || !batchResultsData.results || !batchResultsData.results[index]) return;
+    activeBatchIndex = index;
+    const noteData = batchResultsData.results[index];
+
+    // Highlight active card
+    if (batchCardsGrid) {
+      batchCardsGrid.querySelectorAll(".batch-specimen-card").forEach((c, idx) => {
+        if (idx === index) {
+          c.classList.add("active");
+        } else {
+          c.classList.remove("active");
+        }
+      });
+    }
+
+    // Update active banner
+    if (batchActiveNoteBanner) {
+      batchActiveNoteBanner.style.display = "flex";
+      if (activeNoteFileName) {
+        activeNoteFileName.textContent = noteData.filename || `Note #${index + 1}`;
+      }
+    }
+
+    const matchFile = selectedFiles.find((f) => f.file.name === noteData.filename) || selectedFiles[index];
+    const thumbUrl = matchFile ? matchFile.dataUrl : "";
+
+    displayUploadResult(noteData, thumbUrl);
+  }
 
   function displayUploadResult(data, optThumbUrl) {
     lastExtractedFeatures = data.extracted_features || {};
@@ -386,33 +718,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (uploadVerdictBadge) {
       uploadVerdictBadge.innerHTML = `<i class="${statusIcon}" id="verdictStatusIcon"></i> <span id="uploadVerdictText">${statusText}</span>`;
-    }
-
-    // Denomination details mapping
-    function formatDenominationDisplay(d) {
-      if (!d) return "Philippine Peso Banknote";
-      const display = d.denomination_display || "";
-      if (display.includes("₱")) return display;
-      const match = (d.denomination_match || "").toLowerCase();
-      if (match.includes("poly") || match.includes("1000")) return "₱1,000 Pesos (Blue)";
-      if (match.includes("500")) return "₱500 Pesos (Yellow)";
-      if (match.includes("200")) return "₱200 Pesos (Green)";
-      if (match.includes("100")) return "₱100 Pesos (Violet)";
-      if (match.includes("50")) return "₱50 Pesos (Red)";
-      if (match.includes("20")) return "₱20 Pesos (Orange)";
-      return display ? `₱${display}` : "Philippine Peso Banknote";
-    }
-
-    function getDenominationNumeral(d) {
-      if (!d) return "₱ Note";
-      const str = (d.denomination_display || d.denomination_match || "").toString().toLowerCase();
-      if (str.includes("poly") || str.includes("1000") || str.includes("1,000")) return "₱1,000";
-      if (str.includes("500")) return "₱500";
-      if (str.includes("200")) return "₱200";
-      if (str.includes("100")) return "₱100";
-      if (str.includes("50")) return "₱50";
-      if (str.includes("20")) return "₱20";
-      return "₱ Note";
     }
 
     if (verdictDenomTag) {
@@ -807,14 +1112,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
 
         // Set file into state and display preview
+        selectedFiles = [{
+          file: file,
+          id: "specimen_" + Date.now(),
+          dataUrl: null
+        }];
         currentFile = file;
         fileNameDisplay.textContent = `${filename} (₱${denom} Specimen)`;
 
         const reader = new FileReader();
         reader.onload = (re) => {
-          imagePreview.src = re.target.result;
-          if (resultThumb) resultThumb.src = re.target.result;
-          previewContainer.style.display = "flex";
+          selectedFiles[0].dataUrl = re.target.result;
+          renderPreviews();
 
           // Trigger form submission
           setTimeout(() => {
