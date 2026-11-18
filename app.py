@@ -10,8 +10,8 @@ Trained on the Philippine Banknotes dataset (dataset/):
 import os
 import json
 import logging
+import csv
 import numpy as np
-import pandas as pd
 import joblib
 from flask import Flask, request, jsonify, render_template
 
@@ -204,12 +204,14 @@ def load_artifacts():
     # 3. Demonstration samples for manual entry
     if os.path.exists(DATA_CSV):
         try:
-            df = pd.read_csv(DATA_CSV)
-            gen_df = df[df["class"] == 0].drop_duplicates().head(5)
-            forg_df = df[df["class"] == 1].drop_duplicates().head(5)
+            with open(DATA_CSV, "r", encoding="utf-8") as f:
+                reader = list(csv.DictReader(f))
 
-            SAMPLE_DATA["genuine"] = [
-                {
+            gen = []
+            forg = []
+            for r in reader:
+                cls_val = int(r.get("class", -1))
+                item = {
                     "variance": round(float(r["variance"]), 4),
                     "skewness": round(float(r["skewness"]), 4),
                     "curtosis": round(float(r["curtosis"]), 4),
@@ -220,26 +222,17 @@ def load_artifacts():
                     "r_std": round(float(r["r_std"]), 4),
                     "g_std": round(float(r["g_std"]), 4),
                     "b_std": round(float(r["b_std"]), 4),
-                    "label": "Genuine"
+                    "label": "Genuine" if cls_val == 0 else "Forged"
                 }
-                for _, r in gen_df.iterrows()
-            ]
-            SAMPLE_DATA["forged"] = [
-                {
-                    "variance": round(float(r["variance"]), 4),
-                    "skewness": round(float(r["skewness"]), 4),
-                    "curtosis": round(float(r["curtosis"]), 4),
-                    "entropy": round(float(r["entropy"]), 4),
-                    "r_mean": round(float(r["r_mean"]), 4),
-                    "g_mean": round(float(r["g_mean"]), 4),
-                    "b_mean": round(float(r["b_mean"]), 4),
-                    "r_std": round(float(r["r_std"]), 4),
-                    "g_std": round(float(r["g_std"]), 4),
-                    "b_std": round(float(r["b_std"]), 4),
-                    "label": "Forged"
-                }
-                for _, r in forg_df.iterrows()
-            ]
+                if cls_val == 0 and len(gen) < 5:
+                    gen.append(item)
+                elif cls_val == 1 and len(forg) < 5:
+                    forg.append(item)
+                if len(gen) >= 5 and len(forg) >= 5:
+                    break
+
+            SAMPLE_DATA["genuine"] = gen
+            SAMPLE_DATA["forged"] = forg
             app.logger.info("Loaded demo dataset samples.")
         except Exception as e:
             app.logger.warning(f"Failed to load samples: {e}")
@@ -376,9 +369,9 @@ def predict_manual():
 
     clf = MODELS[model_key]
 
-    features_df = pd.DataFrame([parsed_values], columns=FEATURE_NAMES)
-    pred_class = int(clf.predict(features_df)[0])
-    proba = clf.predict_proba(features_df)[0]
+    features_arr = np.array([parsed_values], dtype=np.float64)
+    pred_class = int(clf.predict(features_arr)[0])
+    proba = clf.predict_proba(features_arr)[0]
     verdict = "Forged" if pred_class == 1 else "Genuine"
     confidence = round(float(np.max(proba) * 100), 2)
     p_gen = round(float(proba[0]) * 100, 2)
@@ -417,15 +410,20 @@ def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "
     # Build input feature vector
     all_f = extracted.get("all_features", {**extracted["features"], **extracted.get("color_features", {})})
     input_row = [all_f[col] for col in FEATURE_NAMES]
-    feat_df = pd.DataFrame([input_row], columns=FEATURE_NAMES)
+    features_arr = np.array([input_row], dtype=np.float64)
 
     clf = MODELS[model_key]
-    pred_class = int(clf.predict(feat_df)[0])
-    proba = clf.predict_proba(feat_df)[0]
+    pred_class = int(clf.predict(features_arr)[0])
+    proba = clf.predict_proba(features_arr)[0]
 
     # Raw model probabilities — no artificial clamping or floors
     p_gen_raw = float(proba[0]) * 100.0
     p_forg_raw = float(proba[1]) * 100.0
+
+    # Cross-reference with alternate model for ensemble verification
+    alt_key = "decision_tree" if model_key == "random_forest" else "random_forest"
+    alt_clf = MODELS.get(alt_key)
+    p_forg_alt = float(alt_clf.predict_proba(features_arr)[0][1] * 100.0) if alt_clf else p_forg_raw
 
     # Denomination recognition (fusing trained ML random forest with official BSP colorimetry)
     denom_best = None
@@ -473,58 +471,62 @@ def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "
         all_f["r_mean"] > 0.94 and all_f["g_mean"] > 0.94 and all_f["b_mean"] > 0.94
     ) or (feats["variance"] < 0.003)
 
-    # OOD handling: if feature extraction flagged out-of-distribution, override verdict
+    # Physical security checks
+    intaglio_pass = (0.0006 <= hf_energy <= 0.015)
+    substrate_pass = (0.020 <= all_f["variance"] <= 0.40)
+    contrast_pass = ((all_f["r_std"] + all_f["g_std"] + all_f["b_std"]) >= 0.25)
+    physical_fails = sum(1 for p in [intaglio_pass, substrate_pass, contrast_pass] if not p)
+
+    # Counterfeits must NEVER be allowed to pass as Genuine.
     if is_non_currency or (ood and len(ood_reasons) >= 2):
-        # Clearly not a valid banknote — force Suspicious/Forged with low confidence
+        # Clearly not a valid banknote — flag Suspicious/Forged with controlled confidence
         verdict = "Suspicious"
+        is_forged = True
         confidence = round(max(p_forg_raw, p_gen_raw), 1)
-        # Cap confidence low to signal uncertainty
         if confidence > 60.0:
             confidence = round(min(confidence, 55.0 + len(ood_reasons) * 5.0), 1)
         p_gen = round(p_gen_raw, 1)
         p_forg = round(p_forg_raw, 1)
         warning_text = (
-            "Image features fall far outside the training distribution. "
-            "This may not be a valid Philippine banknote, or it may be a low-quality scan/screenshot."
+            "Image features fall far outside the expected Philippine banknote distribution. "
+            "This may not be a valid Philippine banknote or image quality is severely degraded."
         )
         failed_checks = ood_reasons if ood_reasons else ["out_of_distribution"]
-        is_forged = True
-    elif ood:
-        # Some features out of range — use model prediction but flag uncertainty
-        is_forged = (pred_class == 1)
-        verdict = "Forged" if is_forged else "Genuine"
-        # Reduce confidence to reflect OOD uncertainty
-        raw_conf = p_forg_raw if is_forged else p_gen_raw
-        confidence = round(max(raw_conf * 0.85, 40.0), 1)
-        p_gen = round(p_gen_raw, 1)
-        p_forg = round(p_forg_raw, 1)
-        warning_text = (
-            "Some extracted features are outside the training distribution. "
-            "The prediction may be less reliable."
-        )
-        failed_checks = ood_reasons
-    else:
-        # Normal in-distribution prediction — use raw model probabilities directly
-        is_forged = (pred_class == 1) or (p_forg_raw >= 50.0)
-        if is_forged:
-            verdict = "Forged"
-            confidence = round(p_forg_raw, 1)
-        elif p_gen_raw < 65.0:
-            # Low genuine probability (<65%) indicates suspicious / counterfeit note
-            is_forged = True
-            verdict = "Forged"
-            confidence = round(max(p_forg_raw, 100.0 - p_gen_raw), 1)
-        else:
-            verdict = "Genuine"
-            confidence = round(p_gen_raw, 1)
 
+    elif pred_class == 1 or p_forg_raw >= 45.0 or (p_forg_raw >= 30.0 and p_forg_alt >= 50.0) or physical_fails >= 2:
+        # Clear counterfeit indicators detected by model, alternate classifier, or physical checks
+        is_forged = True
+        verdict = "Forged"
+        confidence = round(max(p_forg_raw, 75.0 if physical_fails >= 2 else 65.0), 1)
         p_gen = round(p_gen_raw, 1)
         p_forg = round(p_forg_raw, 1)
         warning_text = (
             "Counterfeit indicators detected. Banknote features deviate from official BSP security standards."
-            if is_forged else None
         )
-        failed_checks = ["counterfeit_substrate_wavelet"] if is_forged else []
+        failed_checks = list(ood_reasons) if ood_reasons else ["counterfeit_substrate_wavelet"]
+
+    elif ood or p_forg_raw >= 35.0 or p_gen_raw < 65.0 or physical_fails >= 1:
+        # Borderline / anomalous note — do not mark Genuine, flag for manual inspection
+        is_forged = False
+        verdict = "Uncertain"
+        confidence = round(max(p_gen_raw * 0.75, 45.0), 1)
+        p_gen = round(p_gen_raw, 1)
+        p_forg = round(p_forg_raw, 1)
+        warning_text = (
+            "Some extracted features are borderline or outside standard calibration. "
+            "Manual physical verification (FEEL, LOOK, TILT) is recommended."
+        )
+        failed_checks = list(ood_reasons) if ood_reasons else ["borderline_confidence"]
+
+    else:
+        # In-distribution authentic banknote
+        is_forged = False
+        verdict = "Genuine"
+        confidence = round(p_gen_raw, 1)
+        p_gen = round(p_gen_raw, 1)
+        p_forg = round(p_forg_raw, 1)
+        warning_text = None
+        failed_checks = []
 
     # Bangko Sentral ng Pilipinas (BSP) 3-Step Verification Checklist (FEEL, LOOK, TILT)
     is_suspicious = (verdict == "Suspicious")
@@ -533,15 +535,15 @@ def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "
         {
             "step": "FEEL",
             "name": "Intaglio Microprint Engraving",
-            "status": "PASS" if not check_fail else "FAIL",
-            "detail": f"Sharpness energy: {hf_energy:.5f} (Verified genuine relief)" if not check_fail else f"Sharpness energy: {hf_energy:.5f} (Lacks authentic intaglio relief)",
+            "status": "PASS" if intaglio_pass and not check_fail else "FAIL",
+            "detail": f"Sharpness energy: {hf_energy:.5f} (Verified genuine relief)" if (intaglio_pass and not check_fail) else f"Sharpness energy: {hf_energy:.5f} (Lacks authentic intaglio relief)",
             "description": "Validates intaglio micro-lines and engraved portrait relief"
         },
         {
             "step": "FEEL",
             "name": "Abaca Security Paper Substrate",
-            "status": "PASS" if not check_fail else "FAIL",
-            "detail": f"Surface variance: {feats['variance']:.4f} (Cotton-abaca fiber texture)" if not check_fail else f"Surface variance: {feats['variance']:.4f} (Substrate matches counterfeit paper)",
+            "status": "PASS" if substrate_pass and not check_fail else "FAIL",
+            "detail": f"Surface variance: {feats['variance']:.4f} (Cotton-abaca fiber texture)" if (substrate_pass and not check_fail) else f"Surface variance: {feats['variance']:.4f} (Substrate matches counterfeit paper)",
             "description": "Verifies fibrous roughness of official cotton-abaca security paper"
         },
         {
@@ -561,8 +563,8 @@ def classify_banknote(image_bytes: bytes, filename: str = "", model_key: str = "
         {
             "step": "TILT",
             "name": "Dynamic Range & Contrast Luster",
-            "status": "PASS" if not check_fail else "FAIL",
-            "detail": f"Dynamic range: {(all_f['r_std'] + all_f['g_std'] + all_f['b_std']):.3f} (Authentic intaglio contrast)" if not check_fail else "Flat print; lacks optical variable device luster",
+            "status": "PASS" if contrast_pass and not check_fail else "FAIL",
+            "detail": f"Dynamic range: {(all_f['r_std'] + all_f['g_std'] + all_f['b_std']):.3f} (Authentic intaglio contrast)" if (contrast_pass and not check_fail) else "Flat print; lacks optical variable device luster",
             "description": "Detects washed-out photocopies, scanner clips, and flat prints"
         }
     ]

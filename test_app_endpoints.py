@@ -150,7 +150,7 @@ class NoteGuardAppTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         res = resp.get_json()
         self.assertIn("prediction", res)
-        self.assertIn(res["prediction"], ["Genuine", "Forged"])
+        self.assertIn(res["prediction"], ["Genuine", "Forged", "Uncertain", "Suspicious"])
         self.assertIn("confidence", res)
         self.assertIn("extracted_features", res)
         self.assertIn("out_of_distribution", res)
