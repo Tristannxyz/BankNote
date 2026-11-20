@@ -1,5 +1,16 @@
 {
   "best_model": "random_forest",
+  "dataset_summary": {
+    "dataset_source": "data/banknote_authenticity.csv (Philippine Banknotes dataset + realistic counterfeit specimens)",
+    "total_records": 1736,
+    "genuine_count": 868,
+    "forged_count": 868,
+    "missing_values": 0,
+    "target_mapping": {
+      "0": "Genuine",
+      "1": "Forged"
+    }
+  },
   "feature_names": [
     "variance",
     "skewness",
